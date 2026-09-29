@@ -260,17 +260,54 @@ const STATE = {
   ]
 };
 
+// Google Apps Script Web App URL (Connected to Maesa's Google Spreadsheet)
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6NV9cv1iPsFDN1B2x0TExZDiJn8GSC0hhgjvdsPimL3Ftv_Ut2z4BMKnDGdBAA8tqKQ/exec";
+
 // Cloud Remote Sync Endpoint (Allows Cross-Device Sync between Laptop & Mobile)
 const CLOUD_SYNC_URL = "https://kvdb.io/7zD9XyN19dJ51TqA5Vv9P4/ngambis_students_db_v1";
 
 async function pullCloudStudents() {
+  let localData = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+  let merged = [...localData];
+
+  // 1. Try pulling from Google Sheets via Google Apps Script
+  if (GOOGLE_SCRIPT_URL) {
+    try {
+      const res = await fetch(GOOGLE_SCRIPT_URL, { cache: "no-store" });
+      if (res.ok) {
+        const gasData = await res.json();
+        if (gasData && gasData.students && Array.isArray(gasData.students)) {
+          gasData.students.forEach(gs => {
+            if (gs.email) {
+              const idx = merged.findIndex(m => m.email && m.email.toLowerCase() === gs.email.toLowerCase());
+              if (idx === -1) {
+                merged.push({
+                  id: "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
+                  name: gs.name,
+                  email: gs.email.toLowerCase(),
+                  grade: gs.grade || "Kelas 12",
+                  registeredAt: gs.registeredAt || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+                  role: "STUDENT"
+                });
+              } else {
+                merged[idx] = { ...merged[idx], name: gs.name || merged[idx].name, grade: gs.grade || merged[idx].grade };
+              }
+            }
+          });
+          localStorage.setItem("ngambis_registered_students", JSON.stringify(merged));
+        }
+      }
+    } catch (err) {
+      console.warn("GAS pull note:", err);
+    }
+  }
+
+  // 2. Try pulling from secondary Cloud KV
   try {
     const res = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
     if (res.ok) {
       const cloudData = await res.json();
       if (Array.isArray(cloudData) && cloudData.length > 0) {
-        let localData = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
-        let merged = [...localData];
         cloudData.forEach(cs => {
           const idx = merged.findIndex(m => m.email && m.email.toLowerCase() === cs.email.toLowerCase());
           if (idx === -1) {
@@ -280,12 +317,12 @@ async function pullCloudStudents() {
           }
         });
         localStorage.setItem("ngambis_registered_students", JSON.stringify(merged));
-        return merged;
       }
     }
   } catch (err) {
     console.warn("Cloud sync note:", err);
   }
+
   return getRegisteredStudents();
 }
 
@@ -311,7 +348,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderDeadlines();
   updateAnalyticsStats();
 
-  // Background Cloud Sync for Cross-Device Synchronization
+  // Background Cloud & Google Sheets Sync for Cross-Device Synchronization
   pullCloudStudents().then(() => {
     updateAnalyticsStats();
     if (STATE.currentUser && STATE.currentUser.role === "MENTOR") {
@@ -330,239 +367,168 @@ function loadCustomPasscodes() {
 }
 
 // ==========================================
-// AUTHENTICATION: 3-TAB MODES (SIGN IN, SIGN UP, MENTOR)
+// AUTHENTICATION: 2-TAB CLEAN SYSTEM (SISWA & HEAD MENTOR)
 // ==========================================
-let currentAuthTab = 'login'; // 'login' | 'register' | 'mentor'
+let currentAuthTab = 'student'; // 'student' | 'mentor'
 
 function switchAuthTab(tab) {
   currentAuthTab = tab;
-  const formLogin = document.getElementById("auth-form-login");
-  const formRegister = document.getElementById("auth-form-register");
+  const formStudent = document.getElementById("auth-form-student");
   const formMentor = document.getElementById("auth-form-mentor");
   const errorBox = document.getElementById("login-error");
 
-  const btnLogin = document.getElementById("tab-btn-login");
-  const btnRegister = document.getElementById("tab-btn-register");
+  const btnStudent = document.getElementById("tab-btn-student");
   const btnMentor = document.getElementById("tab-btn-mentor");
 
   errorBox.classList.add("hidden");
 
   // Reset tab button styles
-  [btnLogin, btnRegister, btnMentor].forEach(b => {
-    b.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg text-slate-400 hover:text-white transition";
+  [btnStudent, btnMentor].forEach(b => {
+    if (b) b.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg text-slate-400 hover:text-white transition";
   });
 
-  if (tab === 'login') {
-    formLogin.classList.remove("hidden");
-    formRegister.classList.add("hidden");
-    formMentor.classList.add("hidden");
-    btnLogin.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-brand-500 text-slate-950 transition";
-  } else if (tab === 'register') {
-    formLogin.classList.add("hidden");
-    formRegister.classList.remove("hidden");
-    formMentor.classList.add("hidden");
-    btnRegister.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-brand-accent text-slate-950 transition";
+  if (tab === 'student') {
+    if (formStudent) formStudent.classList.remove("hidden");
+    if (formMentor) formMentor.classList.add("hidden");
+    if (btnStudent) btnStudent.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-brand-500 text-slate-950 transition";
   } else if (tab === 'mentor') {
-    formLogin.classList.add("hidden");
-    formRegister.classList.add("hidden");
-    formMentor.classList.remove("hidden");
-    btnMentor.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-amber-400 text-slate-950 transition";
+    if (formStudent) formStudent.classList.add("hidden");
+    if (formMentor) formMentor.classList.remove("hidden");
+    if (btnMentor) btnMentor.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-amber-400 text-slate-950 transition";
   }
 }
 
-// 1. REGISTER NEW STUDENT HANDLER
-document.getElementById("auth-form-register").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = document.getElementById("reg-name").value.trim();
-  const email = document.getElementById("reg-email").value.trim().toLowerCase();
-  const grade = document.getElementById("reg-grade").value;
-  const passcode = document.getElementById("reg-passcode").value.trim().toUpperCase();
-  const password = document.getElementById("reg-password").value.trim();
-  const errorBox = document.getElementById("login-error");
-  const submitBtn = e.target.querySelector("button[type='submit']");
+// 1. SINGLE-GATE STUDENT ACCESS HANDLER (FOOLPROOF ACROSS ALL DEVICES)
+const studentForm = document.getElementById("auth-form-student");
+if (studentForm) {
+  studentForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("std-name").value.trim();
+    const email = document.getElementById("std-email").value.trim().toLowerCase();
+    const grade = document.getElementById("std-grade").value;
+    const passcode = document.getElementById("std-passcode").value.trim().toUpperCase();
+    const errorBox = document.getElementById("login-error");
+    const submitBtn = e.target.querySelector("button[type='submit']");
 
-  // Validate Email Format
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(email)) {
-    errorBox.textContent = "Format email tidak valid! Mohon masukkan alamat email aktif yang benar (contoh: nama@gmail.com).";
-    errorBox.classList.remove("hidden");
-    return;
-  }
-
-  // Verify mentor passcode
-  if (!STATE.registrationPasscodes.includes(passcode)) {
-    errorBox.textContent = "Passcode Pendaftaran salah! Hubungi mentor untuk mendapatkan passcode pendaftaran resmi.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
-
-  if (password.length < 4) {
-    errorBox.textContent = "Password minimal 4 karakter demi keamanan akun kamu.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
-
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mendaftarkan Akun...`;
-  }
-
-  // Pull latest cloud database before checking
-  await pullCloudStudents();
-
-  // Check if email already registered
-  const registeredUsers = getRegisteredStudents();
-  if (registeredUsers.some(u => u.email === email)) {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = `Selesaikan Pendaftaran <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-      if (window.lucide) lucide.createIcons();
+    // Email format validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      errorBox.textContent = "Format email tidak valid! Mohon masukkan alamat email aktif yang benar (contoh: nama@gmail.com).";
+      errorBox.classList.remove("hidden");
+      return;
     }
-    errorBox.textContent = "Email ini sudah terdaftar! Silakan langsung login di tab 'Masuk (Login)'.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
 
-  const newStudent = {
-    id: "std_" + Date.now(),
-    name: name,
-    email: email,
-    grade: grade,
-    password: password,
-    registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-    role: "STUDENT"
-  };
+    // Passcode validation
+    if (!STATE.registrationPasscodes.includes(passcode)) {
+      errorBox.textContent = "Passcode salah! Masukkan passcode resmi dari mentor (contoh: SUCCESS2026).";
+      errorBox.classList.remove("hidden");
+      return;
+    }
 
-  registeredUsers.push(newStudent);
-  localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Membuka Portal Siswa...`;
+    }
 
-  // Push to Cloud for Cross-Device Sync
-  await pushCloudStudents(registeredUsers);
-
-  // Log activity
-  logActivity("STUDENT_REGISTER", `Siswa baru mendaftar: ${name} (${email})`, grade);
-
-  // Send registration notification to Mentor email (maesa.am222@gmail.com)
-  try {
-    fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        event: "Pendaftaran Siswa Baru",
-        nama_siswa: name,
-        email_siswa: email,
-        kelas: grade,
-        waktu_daftar: newStudent.registeredAt,
-        _subject: `🎉 [Ngambis Bareng] Siswa Baru Mendaftar: ${name} (${email})`,
-        _replyto: email
-      })
-    });
-  } catch (err) {
-    console.warn("Dispatch notification note:", err);
-  }
-
-  if (submitBtn) {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = `Selesaikan Pendaftaran <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-    if (window.lucide) lucide.createIcons();
-  }
-
-  alert(`🎉 Pendaftaran Berhasil! Selamat datang di Ngambis Bareng, ${name}. Kamu akan langsung masuk ke portal.`);
-  loginUser(newStudent);
-});
-
-// 2. SMART STUDENT LOGIN HANDLER (CROSS-DEVICE CLOUD SYNC & PASSCODE COMPATIBLE)
-document.getElementById("auth-form-login").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("login-email").value.trim().toLowerCase();
-  const password = document.getElementById("login-password").value.trim();
-  const errorBox = document.getElementById("login-error");
-  const loginBtn = e.target.querySelector("button[type='submit']");
-
-  if (!email || !password) {
-    errorBox.textContent = "Mohon isi email dan password kamu.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
-
-  if (loginBtn) {
-    loginBtn.disabled = true;
-    loginBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Memeriksa akun...`;
-  }
-
-  // 1. Sync cloud data first so cross-device registration is fetched
-  await pullCloudStudents();
-
-  let registeredUsers = getRegisteredStudents();
-  let foundUser = registeredUsers.find(u => u.email && u.email.toLowerCase() === email);
-
-  // Check if student is using mentor master passcode
-  const isMasterPasscode = STATE.registrationPasscodes.includes(password.toUpperCase());
-
-  // Auto-register if using master passcode on a new device
-  if (!foundUser && isMasterPasscode) {
-    const namePart = email.split("@")[0].replace(/[._]/g, " ");
-    const autoName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-    foundUser = {
+    const studentUser = {
       id: "std_" + Date.now(),
-      name: autoName,
+      name: name,
       email: email,
-      grade: "Kelas 12 (Fase Eksekusi)",
-      password: password,
-      registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Auto-Passcode)",
+      grade: grade,
+      passcode: passcode,
+      registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
       role: "STUDENT"
     };
-    registeredUsers.push(foundUser);
+
+    // Save to local registered list
+    let registeredUsers = getRegisteredStudents();
+    const existingIndex = registeredUsers.findIndex(u => u.email && u.email.toLowerCase() === email);
+    if (existingIndex === -1) {
+      registeredUsers.push(studentUser);
+    } else {
+      registeredUsers[existingIndex] = { ...registeredUsers[existingIndex], name: name, grade: grade, registeredAt: studentUser.registeredAt };
+    }
     localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-    await pushCloudStudents(registeredUsers);
-  }
 
-  if (loginBtn) {
-    loginBtn.disabled = false;
-    loginBtn.innerHTML = `Masuk ke Portal <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-    if (window.lucide) lucide.createIcons();
-  }
+    // Push to Cloud Sync & Google Sheets
+    pushCloudStudents(registeredUsers);
 
-  // If still not found
-  if (!foundUser) {
-    errorBox.textContent = "Akun dengan email ini belum terdaftar! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu untuk mendaftar akunmu.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
+    // If Google Apps Script URL is set, send to Google Sheets
+    if (GOOGLE_SCRIPT_URL) {
+      try {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "register",
+            name: name,
+            email: email,
+            grade: grade
+          })
+        });
+      } catch (err) {
+        console.warn("GAS push note:", err);
+      }
+    }
 
-  // Password Verification (Registered Password OR Mentor Passcode)
-  if (foundUser.password !== password && !isMasterPasscode) {
-    errorBox.textContent = "Password salah! Silakan periksa kembali password yang kamu buat saat mendaftar atau gunakan passcode 'SUCCESS2026'.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
+    // Send email alert to Mentor (maesa.am222@gmail.com)
+    try {
+      fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          event: "Siswa Masuk / Terdaftar",
+          nama_siswa: name,
+          email_siswa: email,
+          kelas: grade,
+          waktu: studentUser.registeredAt,
+          _subject: `🎓 [Ngambis Bareng] Siswa Masuk: ${name} (${email})`,
+          _replyto: email
+        })
+      });
+    } catch (err) {
+      console.warn("Dispatch notification note:", err);
+    }
 
-  loginUser(foundUser);
-});
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<span>Masuk ke Portal Siswa</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
 
-// 3. MENTOR LOGIN HANDLER
-document.getElementById("auth-form-mentor").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const email = document.getElementById("mentor-email").value.trim().toLowerCase();
-  const password = document.getElementById("mentor-password").value.trim();
-  const errorBox = document.getElementById("login-error");
+    // Log Activity & Login User
+    logActivity("LOGIN", `Siswa Masuk: ${email}`, grade);
+    loginUser(studentUser);
+  });
+}
 
-  if (email !== STATE.mentorAuth.email.toLowerCase() || password !== STATE.mentorAuth.password) {
-    errorBox.textContent = "Email atau Password Mentor salah! Akses ditolak.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
+// 2. MENTOR LOGIN HANDLER
+const mentorForm = document.getElementById("auth-form-mentor");
+if (mentorForm) {
+  mentorForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("mentor-email").value.trim().toLowerCase();
+    const password = document.getElementById("mentor-password").value.trim();
+    const errorBox = document.getElementById("login-error");
 
-  const mentorUser = {
-    id: "mentor_maesa",
-    name: "Maesa (Head Mentor)",
-    email: STATE.mentorAuth.email,
-    grade: "Head Mentor",
-    role: "MENTOR"
-  };
+    if (email !== STATE.mentorAuth.email.toLowerCase() || password !== STATE.mentorAuth.password) {
+      errorBox.textContent = "Email atau Password Mentor salah! Akses ditolak.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
 
-  loginUser(mentorUser);
-});
+    const mentorUser = {
+      id: "mentor_maesa",
+      name: "Maesa (Head Mentor)",
+      email: STATE.mentorAuth.email,
+      grade: "Head Mentor",
+      role: "MENTOR"
+    };
+
+    loginUser(mentorUser);
+  });
+}
 
 function loginUser(user) {
   STATE.currentUser = user;
@@ -823,6 +789,26 @@ async function submitEssayDraft(e) {
       },
       body: JSON.stringify(payload)
     });
+
+    if (GOOGLE_SCRIPT_URL) {
+      try {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "submit_essay",
+            student_name: STATE.currentUser.name,
+            student_email: STATE.currentUser.email || "-",
+            student_grade: STATE.currentUser.grade,
+            essay_title: essayTitle,
+            essay_type: essayType,
+            google_docs_link: gdocLink,
+            notes: notes
+          })
+        });
+      } catch (e) {}
+    }
   } catch (err) {
     console.warn("Direct email dispatch note:", err);
   }
