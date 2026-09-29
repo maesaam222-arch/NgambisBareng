@@ -1455,36 +1455,42 @@ async function submitEssayDraft(e) {
       _replyto: STATE.currentUser.email || MENTOR_EMAIL
     };
 
-    // 1. Dispatch to FormSubmit -> sends real email to maesa.am222@gmail.com
-    await fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
-      method: "POST",
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    // 2. Dispatch to Cloud Database via Apps Script
+    // 1. Dispatch to Cloud Database (Google Apps Script) FIRST & IMMEDIATELY
     if (GOOGLE_SCRIPT_URL) {
-      fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "submit_essay",
-          student_name: STATE.currentUser.name,
-          student_email: STATE.currentUser.email || "-",
-          student_grade: STATE.currentUser.grade,
-          essay_title: essayTitle,
-          essay_type: essayType,
-          google_docs_link: gdocLink,
-          notes: notes
-        })
-      }).catch((err) => console.warn("Cloud dispatch note:", err));
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "submit_essay",
+            student_name: STATE.currentUser.name,
+            student_email: STATE.currentUser.email || "-",
+            student_grade: STATE.currentUser.grade,
+            essay_title: essayTitle,
+            essay_type: essayType,
+            google_docs_link: gdocLink,
+            notes: notes
+          })
+        });
+      } catch (scriptErr) {
+        console.warn("Cloud dispatch note:", scriptErr);
+      }
     }
+
+    // 2. Dispatch to FormSubmit (Secondary Email Channel - Non-blocking)
+    try {
+      fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    } catch (e) {}
   } catch (err) {
-    console.warn("Direct email dispatch note:", err);
+    console.warn("Submission error:", err);
   }
 
   submitBtn.disabled = false;
