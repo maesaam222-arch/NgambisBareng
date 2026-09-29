@@ -322,7 +322,7 @@ function switchAuthTab(tab) {
 }
 
 // 1. REGISTER NEW STUDENT HANDLER
-document.getElementById("auth-form-register").addEventListener("submit", (e) => {
+document.getElementById("auth-form-register").addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = document.getElementById("reg-name").value.trim();
   const email = document.getElementById("reg-email").value.trim().toLowerCase();
@@ -331,9 +331,23 @@ document.getElementById("auth-form-register").addEventListener("submit", (e) => 
   const password = document.getElementById("reg-password").value.trim();
   const errorBox = document.getElementById("login-error");
 
+  // Validate Email Format
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(email)) {
+    errorBox.textContent = "Format email tidak valid! Mohon masukkan alamat email aktif yang benar (contoh: nama@gmail.com).";
+    errorBox.classList.remove("hidden");
+    return;
+  }
+
   // Verify mentor passcode
   if (!STATE.registrationPasscodes.includes(passcode)) {
     errorBox.textContent = "Passcode Pendaftaran salah! Hubungi mentor untuk mendapatkan passcode pendaftaran resmi.";
+    errorBox.classList.remove("hidden");
+    return;
+  }
+
+  if (password.length < 4) {
+    errorBox.textContent = "Password minimal 4 karakter demi keamanan akun kamu.";
     errorBox.classList.remove("hidden");
     return;
   }
@@ -351,7 +365,7 @@ document.getElementById("auth-form-register").addEventListener("submit", (e) => 
     name: name,
     email: email,
     grade: grade,
-    password: password || passcode,
+    password: password,
     registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
     role: "STUDENT"
   };
@@ -360,13 +374,32 @@ document.getElementById("auth-form-register").addEventListener("submit", (e) => 
   localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
 
   // Log activity
-  logActivity("STUDENT_REGISTER", `Siswa baru mendaftar: ${email}`, grade);
+  logActivity("STUDENT_REGISTER", `Siswa baru mendaftar: ${name} (${email})`, grade);
 
-  alert(`🎉 Pendaftaran Berhasil! Selamat datang, ${name}. Kamu akan langsung masuk ke portal.`);
+  // Send registration notification to Mentor email (maesa.am222@gmail.com)
+  try {
+    fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        event: "Pendaftaran Siswa Baru",
+        nama_siswa: name,
+        email_siswa: email,
+        kelas: grade,
+        waktu_daftar: newStudent.registeredAt,
+        _subject: `🎉 [Ngambis Bareng] Siswa Baru Mendaftar: ${name} (${email})`,
+        _replyto: email
+      })
+    });
+  } catch (err) {
+    console.warn("Dispatch notification note:", err);
+  }
+
+  alert(`🎉 Pendaftaran Berhasil! Selamat datang di Ngambis Bareng, ${name}. Kamu akan langsung masuk ke portal.`);
   loginUser(newStudent);
 });
 
-// 2. STUDENT LOGIN HANDLER
+// 2. STRICT STUDENT LOGIN HANDLER (MUST BE REGISTERED FIRST)
 document.getElementById("auth-form-login").addEventListener("submit", (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value.trim().toLowerCase();
@@ -376,30 +409,16 @@ document.getElementById("auth-form-login").addEventListener("submit", (e) => {
   const registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
   const foundUser = registeredUsers.find(u => u.email === email);
 
+  // STRICT CHECK 1: Must be registered
   if (!foundUser) {
-    // Check if student wants to auto-login with email + master passcode
-    if (STATE.registrationPasscodes.includes(password.toUpperCase())) {
-      const autoUser = {
-        id: "std_" + btoa(encodeURIComponent(email)).replace(/=/g, "").slice(0, 10).toLowerCase(),
-        name: email.split("@")[0],
-        email: email,
-        grade: "Siswa Binaan",
-        role: "STUDENT",
-        registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
-      };
-      registeredUsers.push(autoUser);
-      localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-      loginUser(autoUser);
-      return;
-    }
-
-    errorBox.textContent = "Email belum terdaftar! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu.";
+    errorBox.textContent = "Akun dengan email ini belum terdaftar! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu untuk mendaftar.";
     errorBox.classList.remove("hidden");
     return;
   }
 
-  if (foundUser.password !== password && !STATE.registrationPasscodes.includes(password.toUpperCase())) {
-    errorBox.textContent = "Password salah! Silakan coba lagi atau hubungi mentor.";
+  // STRICT CHECK 2: Password must match
+  if (foundUser.password !== password) {
+    errorBox.textContent = "Password salah! Silakan periksa kembali password yang kamu buat saat mendaftar.";
     errorBox.classList.remove("hidden");
     return;
   }
