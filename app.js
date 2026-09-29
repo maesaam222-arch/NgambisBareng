@@ -622,7 +622,7 @@ const CAMPUS_BACKGROUNDS = {
   loa: {
     spot: "Umeda Sky Garden & Umekita Green Oasis",
     university: "Taman Umeda / Umekita Park, Osaka Japan 🇯🇵",
-    image: "https://images.unsplash.com/photo-1590559899731-a3f07b743759?w=1920&auto=format&fit=crop&q=80"
+    image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=1920&auto=format&fit=crop&q=80"
   },
   tests: {
     spot: "Hongo Campus Ginkgo Tree Avenue & Yasuda Garden",
@@ -631,8 +631,8 @@ const CAMPUS_BACKGROUNDS = {
   },
   essays: {
     spot: "Main Quadrangle & Palm Drive Garden",
-    university: "Stanford University, California USA 🇺🇸",
-    image: "https://images.unsplash.com/photo-1527891751199-722e37466720?w=1920&auto=format&fit=crop&q=80"
+    university: "Stanford University & Ivy League Campus, USA 🇺🇸",
+    image: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1920&auto=format&fit=crop&q=80"
   },
   templates: {
     spot: "Cannon Green & Historic Nassau Lawn",
