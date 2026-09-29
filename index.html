@@ -96,85 +96,142 @@
         <p class="text-[11px] text-brand-400 font-semibold tracking-wider uppercase mt-0.5">S-1 Global & IUP Mentorship Ecosystem</p>
       </div>
 
-      <!-- Mode Switcher (Siswa vs Mentor) -->
+      <!-- Mode Switcher (Login, Register Siswa Baru, Mentor) -->
       <div class="relative z-10 flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-5">
-        <button type="button" onclick="switchLoginMode('student')" id="tab-mode-student" class="flex-1 py-2 text-xs font-bold rounded-lg bg-brand-500 text-slate-950 transition">
-          Siswa Binaan
+        <button type="button" onclick="switchAuthTab('login')" id="tab-btn-login" class="flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-brand-500 text-slate-950 transition">
+          Masuk (Login)
         </button>
-        <button type="button" onclick="switchLoginMode('mentor')" id="tab-mode-mentor" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
-          Mentor / Admin
+        <button type="button" onclick="switchAuthTab('register')" id="tab-btn-register" class="flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+          Daftar Siswa Baru
+        </button>
+        <button type="button" onclick="switchAuthTab('mentor')" id="tab-btn-mentor" class="flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+          Mentor
         </button>
       </div>
 
-      <form id="login-form" class="space-y-4 relative z-10">
-        
-        <!-- Student Fields -->
-        <div id="student-login-fields" class="space-y-3.5">
-          <div>
-            <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Nama Lengkap Siswa</label>
-            <div class="relative">
-              <i data-lucide="user" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
-              <input type="text" id="student-name" placeholder="Contoh: Muhammad Fatih"
-                class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white placeholder-slate-500">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Angkatan / Kelas</label>
-            <div class="relative">
-              <i data-lucide="layers" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
-              <select id="student-grade" class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white">
-                <option value="Kelas 10">Kelas 10 (Fase Eksplorasi & Fondasi)</option>
-                <option value="Kelas 11" selected>Kelas 11 (Ujian Standar & Portofolio)</option>
-                <option value="Kelas 12">Kelas 12 (Aplikasi Kampus & Beasiswa)</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Passcode Siswa Resmi</label>
-            <div class="relative">
-              <i data-lucide="key" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
-              <input type="password" id="student-passcode" placeholder="Masukkan Passcode dari Mentor"
-                class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white placeholder-slate-500 font-mono">
-            </div>
-            <p class="text-[10px] text-slate-400 mt-1">Passcode resmi dibagikan oleh Mentor di grup WhatsApp Ngambis Bareng.</p>
+      <!-- FORM 1: LOGIN SISWA (MASUK DENGAN EMAIL & PASSWORD) -->
+      <form id="auth-form-login" class="space-y-3.5 relative z-10">
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Email Siswa</label>
+          <div class="relative">
+            <i data-lucide="mail" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
+            <input type="email" id="login-email" required placeholder="nama@gmail.com"
+              class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white placeholder-slate-500">
           </div>
         </div>
 
-        <!-- Mentor Fields (Hidden by default) -->
-        <div id="mentor-login-fields" class="space-y-3.5 hidden">
-          <div>
-            <label class="block text-[11px] font-semibold uppercase tracking-wider text-amber-400 mb-1">Email Mentor</label>
-            <div class="relative">
-              <i data-lucide="mail" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
-              <input type="email" id="mentor-email" placeholder="maesa.am222@gmail.com"
-                class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-400 text-white placeholder-slate-500 font-mono">
-            </div>
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Password Akun</label>
+          <div class="relative">
+            <i data-lucide="lock" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
+            <input type="password" id="login-password" required placeholder="Masukkan password kamu"
+              class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white placeholder-slate-500">
           </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold uppercase tracking-wider text-amber-400 mb-1">Master Password Mentor</label>
-            <div class="relative">
-              <i data-lucide="shield-check" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
-              <input type="password" id="mentor-password" placeholder="Masukkan Master Password"
-                class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-400 text-white placeholder-slate-500">
-            </div>
-            <p class="text-[10px] text-slate-400 mt-1">Khusus akses monitoring dan review draft esai.</p>
-          </div>
+          <p class="text-[10px] text-slate-400 mt-1">Gunakan password yang kamu buat saat mendaftar (atau passcode SUCCESS2026).</p>
         </div>
-
-        <div id="login-error" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs text-center"></div>
 
         <button type="submit" class="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 active:scale-[0.98] text-slate-950 font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 text-xs sm:text-sm mt-2">
-          <span>Buka Portal Pembelajaran</span>
+          <span>Masuk ke Portal</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
 
-        <div class="text-center pt-1">
-          <span class="text-[10px] text-slate-500">Private & Secured Mentorship Ecosystem • Ngambis Bareng Community</span>
+        <div class="text-center pt-2">
+          <p class="text-[11px] text-slate-400">Belum pernah mendaftar? <button type="button" onclick="switchAuthTab('register')" class="text-brand-400 hover:underline font-bold">Daftar di sini</button></p>
         </div>
       </form>
+
+      <!-- FORM 2: DAFTAR SISWA BARU (SIGN UP DENGAN EMAIL & PASSCODE MENTOR) -->
+      <form id="auth-form-register" class="space-y-3 relative z-10 hidden">
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-brand-accent mb-1">Nama Lengkap Siswa</label>
+          <div class="relative">
+            <i data-lucide="user" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+            <input type="text" id="reg-name" required placeholder="Contoh: Muhammad Fatih"
+              class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-accent text-white placeholder-slate-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-brand-accent mb-1">Email Aktif Siswa</label>
+          <div class="relative">
+            <i data-lucide="mail" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+            <input type="email" id="reg-email" required placeholder="fatih@gmail.com"
+              class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-accent text-white placeholder-slate-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-brand-accent mb-1">Angkatan / Kelas</label>
+          <div class="relative">
+            <i data-lucide="layers" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+            <select id="reg-grade" class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-accent text-white">
+              <option value="Kelas 10">Kelas 10 (Fase Eksplorasi & Fondasi)</option>
+              <option value="Kelas 11" selected>Kelas 11 (Ujian Standar & Portofolio)</option>
+              <option value="Kelas 12">Kelas 12 (Aplikasi Kampus & Beasiswa)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-brand-accent mb-1">Passcode Pendaftaran dari Mentor</label>
+          <div class="relative">
+            <i data-lucide="key" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+            <input type="password" id="reg-passcode" required placeholder="Masukkan SUCCESS2026"
+              class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-accent text-white placeholder-slate-500 font-mono">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-brand-accent mb-1">Buat Password Akun</label>
+          <div class="relative">
+            <i data-lucide="lock" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+            <input type="password" id="reg-password" required placeholder="Buat password untuk login berikutnya"
+              class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-accent text-white placeholder-slate-500">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 px-4 bg-brand-accent hover:bg-sky-500 active:scale-[0.98] text-slate-950 font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/20 text-xs sm:text-sm mt-2">
+          <span>Daftar & Buka Portal</span>
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+        </button>
+
+        <div class="text-center pt-1">
+          <p class="text-[11px] text-slate-400">Sudah punya akun? <button type="button" onclick="switchAuthTab('login')" class="text-brand-accent hover:underline font-bold">Masuk di sini</button></p>
+        </div>
+      </form>
+
+      <!-- FORM 3: MENTOR LOGIN -->
+      <form id="auth-form-mentor" class="space-y-3.5 relative z-10 hidden">
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-amber-400 mb-1">Email Mentor</label>
+          <div class="relative">
+            <i data-lucide="mail" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
+            <input type="email" id="mentor-email" required placeholder="maesa.am222@gmail.com"
+              class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-400 text-white placeholder-slate-500 font-mono">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider text-amber-400 mb-1">Master Password Mentor</label>
+          <div class="relative">
+            <i data-lucide="shield-check" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
+            <input type="password" id="mentor-password" required placeholder="Masukkan Master Password"
+              class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-400 text-white placeholder-slate-500">
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">Khusus akses monitoring, database email siswa & review esai.</p>
+        </div>
+
+        <button type="submit" class="w-full py-3 px-4 bg-amber-400 hover:bg-amber-500 active:scale-[0.98] text-slate-950 font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-amber-400/20 text-xs sm:text-sm mt-2">
+          <span>Masuk sebagai Head Mentor</span>
+          <i data-lucide="shield" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <div id="login-error" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs text-center mt-3"></div>
+
+      <div class="text-center pt-3 border-t border-slate-800/80 mt-4">
+        <span class="text-[10px] text-slate-500">Private & Secured Mentorship Ecosystem • Ngambis Bareng Community</span>
+      </div>
     </div>
   </div>
 
@@ -255,23 +312,23 @@
     <!-- Main Content Container -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6">
 
-      <!-- ==================== LIVE COUNTDOWN STRIP ==================== -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5">
-        <div class="flex items-center justify-between gap-2 mb-3">
-          <div class="flex items-center gap-2">
-            <i data-lucide="clock" class="w-4 h-4 text-brand-400"></i>
-            <h3 class="text-xs font-bold uppercase tracking-wider text-white">Application Deadlines Countdown</h3>
-          </div>
-          <span class="text-[10px] text-slate-400">Siklus 2026/2027</span>
-        </div>
-        <div id="deadlines-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
       <!-- ==================== TAB 1: ROADMAP STRATEGIS ==================== -->
       <section id="tab-roadmap" class="tab-content space-y-6">
         
+        <!-- Live Countdown Strip (Khusus di Tab Roadmap) -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-brand-400"></i>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-white">Application Deadlines Countdown</h3>
+            </div>
+            <span class="text-[10px] text-slate-400">Siklus 2026/2027</span>
+          </div>
+          <div id="deadlines-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
         <!-- Hero Banner -->
         <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 border border-slate-800 rounded-2xl p-5 sm:p-8 relative overflow-hidden">
           <div class="max-w-3xl space-y-2.5">
@@ -1039,6 +1096,35 @@ NISN: [NISN Kamu]</pre>
             </div>
             <div id="admin-draft-stream" class="space-y-2.5">
               <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- Registered Students Directory (Email & Profiles) -->
+          <div class="mt-6 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="users" class="w-4 h-4 text-brand-accent"></i>
+                <h3 class="text-sm font-bold text-white">Database Email & Profil Siswa Terdaftar</h3>
+              </div>
+              <button onclick="exportStudentsCSV()" class="self-start sm:self-auto px-3 py-1.5 bg-brand-accent/10 hover:bg-brand-accent/20 text-brand-accent rounded-xl text-xs font-semibold border border-brand-accent/30 flex items-center gap-1.5 transition">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Database Email (CSV)
+              </button>
+            </div>
+            <div class="overflow-x-auto border border-slate-800 rounded-xl max-h-72 overflow-y-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-950 text-slate-300 font-semibold sticky top-0 border-b border-slate-800">
+                  <tr>
+                    <th class="p-3">No</th>
+                    <th class="p-3">Nama Lengkap</th>
+                    <th class="p-3">Email Siswa</th>
+                    <th class="p-3">Kelas</th>
+                    <th class="p-3">Waktu Daftar</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-students-body" class="divide-y divide-slate-800 text-slate-300">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
             </div>
           </div>
 
