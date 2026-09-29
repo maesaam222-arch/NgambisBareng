@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full bg-slate-950 text-slate-100">
+<html lang="id" class="h-full bg-[#FAF7F2] text-stone-900">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,21 +10,22 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             brand: {
-              50: '#f0fdf4',
-              100: '#dcfce7',
-              200: '#bbf7d0',
-              400: '#4ade80',
-              500: '#22c55e',
-              600: '#16a34a',
-              700: '#15803d',
-              800: '#166534',
-              900: '#14532d',
-              accent: '#38bdf8'
+              brown: '#854D0E',
+              'brown-dark': '#78350F',
+              'brown-light': '#FEF3C7',
+              red: '#DC2626',
+              'red-light': '#FEE2E2',
+              blue: '#2563EB',
+              'blue-light': '#DBEAFE',
+              green: '#16A34A',
+              'green-light': '#DCFCE7',
+              black: '#1C1917',
+              ivory: '#FAF7F2',
+              card: '#FFFFFF'
             }
           },
           fontFamily: {
@@ -37,7 +38,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Security & Anti-Leak Measures */
+    /* Security & Anti-Leak Watermark */
     .watermark-overlay {
       position: fixed;
       inset: 0;
@@ -51,7 +52,7 @@
       user-select: none;
       font-size: 13px;
       font-weight: 700;
-      color: #ffffff;
+      color: #1c1917;
       transform: rotate(-25deg);
     }
     @media print {
@@ -59,7 +60,6 @@
         display: none !important;
       }
     }
-    /* Hide scrollbar for clean mobile tabs */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -67,89 +67,100 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* Touch optimization */
     button, input, select, textarea, a {
       -webkit-tap-highlight-color: transparent;
     }
+    /* Timeline Line Style */
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      bottom: 24px;
+      left: 19px;
+      width: 3px;
+      background: #E5E7EB;
+      z-index: 0;
+    }
   </style>
 </head>
-<body class="h-full flex flex-col font-sans antialiased selection:bg-brand-500/30 selection:text-brand-200 pb-20 md:pb-0">
+<body class="h-full flex flex-col font-sans antialiased bg-[#FAF7F2] text-stone-900 selection:bg-amber-200 selection:text-amber-900">
 
-  <!-- Dynamic Security Watermark (Updated with Student Name upon Login) -->
+  <!-- Dynamic Security Forensic Watermark -->
   <div id="watermark-container" class="watermark-overlay hidden">
-    <!-- Populated by JS -->
+    <!-- Injected via JS -->
   </div>
 
   <!-- ==================== AUTH / LOGIN GATE ==================== -->
-  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-md p-4 overflow-y-auto">
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden my-auto">
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="w-full max-w-md bg-white border border-[#E8E1D5] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden my-auto">
       
-      <!-- Glow effect -->
-      <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-brand-accent/15 rounded-full blur-3xl pointer-events-none"></div>
+      <!-- Decorative Accents -->
+      <div class="absolute -top-16 -right-16 w-36 h-36 bg-amber-200/50 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-blue-200/50 rounded-full blur-2xl pointer-events-none"></div>
 
-      <div class="relative z-10 text-center mb-5">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden border-2 border-brand-500/30 shadow-lg shadow-brand-500/10 mb-2.5 bg-slate-950">
+      <div class="relative z-10 text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-800/20 shadow-md mb-2.5 bg-white">
           <img src="logo.jpeg" alt="Logo Ngambis Bareng" class="w-full h-full object-cover">
         </div>
-        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Ngambis Bareng</h1>
-        <p class="text-[11px] text-brand-400 font-semibold tracking-wider uppercase mt-0.5">S-1 Global & IUP Mentorship Ecosystem</p>
+        <h1 class="text-2xl font-bold tracking-tight text-stone-900">Ngambis Bareng</h1>
+        <p class="text-xs text-amber-800 font-semibold tracking-wider uppercase mt-0.5">S-1 Global & IUP Mentorship Ecosystem</p>
       </div>
 
       <!-- Mode Switcher (Siswa & Mentor) -->
-      <div class="relative z-10 flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-5">
-        <button type="button" onclick="switchAuthTab('student')" id="tab-btn-student" class="flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-brand-500 text-slate-950 transition">
+      <div class="relative z-10 flex bg-[#F3EEE6] p-1.5 rounded-xl border border-stone-200 mb-5">
+        <button type="button" onclick="switchAuthTab('student')" id="tab-btn-student" class="flex-1 py-2 text-xs font-bold rounded-lg bg-amber-800 text-white shadow-sm transition">
           Siswa Ngambis
         </button>
-        <button type="button" onclick="switchAuthTab('mentor')" id="tab-btn-mentor" class="flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+        <button type="button" onclick="switchAuthTab('mentor')" id="tab-btn-mentor" class="flex-1 py-2 text-xs font-semibold rounded-lg text-stone-600 hover:text-stone-900 transition">
           Head Mentor
         </button>
       </div>
 
-      <!-- FORM 1: AKSES SISWA (SINGLE-GATE, ZERO FRICTION) -->
-      <form id="auth-form-student" class="space-y-3 relative z-10">
+      <!-- FORM 1: SISWA (SINGLE-GATE) -->
+      <form id="auth-form-student" class="space-y-3.5 relative z-10">
         <div>
-          <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Nama Lengkap Siswa</label>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1">Nama Lengkap Siswa</label>
           <div class="relative">
-            <i data-lucide="user" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+            <i data-lucide="user" class="absolute left-3.5 top-3 w-4 h-4 text-stone-400"></i>
             <input type="text" id="std-name" required placeholder="Contoh: Muhammad Fatih"
-              class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white placeholder-slate-500">
+              class="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F2] border border-stone-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-800 focus:bg-white text-stone-900 placeholder-stone-400 transition">
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Email Aktif Siswa</label>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1">Email Aktif Siswa</label>
           <div class="relative">
-            <i data-lucide="mail" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+            <i data-lucide="mail" class="absolute left-3.5 top-3 w-4 h-4 text-stone-400"></i>
             <input type="email" id="std-email" required placeholder="fatih@gmail.com"
-              class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white placeholder-slate-500">
+              class="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F2] border border-stone-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-800 focus:bg-white text-stone-900 placeholder-stone-400 transition">
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Angkatan / Kelas</label>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1">Angkatan / Kelas</label>
           <div class="relative">
-            <i data-lucide="layers" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-            <select id="std-grade" class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white">
-              <option value="Kelas 10">Kelas 10 (Fase Eksplorasi & Fondasi)</option>
-              <option value="Kelas 11" selected>Kelas 11 (Ujian Standar & Portofolio)</option>
-              <option value="Kelas 12">Kelas 12 (Aplikasi Kampus & Beasiswa)</option>
+            <i data-lucide="layers" class="absolute left-3.5 top-3 w-4 h-4 text-stone-400"></i>
+            <select id="std-grade" class="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F2] border border-stone-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-800 focus:bg-white text-stone-900 transition font-medium">
+              <option value="Kelas 10">Kelas 10 (Fase Eksplorasi & Rapor)</option>
+              <option value="Kelas 11" selected>Kelas 11 (Tes Standar & Portofolio)</option>
+              <option value="Kelas 12">Kelas 12 (Aplikasi Kampus & IUP PTN)</option>
+              <option value="Gap Year / Alumnus">Gap Year / Alumnus</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1">Passcode dari Mentor</label>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1">Passcode dari Mentor</label>
           <div class="relative">
-            <i data-lucide="key" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-            <input type="password" id="std-passcode" required placeholder="Masukkan Passcode (SUCCESS2026)"
-              class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-brand-400 text-white placeholder-slate-500 font-mono">
+            <i data-lucide="key" class="absolute left-3.5 top-3 w-4 h-4 text-stone-400"></i>
+            <input type="password" id="std-passcode" required placeholder="Masukkan SUCCESS2026"
+              class="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F2] border border-stone-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-800 focus:bg-white text-stone-900 placeholder-stone-400 font-mono transition">
           </div>
-          <p class="text-[10px] text-slate-400 mt-1">Dapatkan passcode pendaftaran resmi dari Mentor Maesa.</p>
+          <p class="text-[10px] text-stone-500 mt-1">Gunakan passcode pendaftaran resmi dari Mentor Maesa.</p>
         </div>
 
-        <button type="submit" class="w-full py-2.5 px-4 bg-brand-500 hover:bg-brand-600 active:scale-[0.98] text-slate-950 font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 text-xs sm:text-sm mt-3">
-          <span>Masuk ke Portal Siswa</span>
+        <button type="submit" class="w-full py-3 px-4 bg-amber-800 hover:bg-amber-900 active:scale-[0.98] text-white font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-md text-xs sm:text-sm mt-3">
+          <span>Buka Portal Pembelajaran</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </form>
@@ -157,263 +168,555 @@
       <!-- FORM 2: MENTOR LOGIN -->
       <form id="auth-form-mentor" class="space-y-3.5 relative z-10 hidden">
         <div>
-          <label class="block text-[11px] font-semibold uppercase tracking-wider text-amber-400 mb-1">Email Mentor</label>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1">Email Mentor</label>
           <div class="relative">
-            <i data-lucide="mail" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
+            <i data-lucide="mail" class="absolute left-3.5 top-3 w-4 h-4 text-stone-400"></i>
             <input type="email" id="mentor-email" required placeholder="maesa.am222@gmail.com"
-              class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-400 text-white placeholder-slate-500 font-mono">
+              class="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F2] border border-stone-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-stone-900 focus:bg-white text-stone-900 placeholder-stone-400 font-mono transition">
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold uppercase tracking-wider text-amber-400 mb-1">Master Password Mentor</label>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1">Master Password</label>
           <div class="relative">
-            <i data-lucide="shield-check" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
+            <i data-lucide="shield-check" class="absolute left-3.5 top-3 w-4 h-4 text-stone-400"></i>
             <input type="password" id="mentor-password" required placeholder="Masukkan Master Password"
-              class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-400 text-white placeholder-slate-500">
+              class="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F2] border border-stone-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-stone-900 focus:bg-white text-stone-900 placeholder-stone-400 transition">
           </div>
-          <p class="text-[10px] text-slate-400 mt-1">Khusus akses monitoring, database email siswa & review esai.</p>
+          <p class="text-[10px] text-stone-500 mt-1">Akses khusus manajemen siswa, publikasi lomba & review esai.</p>
         </div>
 
-        <button type="submit" class="w-full py-3 px-4 bg-amber-400 hover:bg-amber-500 active:scale-[0.98] text-slate-950 font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-amber-400/20 text-xs sm:text-sm mt-2">
+        <button type="submit" class="w-full py-3 px-4 bg-stone-900 hover:bg-stone-800 active:scale-[0.98] text-white font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-md text-xs sm:text-sm mt-3">
           <span>Masuk sebagai Head Mentor</span>
           <i data-lucide="shield" class="w-4 h-4"></i>
         </button>
       </form>
 
-      <div id="login-error" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs text-center mt-3"></div>
+      <div id="login-error" class="hidden p-3 rounded-xl bg-red-100 border border-red-300 text-red-800 text-xs text-center mt-3 font-medium"></div>
 
-      <div class="text-center pt-3 border-t border-slate-800/80 mt-4">
-        <span class="text-[10px] text-slate-500">Private & Secured Mentorship Ecosystem • Ngambis Bareng Community</span>
+      <div class="text-center pt-4 border-t border-stone-200 mt-5">
+        <span class="text-[10px] text-stone-400 font-medium">© 2026 Ngambis Bareng • Secured Mentorship Ecosystem</span>
       </div>
     </div>
   </div>
 
   <!-- ==================== MAIN APPLICATION LAYOUT ==================== -->
-  <div id="app-container" class="flex-1 flex flex-col hidden min-h-screen">
+  <div id="app-container" class="flex-1 flex flex-col hidden min-h-screen relative">
     
     <!-- Top Navigation Bar -->
-    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-lg border-b border-slate-800">
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
-        <!-- Brand -->
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-brand-500/30 flex items-center justify-center shrink-0 bg-slate-950">
-            <img src="logo.jpeg" alt="Logo Ngambis Bareng" class="w-full h-full object-cover">
-          </div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-1.5">
-              <span class="font-bold text-white text-sm sm:text-base tracking-tight truncate">Ngambis Bareng</span>
-              <span class="text-[9px] uppercase font-bold bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded border border-brand-500/30 shrink-0">Private</span>
+        <!-- Left: Brand & Sidebar Toggle -->
+        <div class="flex items-center gap-3">
+          <button onclick="toggleSidebar()" id="btn-toggle-sidebar" class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 transition flex items-center justify-center">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+          
+          <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchTab('dashboard')">
+            <div class="w-9 h-9 rounded-xl overflow-hidden border border-stone-300 flex items-center justify-center shrink-0 bg-white shadow-xs">
+              <img src="logo.jpeg" alt="Logo Ngambis Bareng" class="w-full h-full object-cover">
             </div>
-            <p class="text-[10px] text-slate-400 truncate">S-1 Global & IUP Mentorship</p>
+            <div>
+              <span class="text-sm font-bold text-stone-900 tracking-tight block leading-tight">Ngambis Bareng</span>
+              <span class="text-[10px] font-semibold text-amber-800 uppercase tracking-wider block">S-1 Global & IUP</span>
+            </div>
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs -->
-        <nav class="hidden lg:flex items-center gap-1">
-          <button onclick="switchTab('roadmap')" id="nav-roadmap" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition text-brand-400 bg-brand-500/10 border border-brand-500/20">
-            Roadmap 3 Tahun
-          </button>
-          <button onclick="switchTab('scholarships')" id="nav-scholarships" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">
-            Database Beasiswa
-          </button>
-          <button onclick="switchTab('loa')" id="nav-loa" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">
-            LoA & Apply
-          </button>
-          <button onclick="switchTab('tests')" id="nav-tests" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">
-            SAT & Match Calc
-          </button>
-          <button onclick="switchTab('essays')" id="nav-essays" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">
-            Esai & Review
-          </button>
-          <button onclick="switchTab('templates')" id="nav-templates" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">
-            Templates
-          </button>
-          <button onclick="switchTab('portfolio')" id="nav-portfolio" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">
-            Portofolio
-          </button>
-          <button onclick="switchTab('admin')" id="nav-admin" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-amber-400 hover:bg-amber-400/10 transition border border-amber-400/30 hidden">
-            <span class="flex items-center gap-1"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Mentor Dashboard</span>
-          </button>
-        </nav>
-
-        <!-- User Profile & Action -->
+        <!-- Right: Student Profile & Logout -->
         <div class="flex items-center gap-2 sm:gap-3">
-          <div class="text-right">
-            <p id="user-display-name" class="text-xs font-bold text-white leading-none truncate max-w-[120px] sm:max-w-xs">Nama</p>
-            <p id="user-display-role" class="text-[10px] text-brand-400 mt-0.5 font-medium">Kelas</p>
+          <div class="hidden sm:flex items-center gap-2 bg-[#FAF7F2] border border-stone-200 px-3 py-1.5 rounded-xl text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-bold text-stone-800 user-name-display">Siswa</span>
+            <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-semibold user-grade-display">Kelas 12</span>
           </div>
-          <button onclick="logout()" title="Keluar / Ganti Akun" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition active:scale-95">
+
+          <button onclick="logout()" class="p-2 sm:px-3 sm:py-1.5 rounded-xl border border-stone-200 hover:bg-red-50 text-stone-600 hover:text-red-700 transition text-xs font-semibold flex items-center gap-1.5">
             <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Keluar</span>
           </button>
         </div>
-      </div>
-
-      <!-- Mobile Top Horizontal Scroll Bar -->
-      <div class="flex lg:hidden overflow-x-auto px-3 py-2 border-t border-slate-800 gap-1.5 no-scrollbar bg-slate-950/70">
-        <button onclick="switchTab('roadmap')" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap bg-brand-500/10 text-brand-400 border border-brand-500/20">Roadmap</button>
-        <button onclick="switchTab('scholarships')" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap text-slate-300">Beasiswa</button>
-        <button onclick="switchTab('loa')" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap text-slate-300">LoA & Apply</button>
-        <button onclick="switchTab('tests')" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap text-slate-300">SAT & Calc</button>
-        <button onclick="switchTab('essays')" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap text-slate-300">Esai & Review</button>
-        <button onclick="switchTab('templates')" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap text-slate-300">Templates</button>
-        <button onclick="switchTab('portfolio')" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap text-slate-300">Portofolio</button>
-        <button onclick="switchTab('admin')" id="mobile-nav-admin" class="tab-btn px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap text-amber-400 border border-amber-400/30 hidden">Mentor Panel</button>
       </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6">
-
-      <!-- ==================== TAB 1: ROADMAP STRATEGIS ==================== -->
-      <section id="tab-roadmap" class="tab-content space-y-6">
+    <!-- SIDEBAR DRAWER (COLLAPSIBLE / TIMBUL-TENGGELAM) -->
+    <div id="sidebar-backdrop" onclick="closeSidebar()" class="fixed inset-0 z-40 bg-stone-900/40 backdrop-blur-xs hidden transition-opacity"></div>
+    
+    <aside id="sidebar-drawer" class="fixed top-0 left-0 bottom-0 z-50 w-72 sm:w-80 bg-white border-r border-stone-200 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between">
+      
+      <!-- Top: Profile Header & Navigation Links -->
+      <div class="overflow-y-auto p-5 no-scrollbar">
         
-        <!-- Live Countdown Strip (Khusus di Tab Roadmap) -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5">
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="clock" class="w-4 h-4 text-brand-400"></i>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-white">Application Deadlines Countdown</h3>
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-stone-200">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl overflow-hidden border border-stone-300">
+              <img src="logo.jpeg" alt="Logo" class="w-full h-full object-cover">
             </div>
-            <span class="text-[10px] text-slate-400">Siklus 2026/2027</span>
+            <div>
+              <h3 class="text-xs font-bold text-stone-900">Menu Portal Mentorship</h3>
+              <p class="text-[10px] text-stone-500">Pilih modul pembelajaran</p>
+            </div>
           </div>
-          <div id="deadlines-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            <!-- Populated by JS -->
+          <button onclick="closeSidebar()" class="p-1.5 rounded-lg hover:bg-stone-100 text-stone-500">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Student Mini Card -->
+        <div class="p-3 bg-[#FAF7F2] rounded-2xl border border-stone-200 mb-4">
+          <p class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">Profil Siswa Aktif</p>
+          <p class="text-xs font-bold text-stone-900 user-name-display mt-0.5 truncate">Nama Siswa</p>
+          <p class="text-[11px] text-stone-500 user-email-display truncate">email@gmail.com</p>
+          <span class="inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 user-grade-display">Kelas 12</span>
+        </div>
+
+        <!-- Navigation Menu Items -->
+        <nav class="space-y-1">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-amber-800"></i>
+            <span>Dashboard Siswa</span>
+          </button>
+
+          <button onclick="switchTab('roadmap')" id="nav-roadmap" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="map" class="w-4 h-4 text-emerald-700"></i>
+            <span>Roadmap PTLN & IUP (Bergaris)</span>
+          </button>
+
+          <button onclick="switchTab('competitions')" id="nav-competitions" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left relative">
+            <i data-lucide="trophy" class="w-4 h-4 text-amber-600"></i>
+            <span>Info Lomba & Kompetisi</span>
+            <span class="ml-auto px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-300">NEW</span>
+          </button>
+
+          <button onclick="switchTab('scholarships')" id="nav-scholarships" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="award" class="w-4 h-4 text-blue-700"></i>
+            <span>Database Beasiswa & IUP PTN</span>
+          </button>
+
+          <button onclick="switchTab('loa')" id="nav-loa" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="send" class="w-4 h-4 text-rose-700"></i>
+            <span>Panduan LoA & Portals</span>
+          </button>
+
+          <button onclick="switchTab('tests')" id="nav-tests" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="calculator" class="w-4 h-4 text-purple-700"></i>
+            <span>SAT, IELTS & TOEFL ITP Calc</span>
+          </button>
+
+          <button onclick="switchTab('essays')" id="nav-essays" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="pen-tool" class="w-4 h-4 text-amber-700"></i>
+            <span>Masterclass Esai & Review Hub</span>
+          </button>
+
+          <button onclick="switchTab('templates')" id="nav-templates" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="file-text" class="w-4 h-4 text-teal-700"></i>
+            <span>Template Surat & Email Resmi</span>
+          </button>
+
+          <button onclick="switchTab('portfolio')" id="nav-portfolio" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-100 transition text-left">
+            <i data-lucide="briefcase" class="w-4 h-4 text-indigo-700"></i>
+            <span>Blueprint Portofolio Jurusan</span>
+          </button>
+
+          <!-- Mentor Only Nav -->
+          <div id="nav-admin" class="hidden pt-2 border-t border-stone-200 mt-2">
+            <button onclick="switchTab('admin')" class="nav-menu-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 transition text-left border border-amber-300">
+              <i data-lucide="shield-check" class="w-4 h-4 text-amber-800"></i>
+              <span>Control Center Mentor</span>
+            </button>
+          </div>
+        </nav>
+
+      </div>
+
+      <!-- Bottom: Ecosystem Footer -->
+      <div class="p-4 border-t border-stone-200 bg-[#FAF7F2]">
+        <p class="text-[10px] text-stone-500 text-center font-medium">Ngambis Bareng Mentorship Ecosystem</p>
+      </div>
+
+    </aside>
+
+    <!-- ==================== MAIN CONTENT VIEWPORT ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+      <!-- ==================== TAB 0: DASHBOARD SISWA (OVERVIEW) ==================== -->
+      <section id="tab-dashboard" class="tab-content space-y-6">
+        
+        <!-- Welcome Hero Banner -->
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
+          <div class="absolute -top-20 -right-20 w-44 h-44 bg-amber-100 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-44 h-44 bg-blue-100 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-3 border border-amber-200">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>Selamat Datang di Portal Pembelajaran!</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">Halo, <span class="user-name-display text-amber-800">Siswa Binaan</span>! 👋</h1>
+              <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl leading-relaxed">
+                Portal persiapan resmi S-1 Global & IUP PTN Indonesia. Akses modul kurikulum, database beasiswa dunia, info lomba terbaru, dan konsultasi esai langsung dengan mentor.
+              </p>
+            </div>
+
+            <!-- Quick Milestone Progress Widget -->
+            <div class="bg-[#FAF7F2] p-4 sm:p-5 rounded-2xl border border-stone-200 shrink-0 min-w-[240px]">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-stone-700">Progress Roadmap</span>
+                <span id="overall-progress-text" class="text-xs font-bold text-amber-900">0% Selesai</span>
+              </div>
+              <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
+                <div id="overall-progress-bar" class="bg-amber-700 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+              <button onclick="switchTab('roadmap')" class="mt-3 w-full py-1.5 px-3 bg-white hover:bg-stone-50 border border-stone-300 rounded-xl text-xs font-bold text-stone-800 transition flex items-center justify-center gap-1">
+                <span>Lihat Roadmap Lengkap</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Hero Banner -->
-        <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 border border-slate-800 rounded-2xl p-5 sm:p-8 relative overflow-hidden">
-          <div class="max-w-3xl space-y-2.5">
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-brand-500/10 border border-brand-500/30 text-brand-400 inline-block">
-              Interactive Checklist
-            </span>
-            <h2 class="text-xl sm:text-3xl font-bold text-white tracking-tight">Roadmap 3 Tahun Kuliah S-1 Dunia & IUP PTN</h2>
-            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Centang setiap capaian (milestone) yang sudah kamu selesaikan. Progresmu akan otomatis tersimpan di profil dan terpantau langsung di sistem mentor!
-            </p>
-          </div>
+        <!-- 2 Main Paths Banner: PTLN vs IUP PTN -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           
-          <!-- Progress Bar -->
-          <div class="mt-5 pt-5 border-t border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="flex-1">
-              <div class="flex justify-between text-xs font-medium mb-1.5">
-                <span class="text-slate-300">Total Progres Persiapan Kamu</span>
-                <span id="overall-progress-text" class="text-brand-400 font-bold">0% Selesai</span>
+          <!-- Path 1: PTLN -->
+          <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm hover:border-amber-700 transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Jalur 1: Global</span>
+                <span class="text-xs text-stone-500 font-medium">BIM, MEXT, GKS, US</span>
               </div>
-              <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                <div id="overall-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-brand-accent transition-all duration-300" style="width: 0%"></div>
-              </div>
+              <h3 class="text-lg font-bold text-stone-900 mb-1.5">S-1 Luar Negeri (Full Ride Scholarship)</h3>
+              <p class="text-xs text-stone-600 leading-relaxed mb-4">
+                Panduan komprehensif menembus universitas top 100 dunia dengan beasiswa penuh pemerintah RI (BIM), beasiswa kedutaan (MEXT Jepang, GKS Korea, Turkiye, Hungaria), dan Need-Blind Amerika Serikat.
+              </p>
             </div>
+            <button onclick="switchTab('roadmap'); switchRoadmapTrack('ptln');" class="py-2.5 px-4 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+              <span>Buka Roadmap PTLN</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
           </div>
+
+          <!-- Path 2: IUP PTN -->
+          <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm hover:border-blue-700 transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-900 border border-blue-300">Jalur 2: Nasional</span>
+                <span class="text-xs text-stone-500 font-medium">UGM, UI KKI, ITB, UNAIR, ITS</span>
+              </div>
+              <h3 class="text-lg font-bold text-stone-900 mb-1.5">IUP PTN (Kelas Internasional Dalam Negeri)</h3>
+              <p class="text-xs text-stone-600 leading-relaxed mb-4">
+                Strategi lolos Gelombang 1 intake IUP PTN ternama. Standar TOEFL ITP (min. 500 umum, min. 550 Kedokteran), ujian GMST/AQAS, esai motivasi, dan wawancara MMI.
+              </p>
+            </div>
+            <button onclick="switchTab('roadmap'); switchRoadmapTrack('iup');" class="py-2.5 px-4 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+              <span>Buka Roadmap IUP PTN</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+
         </div>
 
-        <!-- 3-Column Phase Cards -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          
-          <!-- Kelas 10 -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col">
-            <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800">
-              <div>
-                <span class="text-[10px] font-bold text-brand-400 uppercase tracking-wider">Tahap 1</span>
-                <h3 class="text-base sm:text-lg font-bold text-white">Kelas 10: Fondasi</h3>
-              </div>
-              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-300 border border-slate-700">Tahun 1</span>
-            </div>
+        <!-- Quick Access Feature Grid -->
+        <div>
+          <h2 class="text-base font-bold text-stone-900 mb-3 flex items-center gap-2">
+            <i data-lucide="grid" class="w-4 h-4 text-amber-800"></i>
+            <span>Pusat Fitur & Modul Belajar</span>
+          </h2>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             
-            <p class="text-[11px] text-slate-400 mb-3">Fokus membangun kebiasaan akademik, nilai rapor prima, dan eksplorasi minat lomba/proyek sosial.</p>
+            <button onclick="switchTab('competitions')" class="p-4 bg-white border border-stone-200 hover:border-amber-600 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="trophy" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold text-stone-900">Info Lomba & Prestasi</h4>
+              <p class="text-[10px] text-stone-500 mt-0.5">Kompetisi terkurasi Puspresnas</p>
+            </button>
 
-            <div class="space-y-2.5 flex-1">
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k10_rapor')" id="ms-k10_rapor" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Pertahankan Rata-rata Rapor Semester 1 & 2 ≥ 85-90.</span>
-              </label>
+            <button onclick="switchTab('scholarships')" class="p-4 bg-white border border-stone-200 hover:border-blue-600 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="award" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold text-stone-900">Database Beasiswa</h4>
+              <p class="text-[10px] text-stone-500 mt-0.5">20+ beasiswa S-1 & IUP</p>
+            </button>
 
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k10_english')" id="ms-k10_english" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Mulai membaca artikel ilmiah berbahasa Inggris rutin & latih vocab harian.</span>
-              </label>
+            <button onclick="switchTab('tests')" class="p-4 bg-white border border-stone-200 hover:border-purple-600 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="calculator" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold text-stone-900">Kalkulator Skor & TOEFL</h4>
+              <p class="text-[10px] text-stone-500 mt-0.5">Standar 500/550 & SAT</p>
+            </button>
 
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k10_ekskul')" id="ms-k10_ekskul" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Gabung 1-2 ekstrakurikuler inti & inisiasi proyek sosial kecil (*volunteering*).</span>
-              </label>
+            <button onclick="switchTab('essays')" class="p-4 bg-white border border-stone-200 hover:border-rose-600 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="pen-tool" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold text-stone-900">Masterclass Esai</h4>
+              <p class="text-[10px] text-stone-500 mt-0.5">Struktur & review Google Docs</p>
+            </button>
 
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k10_log')" id="ms-k10_log" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Buat *Master Activity Log* untuk mendokumentasikan sertifikat & peran kepemimpinan.</span>
-              </label>
+            <button onclick="switchTab('loa')" class="p-4 bg-white border border-stone-200 hover:border-emerald-600 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="send" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold text-stone-900">Panduan LoA & Portals</h4>
+              <p class="text-[10px] text-stone-500 mt-0.5">Common App, UCAS, IUP</p>
+            </button>
+
+            <button onclick="switchTab('templates')" class="p-4 bg-white border border-stone-200 hover:border-teal-600 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold text-stone-900">Template Surat & LoR</h4>
+              <p class="text-[10px] text-stone-500 mt-0.5">Fee waiver & rekomendasi guru</p>
+            </button>
+
+            <button onclick="switchTab('portfolio')" class="p-4 bg-white border border-stone-200 hover:border-indigo-600 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="briefcase" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold text-stone-900">Portofolio Jurusan</h4>
+              <p class="text-[10px] text-stone-500 mt-0.5">Spike profile 5 rumpun ilmu</p>
+            </button>
+
+            <button onclick="toggleSidebar()" class="p-4 bg-stone-900 text-white hover:bg-stone-800 rounded-2xl text-left transition shadow-xs group">
+              <div class="w-9 h-9 rounded-xl bg-stone-800 text-amber-300 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-xs font-bold">Buka Semua Menu</h4>
+              <p class="text-[10px] text-stone-400 mt-0.5">Navigasi sidebar lengkap</p>
+            </button>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==================== TAB 1: ROADMAP BERGARIS (PTLN VS IUP) ==================== -->
+      <section id="tab-roadmap" class="tab-content space-y-6 hidden">
+        
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-200">
+            <div>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200 inline-block mb-2">Roadmap Terstruktur</span>
+              <h2 class="text-2xl font-bold text-stone-900">Peta Jalan 3 Tahun: PTLN & IUP PTN</h2>
+              <p class="text-xs text-stone-600 mt-1">Pilih jalur targetmu untuk melihat timeline langkah demi langkah yang saling terhubung.</p>
+            </div>
+
+            <!-- Track Switcher -->
+            <div class="flex bg-[#F3EEE6] p-1.5 rounded-2xl border border-stone-200 w-full sm:w-auto">
+              <button onclick="switchRoadmapTrack('ptln')" id="btn-track-ptln" class="flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-amber-800 text-white shadow-sm transition">
+                🌍 Jalur PTLN (Luar Negeri)
+              </button>
+              <button onclick="switchRoadmapTrack('iup')" id="btn-track-iup" class="flex-1 sm:flex-none py-2 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition">
+                🇮🇩 Jalur IUP PTN (Nasional)
+              </button>
             </div>
           </div>
 
-          <!-- Kelas 11 -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col">
-            <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800">
-              <div>
-                <span class="text-[10px] font-bold text-brand-accent uppercase tracking-wider">Tahap 2</span>
-                <h3 class="text-base sm:text-lg font-bold text-white">Kelas 11: Standarisasi</h3>
-              </div>
-              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-300 border border-slate-700">Tahun 2</span>
+          <!-- Application Deadlines Countdown Widget -->
+          <div class="mt-6 p-4 sm:p-5 bg-[#FAF7F2] rounded-2xl border border-stone-200">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="clock" class="w-4 h-4 text-amber-800"></i>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-stone-800">Batas Waktu Pendaftaran Terdekat (Countdown)</h3>
             </div>
-
-            <p class="text-[11px] text-slate-400 mb-3">Fokus mengejar sertifikasi tes internasional (SAT, IELTS) dan membangun *signature project* orisinal.</p>
-
-            <div class="space-y-2.5 flex-1">
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k11_sat')" id="ms-k11_sat" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Latihan intensif <a href="https://www.khanacademy.org/digital-sat" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">Khan Academy SAT</a> & ambil tes resmi Digital SAT (Target 1400+).</span>
-              </label>
-
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k11_ielts')" id="ms-k11_ielts" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Ambil tes resmi IELTS Academic (Target min. 6.5 - 7.5) atau TOEFL iBT (95+).</span>
-              </label>
-
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k11_project')" id="ms-k11_project" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Eksekusi *Signature Project* / Ikut Lomba Tingkat Nasional (<a href="https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/osn/" target="_blank" rel="noopener noreferrer" class="text-brand-accent underline">OSN</a>, <a href="https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/opsi/" target="_blank" rel="noopener noreferrer" class="text-brand-accent underline">OPSI</a>, <a href="https://pusatprestasinasional.kemdikbud.go.id/event/seni-budaya-dan-bahasa/nsdc/" target="_blank" rel="noopener noreferrer" class="text-brand-accent underline">NSDC</a>).</span>
-              </label>
-
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k11_collegelist')" id="ms-k11_collegelist" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Susun *College List* (3 Reach, 4 Match, 3 Safety) dan pantau program <a href="https://pusatprestasinasional.kemdikbud.go.id/" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">BIM Persiapan</a>.</span>
-              </label>
+            <div id="deadlines-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <!-- Injected by JS -->
             </div>
           </div>
 
-          <!-- Kelas 12 -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col">
-            <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-800">
-              <div>
-                <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider">Tahap 3</span>
-                <h3 class="text-base sm:text-lg font-bold text-white">Kelas 12: Eksekusi</h3>
+          <!-- VIEW 1: ROADMAP PTLN (LUAR NEGERI) -->
+          <div id="roadmap-view-ptln" class="mt-8 space-y-6">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-amber-900 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-700"></span>
+              <span>Langkah Garis Waktu: Beasiswa & Universitas Luar Negeri</span>
+            </h3>
+
+            <div class="relative timeline-line space-y-8 pl-4 sm:pl-6">
+              
+              <!-- Step 1: Kelas 10 -->
+              <div class="relative flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-amber-800 text-white font-bold text-sm flex items-center justify-center shrink-0 z-10 shadow-md">
+                  1
+                </div>
+                <div class="flex-1 bg-[#FAF7F2] p-5 rounded-2xl border border-stone-200">
+                  <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm sm:text-base">Tahap 1: Kelas 10 — Fase Eksplorasi & Fondasi Akademik</h4>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Tahun 1</span>
+                  </div>
+                  <p class="text-xs text-stone-600 mb-3">Fokus menjaga nilai rapor di atas rata-rata 85+, riset negara target, dan eksplorasi minat lomba/organisasi.</p>
+                  
+                  <div class="space-y-2">
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k10_rapor')" id="ms-k10_rapor" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Pertahankan rata-rata rapor semester 1 & 2 di atas 85.0 (Kunci lolos seleksi berkas BIM & MEXT).</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k10_vocab')" id="ms-k10_vocab" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Bangun kebiasaan membaca artikel jurnal/buku berbahasa Inggris 15 menit per hari.</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k10_lomba')" id="ms-k10_lomba" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Ikuti seleksi OSN / OPSI tingkat kota/kabupaten untuk membangun portofolio awal.</span>
+                    </label>
+                  </div>
+                </div>
               </div>
-              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-300 border border-slate-700">Tahun 3</span>
+
+              <!-- Step 2: Kelas 11 -->
+              <div class="relative flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-amber-800 text-white font-bold text-sm flex items-center justify-center shrink-0 z-10 shadow-md">
+                  2
+                </div>
+                <div class="flex-1 bg-[#FAF7F2] p-5 rounded-2xl border border-stone-200">
+                  <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm sm:text-base">Tahap 2: Kelas 11 — Fase Standarisasi (Digital SAT, IELTS & Spike)</h4>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Tahun 2</span>
+                  </div>
+                  <p class="text-xs text-stone-600 mb-3">Mengejar sertifikasi tes internasional resmi dan menyelesaikan *signature project* orisinal.</p>
+                  
+                  <div class="space-y-2">
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k11_sat')" id="ms-k11_sat" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Ambil tes resmi Digital SAT (Target min. 1400 - 1500+) dan IELTS Academic (Target min. 7.0).</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k11_project')" id="ms-k11_project" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Eksekusi *Spike Project* nyata / Raih medali di kompetisi nasional terkurasi Puspresnas.</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k11_collegelist')" id="ms-k11_collegelist" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Daftar program pembinaan persiapan Beasiswa Indonesia Maju (BIM Persiapan Non-Gelar).</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3: Kelas 12 -->
+              <div class="relative flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-amber-800 text-white font-bold text-sm flex items-center justify-center shrink-0 z-10 shadow-md">
+                  3
+                </div>
+                <div class="flex-1 bg-[#FAF7F2] p-5 rounded-2xl border border-stone-200">
+                  <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm sm:text-base">Tahap 3: Kelas 12 — Fase Eksekusi & Submit Aplikasi</h4>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Tahun 3</span>
+                  </div>
+                  <p class="text-xs text-stone-600 mb-3">Penulisan esai aplikasi (Personal Statement), pengumpulan surat rekomendasi guru, dan submit portal beasiswa.</p>
+                  
+                  <div class="space-y-2">
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k12_lor')" id="ms-k12_lor" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Minta 2-3 Surat Rekomendasi (LoR) resmi dari Guru Matematika/Sains/Bahasa & Kepala Sekolah.</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k12_essay')" id="ms-k12_essay" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Tulis Personal Statement / Common App Essay dan minta review intensif mentor minimal 5 kali.</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" onchange="toggleMilestone('k12_submit_app')" id="ms-k12_submit_app" class="mt-0.5 rounded text-amber-800 focus:ring-0">
+                      <span>Submit aplikasi via Common App (USA), UCAS (UK), MEXT (Jepang), GKS (Korea), & BIM Luar Negeri.</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
             </div>
+          </div>
 
-            <p class="text-[11px] text-slate-400 mb-3">Fokus penulisan esai aplikasi, surat rekomendasi, submit portal beasiswa & ujian masuk IUP.</p>
+          <!-- VIEW 2: ROADMAP IUP PTN (INDONESIA) -->
+          <div id="roadmap-view-iup" class="mt-8 space-y-6 hidden">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-700"></span>
+              <span>Langkah Garis Waktu: Jalur Kelas Internasional (IUP PTN Indonesia)</span>
+            </h3>
 
-            <div class="space-y-2.5 flex-1">
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k12_lor')" id="ms-k12_lor" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Minta 2-3 Surat Rekomendasi (LoR) ke Guru Mapel & Konselor/Kepala Sekolah.</span>
-              </label>
+            <div class="relative timeline-line space-y-8 pl-4 sm:pl-6">
+              
+              <!-- Step 1: Kelas 10 -->
+              <div class="relative flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold text-sm flex items-center justify-center shrink-0 z-10 shadow-md">
+                  1
+                </div>
+                <div class="flex-1 bg-[#FAF7F2] p-5 rounded-2xl border border-stone-200">
+                  <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm sm:text-base">Tahap 1: Fondasi Bahasa Inggris & Nilai Rapor Kuat</h4>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-300">Tahun 1</span>
+                  </div>
+                  <p class="text-xs text-stone-600 mb-3">IUP PTN menguji kemampuan akademik berbahasa Inggris penuh sejak ujian masuk hingga perkuliahan.</p>
+                  
+                  <div class="space-y-2">
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" class="mt-0.5 rounded text-blue-700 focus:ring-0">
+                      <span>Pelajari silabus GMST (UGM), SIMAK KKI (UI), dan AQAS (ITB) untuk membiasakan soal Basic Math & Science berbahasa Inggris.</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" class="mt-0.5 rounded text-blue-700 focus:ring-0">
+                      <span>Riset program mitra double degree luar negeri di prodi target (contoh: Melbourne, Monash, Erasmus).</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k12_essay')" id="ms-k12_essay" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Tulis & poles Personal Statement / Common App Essay (Review min. 5 kali).</span>
-              </label>
+              <!-- Step 2: Kelas 11 -->
+              <div class="relative flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold text-sm flex items-center justify-center shrink-0 z-10 shadow-md">
+                  2
+                </div>
+                <div class="flex-1 bg-[#FAF7F2] p-5 rounded-2xl border border-stone-200">
+                  <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm sm:text-base">Tahap 2: Sertifikasi TOEFL ITP (Min. 500 / 550 FK) & SAT Math</h4>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-300">Tahun 2</span>
+                  </div>
+                  <p class="text-xs text-stone-600 mb-3">Kunci lolos administrasi awal seluruh kampus IUP PTN di Indonesia.</p>
+                  
+                  <div class="space-y-2">
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" class="mt-0.5 rounded text-blue-700 focus:ring-0">
+                      <span>Ambil tes resmi TOEFL ITP: Pastikan skor minimal ≥ 500 untuk jurusan umum, atau minimal ≥ 550 untuk Fakultas Kedokteran (FK UGM, KKI UI, IUP UNAIR).</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" class="mt-0.5 rounded text-blue-700 focus:ring-0">
+                      <span>(Khusus ITB IUP): Kejar skor Digital SAT Math ≥ 700 agar dibebaskan dari ujian AQAS ITB.</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('k12_submit_app')" id="ms-k12_submit_app" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Submit aplikasi via <a href="https://www.commonapp.org/" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">Common App</a> / <a href="https://www.ucas.com/" target="_blank" rel="noopener noreferrer" class="text-brand-accent underline">UCAS</a> / Direct Portal.</span>
-              </label>
+              <!-- Step 3: Kelas 12 -->
+              <div class="relative flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold text-sm flex items-center justify-center shrink-0 z-10 shadow-md">
+                  3
+                </div>
+                <div class="flex-1 bg-[#FAF7F2] p-5 rounded-2xl border border-stone-200">
+                  <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm sm:text-base">Tahap 3: Eksekusi Gelombang 1 (Jan-Feb), Gelombang 2 (Apr), & Interview MMI</h4>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-300">Tahun 3</span>
+                  </div>
+                  <p class="text-xs text-stone-600 mb-3">Prioritaskan mendaftar di Gelombang 1 (Intake Terbesar) sebelum kuota terisi penuh.</p>
+                  
+                  <div class="space-y-2">
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" class="mt-0.5 rounded text-blue-700 focus:ring-0">
+                      <span>Submit Gelombang 1 IUP UGM & ITB (Januari - Februari).</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" class="mt-0.5 rounded text-blue-700 focus:ring-0">
+                      <span>Simulasi wawancara akademik dan Mini Multiple Interview (MMI) Kedokteran bersama mentor.</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-xs text-stone-700 cursor-pointer">
+                      <input type="checkbox" class="mt-0.5 rounded text-blue-700 focus:ring-0">
+                      <span>Daftar SIMAK KKI UI, IUP UNAIR, & IUP ITS di Gelombang 2/3 jika memerlukan cadangan.</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-              <label class="milestone-item flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 cursor-pointer transition">
-                <input type="checkbox" onchange="toggleMilestone('ms-k12_scholarship')" id="ms-k12_scholarship" class="mt-0.5 rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
-                <span class="text-xs text-slate-300">Submit beasiswa pemerintah (MEXT, GKS, Turkiye, BIM S1, Hungaria) & tes IUP PTN.</span>
-              </label>
             </div>
           </div>
 
@@ -421,24 +724,62 @@
 
       </section>
 
-      <!-- ==================== TAB 2: DATABASE BEASISWA & IUP ==================== -->
-      <section id="tab-scholarships" class="tab-content space-y-5 hidden">
+      <!-- ==================== TAB 2: INFO LOMBA & KOMPETISI (NEW) ==================== -->
+      <section id="tab-competitions" class="tab-content space-y-6 hidden">
         
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-white">Database Beasiswa S-1 Global & IUP</h2>
-            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Daftar beasiswa penuh pemerintah, kampus dunia, dan jalur IUP PTN dengan link pendaftaran resmi.</p>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-1 border border-amber-300">
+              <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
+              <span>Info Lomba & Ajang Talenta Berkelanjutan</span>
+            </div>
+            <h2 class="text-2xl font-bold text-stone-900">Kompetisi Prestasi Nasional & Global</h2>
+            <p class="text-xs text-stone-600 mt-0.5">Daftar lomba resmi terkurasi untuk memperkuat portofolio beasiswa BIM dan admisi IUP PTN.</p>
           </div>
 
-          <!-- Filter & Search -->
+          <!-- Search & Filters -->
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <div class="relative flex-1">
-              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5"></i>
-              <input type="text" id="scholarship-search" oninput="filterScholarships()" placeholder="Cari beasiswa / negara..."
-                class="w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400">
+              <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
+              <input type="text" id="comp-search" oninput="filterCompetitions()" placeholder="Cari nama lomba / bidang..."
+                class="w-full pl-9 pr-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
             </div>
 
-            <select id="scholarship-category-filter" onchange="filterScholarships()" class="bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-300 px-3 py-1.5 focus:outline-none focus:border-brand-400">
+            <select id="comp-cat-filter" onchange="filterCompetitions()" class="bg-white border border-stone-300 rounded-xl text-xs text-stone-700 px-3 py-2 focus:outline-none focus:border-amber-800 font-medium">
+              <option value="ALL">Semua Kategori</option>
+              <option value="STEM">Sains, Tech & Math (STEM)</option>
+              <option value="RISET">Riset & Karya Tulis (OPSI/ISEF)</option>
+              <option value="BISNIS">Bisnis & Ekonomi</option>
+              <option value="HUMANIORA">Debat & Esai Humaniora</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Competition Feed Grid -->
+        <div id="competition-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Populated by JS -->
+        </div>
+
+      </section>
+
+      <!-- ==================== TAB 3: DATABASE BEASISWA & IUP ==================== -->
+      <section id="tab-scholarships" class="tab-content space-y-6 hidden">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-stone-900">Database Beasiswa S-1 Global & IUP</h2>
+            <p class="text-xs text-stone-600 mt-0.5">Daftar beasiswa penuh pemerintah, kampus top dunia, dan jalur IUP PTN dengan link pendaftaran resmi.</p>
+          </div>
+
+          <!-- Search & Filters -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div class="relative flex-1">
+              <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
+              <input type="text" id="scholarship-search" oninput="filterScholarships()" placeholder="Cari beasiswa / negara..."
+                class="w-full pl-9 pr-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+            </div>
+
+            <select id="scholarship-category-filter" onchange="filterScholarships()" class="bg-white border border-stone-300 rounded-xl text-xs text-stone-700 px-3 py-2 focus:outline-none focus:border-amber-800 font-medium">
               <option value="ALL">Semua Kategori</option>
               <option value="RI_GOV">Pemerintah RI (BIM, Unggulan)</option>
               <option value="INTL_GOV">Pemerintah Asing (MEXT, GKS, Turkiye, Hungaria)</option>
@@ -449,395 +790,261 @@
         </div>
 
         <!-- Grid Beasiswa -->
-        <div id="scholarship-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div id="scholarship-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <!-- Populated by JS -->
         </div>
 
       </section>
 
-      <!-- ==================== TAB 3: LoA & CARA APPLY ==================== -->
-      <section id="tab-loa" class="tab-content space-y-5 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-white mb-1.5">Panduan Lengkap Mendapatkan LoA & Melamar Kampus</h2>
-          <p class="text-xs text-slate-400 mb-5">Pahami alur dari riset kampus hingga menerima surat penerimaan resmi (*Letter of Acceptance*).</p>
+      <!-- ==================== TAB 4: LoA & PORTALS ==================== -->
+      <section id="tab-loa" class="tab-content space-y-6 hidden">
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          <h2 class="text-2xl font-bold text-stone-900 mb-1.5">Panduan Lengkap Mendapatkan LoA & Melamar Kampus</h2>
+          <p class="text-xs text-stone-600 mb-6">Pahami alur dari riset kampus hingga menerima surat penerimaan resmi (*Letter of Acceptance*).</p>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="flex items-center gap-2 text-brand-400 font-bold text-xs sm:text-sm mb-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+            <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <div class="flex items-center gap-2 text-emerald-800 font-bold text-sm mb-2">
                 <i data-lucide="file-check" class="w-4 h-4"></i>
                 <span>Conditional vs Unconditional LoA</span>
               </div>
-              <ul class="space-y-1.5 text-xs text-slate-300 list-disc list-inside leading-relaxed">
-                <li><strong class="text-white">Conditional LoA:</strong> Diterima dengan syarat nilai akhir ijazah atau skor IELTS dinaikkan sebelum tanggal masuk kuliah.</li>
-                <li><strong class="text-white">Unconditional LoA:</strong> Diterima 100% mutlak tanpa syarat tambahan. Dokumen kunci pencairan beasiswa BIM dan Beasiswa Unggulan.</li>
+              <ul class="space-y-2 text-xs text-stone-700 list-disc list-inside leading-relaxed">
+                <li><strong class="text-stone-900">Conditional LoA:</strong> Diterima dengan syarat nilai akhir ijazah atau skor IELTS/TOEFL dinaikkan sebelum tanggal masuk kuliah.</li>
+                <li><strong class="text-stone-900">Unconditional LoA:</strong> Diterima mutlak tanpa syarat tambahan. Dokumen wajib untuk pencairan Beasiswa Indonesia Maju (BIM).</li>
               </ul>
             </div>
 
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="flex items-center gap-2 text-brand-accent font-bold text-xs sm:text-sm mb-2">
+            <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <div class="flex items-center gap-2 text-blue-800 font-bold text-sm mb-2">
                 <i data-lucide="layers" class="w-4 h-4"></i>
                 <span>Strategi Membagi College List</span>
               </div>
-              <ul class="space-y-1.5 text-xs text-slate-300 list-disc list-inside leading-relaxed">
-                <li><strong class="text-white">Reach / Dream (2-3 Kampus):</strong> Kampus dengan acceptance rate < 15% (contoh: Harvard, Oxford, NUS).</li>
-                <li><strong class="text-white">Match / Target (4-5 Kampus):</strong> Kampus sebanding dengan nilai rapor & SAT (contoh: Toronto, KAIST, Sydney).</li>
-                <li><strong class="text-white">Safety (2-3 Kampus):</strong> Kampus peluang diterima > 85% (contoh: IUP UGM/ITB, Monash Malaysia).</li>
+              <ul class="space-y-2 text-xs text-stone-700 list-disc list-inside leading-relaxed">
+                <li><strong class="text-stone-900">Reach / Dream (2-3 Kampus):</strong> Acceptance rate &lt; 15% (Harvard, Oxford, Cambridge, NUS).</li>
+                <li><strong class="text-stone-900">Match / Target (4-5 Kampus):</strong> Sesuai profil rapor &amp; SAT (Toronto, KAIST, Sydney).</li>
+                <li><strong class="text-stone-900">Safety (2-3 Kampus):</strong> Peluang diterima &gt; 85% (IUP UGM, ITB, Monash Malaysia).</li>
               </ul>
             </div>
           </div>
 
-          <!-- Step-by-Step Portals -->
-          <div class="space-y-3.5">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">Portal Pendaftaran Resmi Kampus Global & IUP</h3>
+          <!-- Portals Links -->
+          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-800 mb-3">Portal Resmi Pendaftaran Dunia & IUP</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-              
-              <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="font-bold text-white text-xs sm:text-sm">🇺🇸 Common App (USA)</span>
-                  <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-brand-400 font-semibold">Holistic</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mb-2.5">Portal terpusat untuk lebih dari 1.000 universitas di Amerika Serikat dan dunia.</p>
-                <a href="https://www.commonapp.org/" target="_blank" rel="noopener noreferrer" onclick="logActivity('PORTAL_LINK', 'Common App USA')" class="inline-flex items-center gap-1 text-xs text-brand-400 hover:underline font-medium">
-                  Buka Portal Common App <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
-              </div>
-
-              <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="font-bold text-white text-xs sm:text-sm">🇬🇧 UCAS (UK)</span>
-                  <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-brand-accent font-semibold">Academic-Heavy</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mb-2.5">Maksimal memilih 5 jurusan di seluruh universitas Inggris Raya (Oxford, Cambridge, Imperial).</p>
-                <a href="https://www.ucas.com/" target="_blank" rel="noopener noreferrer" onclick="logActivity('PORTAL_LINK', 'UCAS UK')" class="inline-flex items-center gap-1 text-xs text-brand-accent hover:underline font-medium">
-                  Buka Portal UCAS <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
-              </div>
-
-              <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="font-bold text-white text-xs sm:text-sm">🇳🇱 Studielink (Belanda)</span>
-                  <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-amber-400 font-semibold">Direct Match</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mb-2.5">Pendaftaran terpusat universitas riset di Belanda (TU Delft, Univ of Amsterdam, Leiden).</p>
-                <a href="https://www.studielink.nl/" target="_blank" rel="noopener noreferrer" onclick="logActivity('PORTAL_LINK', 'Studielink Netherlands')" class="inline-flex items-center gap-1 text-xs text-amber-400 hover:underline font-medium">
-                  Buka Portal Studielink <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
-              </div>
-
-              <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="font-bold text-white text-xs sm:text-sm">🇩🇪 Uni-Assist (Jerman)</span>
-                  <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-sky-400 font-semibold">HZB Check</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mb-2.5">Portal evaluasi sertifikat ijazah internasional untuk universitas negeri di Jerman.</p>
-                <a href="https://www.uni-assist.de/en/" target="_blank" rel="noopener noreferrer" onclick="logActivity('PORTAL_LINK', 'Uni-Assist Germany')" class="inline-flex items-center gap-1 text-xs text-sky-400 hover:underline font-medium">
-                  Buka Portal Uni-Assist <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
-              </div>
-
-              <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="font-bold text-white text-xs sm:text-sm">🇸🇬 Direct Apply NUS</span>
-                  <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-orange-400 font-semibold">Singapore</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mb-2.5">Portal pendaftaran sarjana internasional National University of Singapore.</p>
-                <a href="https://www.nus.edu.sg/oam/apply-to-nus" target="_blank" rel="noopener noreferrer" onclick="logActivity('PORTAL_LINK', 'NUS Admission')" class="inline-flex items-center gap-1 text-xs text-orange-400 hover:underline font-medium">
-                  Buka Admisi NUS <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
-              </div>
-
-              <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="font-bold text-white text-xs sm:text-sm">🇮🇩 Admisi IUP PTN</span>
-                  <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-teal-400 font-semibold">Indonesia</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mb-2.5">Pendaftaran IUP UGM, SIMAK KKI UI, IUP ITB, UNAIR, dan ITS.</p>
-                <a href="https://um.ugm.ac.id/international-undergraduate-program-iup/" target="_blank" rel="noopener noreferrer" onclick="logActivity('PORTAL_LINK', 'IUP UGM')" class="inline-flex items-center gap-1 text-xs text-teal-400 hover:underline font-medium">
-                  Portal IUP UGM <i data-lucide="external-link" class="w-3 h-3"></i>
-                </a>
-              </div>
-
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-stone-200 hover:border-amber-700 transition">
+              <span class="font-bold text-stone-900 text-xs block mb-1">🇺🇸 Common App (USA)</span>
+              <p class="text-[11px] text-stone-600 mb-2">Portal terpusat untuk 1.000+ kampus Amerika Serikat.</p>
+              <a href="https://www.commonapp.org/" target="_blank" class="text-xs text-amber-800 font-bold hover:underline inline-flex items-center gap-1">
+                Buka Common App <i data-lucide="external-link" class="w-3 h-3"></i>
+              </a>
             </div>
-          </div>
 
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-stone-200 hover:border-blue-700 transition">
+              <span class="font-bold text-stone-900 text-xs block mb-1">🇬🇧 UCAS (UK)</span>
+              <p class="text-[11px] text-stone-600 mb-2">Pendaftaran maksimal 5 jurusan di universitas Inggris Raya.</p>
+              <a href="https://www.ucas.com/" target="_blank" class="text-xs text-blue-800 font-bold hover:underline inline-flex items-center gap-1">
+                Buka UCAS UK <i data-lucide="external-link" class="w-3 h-3"></i>
+              </a>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-stone-200 hover:border-emerald-700 transition">
+              <span class="font-bold text-stone-900 text-xs block mb-1">🇮🇩 Admisi IUP PTN</span>
+              <p class="text-[11px] text-stone-600 mb-2">Portal resmi IUP UGM, UI KKI, ITB, UNAIR, &amp; ITS.</p>
+              <a href="https://um.ugm.ac.id/international-undergraduate-program-iup/" target="_blank" class="text-xs text-emerald-800 font-bold hover:underline inline-flex items-center gap-1">
+                Buka Admisi IUP <i data-lucide="external-link" class="w-3 h-3"></i>
+              </a>
+            </div>
+
+          </div>
         </div>
       </section>
 
-      <!-- ==================== TAB 4: SAT & CALCULATOR ==================== -->
-      <section id="tab-tests" class="tab-content space-y-5 hidden">
-        
-        <!-- Interactive Profile Chance Simulator -->
-        <div class="bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-800 rounded-2xl p-5 sm:p-8">
-          <div class="flex items-center gap-2 text-brand-400 font-bold text-xs uppercase tracking-wider mb-1.5">
-            <i data-lucide="sparkles" class="w-4 h-4"></i>
-            <span>Interactive Simulator</span>
+      <!-- ==================== TAB 5: SAT, IELTS, TOEFL ITP & CHANCE MATCH ==================== -->
+      <section id="tab-tests" class="tab-content space-y-6 hidden">
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          
+          <div>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-purple-100 text-purple-900 border border-purple-200 inline-block mb-2">Standar Bahasa & Kalkulator</span>
+            <h2 class="text-2xl font-bold text-stone-900">Standar Tes Internasional & TOEFL ITP IUP</h2>
+            <p class="text-xs text-stone-600 mt-1">Gunakan simulator ini untuk mengukur kesiapan profil akademikmu terhadap beasiswa dunia dan jalur IUP PTN.</p>
           </div>
-          <h2 class="text-lg sm:text-2xl font-bold text-white mb-1.5">Kalkulator Match Kampus & Prediksi Peluang</h2>
-          <p class="text-xs text-slate-300 mb-5">Masukkan estimasi nilai rapor, skor SAT, dan tes bahasa Inggrismu untuk melihat kategori peluang kampus yang paling cocok.</p>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Rata-rata Rapor (Skala 100)</label>
-              <input type="number" id="calc-gpa" placeholder="Contoh: 90" min="60" max="100" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400">
-            </div>
+          <!-- TOEFL ITP Guidelines Banner -->
+          <div class="mt-6 p-5 rounded-2xl bg-amber-50/80 border border-amber-300">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-900 mb-2 flex items-center gap-2">
+              <i data-lucide="info" class="w-4 h-4"></i>
+              <span>Standar Resmi Skor TOEFL ITP untuk IUP PTN Indonesia</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-amber-950">
+              <div class="p-3 bg-white/80 rounded-xl border border-amber-200">
+                <p class="font-bold text-stone-900 mb-0.5">1. IUP Jurusan Umum (Teknik, Bisnis, Hukum, HI)</p>
+                <p class="text-amber-900 font-semibold">Skor Minimal: TOEFL ITP ≥ 500 (atau IELTS ≥ 5.5)</p>
+                <p class="text-[11px] text-stone-600 mt-1">Berlaku untuk IUP UGM, ITB, UI KKI Non-FK, UNAIR, dan ITS.</p>
+              </div>
 
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Skor Digital SAT (Skala 1600)</label>
-              <input type="number" id="calc-sat" placeholder="Contoh: 1450" min="400" max="1600" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400">
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Skor IELTS (Skala 9.0)</label>
-              <input type="number" id="calc-ielts" step="0.5" placeholder="Contoh: 7.0" min="4.0" max="9.0" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400">
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Tingkat Prestasi Tertinggi</label>
-              <select id="calc-spike" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400">
-                <option value="school">Tingkat Sekolah / Komunitas</option>
-                <option value="city">Tingkat Kota / Kabupaten</option>
-                <option value="provincial">Tingkat Provinsi</option>
-                <option value="national_gold" selected>Nasional (OSN / OPSI / Medalis)</option>
-              </select>
+              <div class="p-3 bg-white/80 rounded-xl border border-amber-200">
+                <p class="font-bold text-stone-900 mb-0.5">2. IUP Fakultas Kedokteran (FK UGM, KKI UI, UNAIR FK)</p>
+                <p class="text-red-700 font-bold">Skor Minimal: TOEFL ITP ≥ 550 (atau IELTS ≥ 6.5)</p>
+                <p class="text-[11px] text-stone-600 mt-1">Wajib skor tinggi untuk menembus ujian tulis dan wawancara MMI klinis.</p>
+              </div>
             </div>
           </div>
 
-          <div class="mt-4 flex justify-end">
-            <button onclick="calculateProfileChance()" class="w-full sm:w-auto px-5 py-2.5 bg-brand-500 hover:bg-brand-600 active:scale-95 text-slate-950 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-brand-500/20">
-              <i data-lucide="calculator" class="w-4 h-4"></i>
-              <span>Hitung Peluang Profil</span>
-            </button>
-          </div>
-
-          <div id="calc-result" class="hidden"></div>
-        </div>
-
-        <!-- Benchmark Table -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-8">
-          <h3 class="text-base sm:text-lg font-bold text-white mb-3">Benchmark Resmi Skor Tes Internasional</h3>
-          <div class="overflow-x-auto -mx-5 sm:mx-0 px-5 sm:px-0">
-            <table class="w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden min-w-[500px]">
-              <thead class="bg-slate-950 text-slate-300 font-semibold border-b border-slate-800">
-                <tr>
-                  <th class="p-2.5 sm:p-3">Target Tingkat Kampus</th>
-                  <th class="p-2.5 sm:p-3">Digital SAT</th>
-                  <th class="p-2.5 sm:p-3">IELTS Academic</th>
-                  <th class="p-2.5 sm:p-3">TOEFL iBT</th>
-                  <th class="p-2.5 sm:p-3">Duolingo (DET)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-800 text-slate-300">
-                <tr class="bg-slate-900/50 hover:bg-slate-800/40">
-                  <td class="p-2.5 sm:p-3 font-semibold text-white">🌟 Tier 1: Ivy League / Top 20 Global (MIT, Harvard, NUS, Oxford)</td>
-                  <td class="p-2.5 sm:p-3 text-brand-400 font-bold">1520 - 1580+</td>
-                  <td class="p-2.5 sm:p-3 text-brand-400 font-bold">7.5 - 8.5</td>
-                  <td class="p-2.5 sm:p-3 text-brand-400 font-bold">108 - 118</td>
-                  <td class="p-2.5 sm:p-3 text-brand-400 font-bold">135 - 150</td>
-                </tr>
-                <tr class="bg-slate-900/50 hover:bg-slate-800/40">
-                  <td class="p-2.5 sm:p-3 font-semibold text-white">🎯 Tier 2: Top Global 50-100 (Toronto, KAIST, Melbourne, UBC)</td>
-                  <td class="p-2.5 sm:p-3 text-brand-accent font-bold">1420 - 1500</td>
-                  <td class="p-2.5 sm:p-3 text-brand-accent font-bold">6.5 - 7.5</td>
-                  <td class="p-2.5 sm:p-3 text-brand-accent font-bold">95 - 105</td>
-                  <td class="p-2.5 sm:p-3 text-brand-accent font-bold">120 - 130</td>
-                </tr>
-                <tr class="bg-slate-900/50 hover:bg-slate-800/40">
-                  <td class="p-2.5 sm:p-3 font-semibold text-white">🏛️ Tier 3: Beasiswa Pemerintah (MEXT, Turkiye, GKS, Hungaria)</td>
-                  <td class="p-2.5 sm:p-3">1300+ (Opsional)</td>
-                  <td class="p-2.5 sm:p-3">6.0 - 6.5</td>
-                  <td class="p-2.5 sm:p-3">80 - 95</td>
-                  <td class="p-2.5 sm:p-3">110 - 120</td>
-                </tr>
-                <tr class="bg-slate-900/50 hover:bg-slate-800/40">
-                  <td class="p-2.5 sm:p-3 font-semibold text-white">🇮🇩 Jalur IUP PTN (IUP UGM, KKI UI, IUP ITB, UNAIR, ITS)</td>
-                  <td class="p-2.5 sm:p-3 text-purple-400 font-bold">SAT Math 700+</td>
-                  <td class="p-2.5 sm:p-3">5.5 - 6.5</td>
-                  <td class="p-2.5 sm:p-3">70 - 85</td>
-                  <td class="p-2.5 sm:p-3">100 - 115</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Free Official Prep Links -->
-          <div class="mt-6 pt-5 border-t border-slate-800">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2.5">Akses Sumber Latihan Resmi & Gratis</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <a href="https://www.khanacademy.org/digital-sat" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-brand-500/50 transition flex items-center justify-between">
-                <div>
-                  <p class="font-bold text-white text-xs">Khan Academy SAT</p>
-                  <p class="text-[10px] text-slate-400">Latihan resmi College Board</p>
-                </div>
-                <i data-lucide="external-link" class="w-4 h-4 text-brand-400"></i>
-              </a>
-
-              <a href="https://bluebook.collegeboard.org/" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-brand-500/50 transition flex items-center justify-between">
-                <div>
-                  <p class="font-bold text-white text-xs">Bluebook College Board</p>
-                  <p class="text-[10px] text-slate-400">Download aplikasi resmi Digital SAT</p>
-                </div>
-                <i data-lucide="external-link" class="w-4 h-4 text-brand-400"></i>
-              </a>
-
-              <a href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-practice-tests" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-brand-accent/50 transition flex items-center justify-between">
-                <div>
-                  <p class="font-bold text-white text-xs">British Council Mock</p>
-                  <p class="text-[10px] text-slate-400">Free IELTS Practice Test</p>
-                </div>
-                <i data-lucide="external-link" class="w-4 h-4 text-brand-accent"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- ==================== TAB 5: MASTERCLASS ESAI & REVIEW ==================== -->
-      <section id="tab-essays" class="tab-content space-y-5 hidden">
-        
-        <!-- Draft Submission & Email Forwarder -->
-        <div class="bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-800 rounded-2xl p-5 sm:p-8">
-          <div class="flex items-center gap-2 text-brand-accent font-bold text-xs uppercase tracking-wider mb-1.5">
-            <i data-lucide="send" class="w-4 h-4"></i>
-            <span>Mentor Feedback Hub (Direct Email)</span>
-          </div>
-          <h2 class="text-lg sm:text-2xl font-bold text-white mb-1.5">Kirim Draft Esai untuk Direview Mentor</h2>
-          <p class="text-xs text-slate-300 mb-5 leading-relaxed">
-            Tulis esaimu di Google Docs (set akses: <em>"Anyone with the link can comment"</em>). Saat kamu submit, link esaimu akan <strong>langsung terkirim ke email Mentor</strong> (<span class="text-brand-accent font-mono">maesa.am222@gmail.com</span>) untuk diberi feedback langsung.
-          </p>
-
-          <form id="draft-form" onsubmit="submitEssayDraft(event)" class="space-y-3.5">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <!-- Simulator Form -->
+          <div class="mt-8 p-6 bg-[#FAF7F2] rounded-2xl border border-stone-200">
+            <h3 class="text-sm font-bold text-stone-900 mb-4">Simulasi Kecocokan Profil Kamu</h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Judul / Topik Esai</label>
-                <input type="text" id="draft-title" required placeholder="Contoh: Personal Statement - Air Pollution IoT" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400">
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Target Jalur</label>
+                <select id="calc-target-track" class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+                  <option value="IUP_FK">IUP Fakultas Kedokteran (UGM / UI / UNAIR)</option>
+                  <option value="IUP_REGULAR" selected>IUP Jurusan Umum (Teknik, Bisnis, HI, Hukum)</option>
+                  <option value="PTLN_GLOBAL">S-1 Luar Negeri (BIM / Top Global)</option>
+                </select>
               </div>
 
               <div>
-                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Jenis Dokumen</label>
-                <select id="draft-type" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400">
-                  <option value="Common App Essay">Common App Main Essay (650 Kata)</option>
-                  <option value="Motivation Letter MEXT/GKS">Motivation Letter Beasiswa (MEXT/GKS/Turkiye)</option>
-                  <option value="Esai Kontribusi BIM">Esai Kontribusi BIM / Unggulan</option>
-                  <option value="Supplemental Essay">Supplemental Essay (Why Major / Why School)</option>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Skor TOEFL ITP (Range 310 - 677)</label>
+                <input type="number" id="calc-toefl-itp" placeholder="Contoh: 530" value="510" min="310" max="677"
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-mono">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Rata-Rata Nilai Rapor (Skala 100)</label>
+                <input type="number" id="calc-gpa" placeholder="Contoh: 88.5" value="88" step="0.1"
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-mono">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Skor Digital SAT (Jika Ada)</label>
+                <input type="number" id="calc-sat" placeholder="Contoh: 1450" value="1380" min="400" max="1600"
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-mono">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Skor IELTS (Jika Ada)</label>
+                <input type="number" id="calc-ielts" placeholder="Contoh: 6.5" value="6.5" step="0.5" min="0" max="9"
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-mono">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Prestasi / Spike Profile</label>
+                <select id="calc-spike" class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+                  <option value="national_gold">Medalis OSN / OPSI / Lomba Nasional</option>
+                  <option value="regional_lead" selected>Juara Kota / Ketua Organisasi / Riset</option>
+                  <option value="school_active">Aktif Ekstrakurikuler &amp; Relawan</option>
                 </select>
               </div>
             </div>
 
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Link Google Docs (Status: Anyone can comment)</label>
-              <input type="url" id="draft-link" required placeholder="https://docs.google.com/document/d/..." class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400 font-mono">
-            </div>
+            <button onclick="calculateProfileChance()" class="mt-4 w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-1.5">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Cek Analisis Kecocokan Profil</span>
+            </button>
 
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Catatan Khusus untuk Mentor (Opsional)</label>
-              <textarea id="draft-notes" rows="2" placeholder="Bagian mana yang kamu rasa masih kurang pas atau butuh masukan khusus?" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-400"></textarea>
-            </div>
+            <!-- Result Box -->
+            <div id="calc-result" class="hidden"></div>
+          </div>
 
-            <div id="draft-alert" class="hidden"></div>
+        </div>
+      </section>
 
-            <div class="flex justify-end">
-              <button type="submit" id="btn-submit-draft" class="w-full sm:w-auto px-5 py-2.5 bg-brand-accent hover:bg-sky-500 active:scale-95 text-slate-950 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-brand-accent/20">
+      <!-- ==================== TAB 6: MASTERCLASS ESAI & REVIEW HUB ==================== -->
+      <section id="tab-essays" class="tab-content space-y-6 hidden">
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          
+          <div>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-100 text-rose-900 border border-rose-200 inline-block mb-2">Masterclass & Feedback Hub</span>
+            <h2 class="text-2xl font-bold text-stone-900">Bedah Esai & Pengiriman Draft ke Mentor</h2>
+            <p class="text-xs text-stone-600 mt-1">Kirimkan link Google Docs esaimu untuk mendapatkan koreksi detail dan catatan terarah dari Mentor Maesa.</p>
+          </div>
+
+          <!-- Essay Submission Form -->
+          <div class="mt-6 p-6 bg-[#FAF7F2] rounded-2xl border border-stone-200">
+            <h3 class="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
+              <i data-lucide="send" class="w-4 h-4 text-amber-800"></i>
+              <span>Formulir Pengiriman Draft Esai</span>
+            </h3>
+
+            <form id="draft-form" onsubmit="submitEssayDraft(event)" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Judul / Topik Esai</label>
+                  <input type="text" id="draft-title" required placeholder="Contoh: Common App Essay - Personal Growth"
+                    class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Tipe Esai</label>
+                  <select id="draft-type" class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-medium">
+                    <option value="Personal Statement (Common App)">Personal Statement (Common App)</option>
+                    <option value="Motivation Letter (IUP / Beasiswa)">Motivation Letter (IUP / Beasiswa)</option>
+                    <option value="Study Plan (GKS / MEXT / Turkiye)">Study Plan (GKS / MEXT / Turkiye)</option>
+                    <option value="Esai Kontribusi (BIM / LPDP / Unggulan)">Esai Kontribusi (BIM / LPDP / Unggulan)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Tautan Google Docs (Pastikan Setting 'Anyone with link can comment')</label>
+                <input type="url" id="draft-link" required placeholder="https://docs.google.com/document/d/..."
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-mono">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Catatan Tambahan untuk Mentor</label>
+                <textarea id="draft-notes" rows="2" placeholder="Bagian mana yang ingin difokuskan dalam review kali ini?"
+                  class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800"></textarea>
+              </div>
+
+              <div id="draft-alert" class="hidden"></div>
+
+              <button type="submit" id="btn-submit-draft" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-1.5">
                 <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                <span>Kirim Draft ke Email Mentor</span>
+                <span>Kirim Draft ke Mentor</span>
               </button>
-            </div>
-          </form>
+            </form>
+          </div>
 
-          <!-- List of submitted drafts -->
-          <div class="mt-6 pt-5 border-t border-slate-800">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2.5">Riwayat Draft Esai Kamu</h3>
+          <!-- My Submitted Drafts List -->
+          <div class="mt-8 space-y-3">
+            <h3 class="text-sm font-bold text-stone-900 flex items-center gap-2">
+              <i data-lucide="history" class="w-4 h-4 text-stone-500"></i>
+              <span>Riwayat Draft yang Telah Kamu Kirimkan</span>
+            </h3>
             <div id="student-draft-list" class="space-y-2.5">
               <!-- Injected by JS -->
             </div>
           </div>
+
         </div>
-
-        <!-- Masterclass Content -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-8">
-          <h3 class="text-base sm:text-lg font-bold text-white mb-3">Formula Anatomi 5 Paragraf Esai Kelas Dunia</h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <span class="text-[9px] font-bold text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded">Langkah 1</span>
-              <h4 class="text-xs font-bold text-white mt-1.5">The Hook & Catalyst</h4>
-              <p class="text-[11px] text-slate-400 mt-1">Ceritakan momen spesifik, kegagalan, atau fenomena riil yang memantik rasa penasaranmu.</p>
-            </div>
-
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <span class="text-[9px] font-bold text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded">Langkah 2</span>
-              <h4 class="text-xs font-bold text-white mt-1.5">Intellectual Depth</h4>
-              <p class="text-[11px] text-slate-400 mt-1">Tunjukkan bagaimana kamu mengeksplorasi ilmu tersebut mandiri di luar materi sekolah.</p>
-            </div>
-
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <span class="text-[9px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded">Langkah 3</span>
-              <h4 class="text-xs font-bold text-white mt-1.5">Community Impact</h4>
-              <p class="text-[11px] text-slate-400 mt-1">Buktikan ilmumu dipakai untuk memberi dampak positif nyata ke lingkungan sekitar.</p>
-            </div>
-
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <span class="text-[9px] font-bold text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded">Langkah 4</span>
-              <h4 class="text-xs font-bold text-white mt-1.5">Why Major & School</h4>
-              <p class="text-[11px] text-slate-400 mt-1">Sebutkan nama lab spesifik, profesor, mata kuliah unik, dan kurikulum target.</p>
-            </div>
-
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <span class="text-[9px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">Langkah 5</span>
-              <h4 class="text-xs font-bold text-white mt-1.5">Future Vision</h4>
-              <p class="text-[11px] text-slate-400 mt-1">Tutup dengan kontribusi konkritmu untuk Indonesia dalam 5-10 tahun ke depan.</p>
-            </div>
-          </div>
-
-          <!-- Official Links Repository -->
-          <div class="pt-5 border-t border-slate-800">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2.5">Koleksi Resmi "Essays That Worked" Universitas Top Dunia</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <a href="https://apply.jhu.edu/application-process/essays-that-worked/" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-brand-500/50 transition">
-                <span class="font-bold text-white text-xs block mb-1">Johns Hopkins University</span>
-                <span class="text-[10px] text-slate-400">Esai pilihan komite admisi resmi JHU.</span>
-              </a>
-
-              <a href="https://admissions.tufts.edu/apply/advice/past-essays/" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-brand-accent/50 transition">
-                <span class="font-bold text-white text-xs block mb-1">Tufts University Essays</span>
-                <span class="text-[10px] text-slate-400">Koleksi esai orisinal & komentar konselor.</span>
-              </a>
-
-              <a href="https://www.collegeessayguy.com/personal-statement" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-purple-400/50 transition">
-                <span class="font-bold text-white text-xs block mb-1">College Essay Guy Vault</span>
-                <span class="text-[10px] text-slate-400">Panduan struktur & ratusan contoh esai.</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
       </section>
 
-      <!-- ==================== TAB 6: TEMPLATE EMAIL & LoR ==================== -->
-      <section id="tab-templates" class="tab-content space-y-5 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-8">
-          <div class="flex items-center gap-2 text-purple-400 font-bold text-xs uppercase tracking-wider mb-1.5">
-            <i data-lucide="file-text" class="w-4 h-4"></i>
-            <span>Ready-to-Use Copy-Paste Templates</span>
+      <!-- ==================== TAB 7: TEMPLATE SURAT & LoR ==================== -->
+      <section id="tab-templates" class="tab-content space-y-6 hidden">
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          
+          <div>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-teal-100 text-teal-900 border border-teal-200 inline-block mb-2">Template Siap Pakai</span>
+            <h2 class="text-2xl font-bold text-stone-900">Template Email &amp; Surat Rekomendasi Resmi</h2>
+            <p class="text-xs text-stone-600 mt-1">Salin dan sesuaikan template email profesional berikut untuk permohonan pembebasan biaya (fee waiver) dan surat rekomendasi guru.</p>
           </div>
-          <h2 class="text-xl sm:text-2xl font-bold text-white mb-1.5">Template Dokumen & Email Komunikasi Resmi</h2>
-          <p class="text-xs text-slate-400 mb-5">Salin dan sesuaikan template email profesional berikut untuk meminta waiver biaya pendaftaran dan surat rekomendasi guru.</p>
 
-          <div class="space-y-4 sm:space-y-5">
+          <div class="mt-6 space-y-5">
             
-            <!-- Template 1: Fee Waiver -->
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+            <!-- Template 1 -->
+            <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <div>
-                  <h4 class="text-xs font-bold text-white">1. Email Application Fee Waiver ke Admisi US ($75 - $90 Saving)</h4>
-                  <p class="text-[10px] text-slate-400">Kirim ke email kantor admisi universitas sebelum submit Common App.</p>
+                  <h4 class="text-xs font-bold text-stone-900">1. Email Application Fee Waiver ke Admisi Kampus US ($75 - $90 Saving)</h4>
+                  <p class="text-[10px] text-stone-500">Kirim sebelum submit aplikasi Common App.</p>
                 </div>
-                <button onclick="copyTemplate('tpl-fee-waiver')" class="self-start sm:self-auto px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-brand-400 rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1">
+                <button onclick="copyTemplate('tpl-fee-waiver')" class="px-3 py-1.5 bg-white hover:bg-stone-50 text-amber-800 rounded-xl text-xs font-bold border border-stone-300 flex items-center gap-1 shadow-xs">
                   <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Teks
                 </button>
               </div>
-              <pre id="tpl-fee-waiver" class="p-3 bg-slate-900 rounded-lg text-[10px] sm:text-[11px] text-slate-300 font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed">Subject: Application Fee Waiver Request - [Nama Lengkap Siswa] - Common App ID: [ID Kamu]
+              <pre id="tpl-fee-waiver" class="p-3.5 bg-white rounded-xl text-xs text-stone-800 font-mono border border-stone-200 overflow-x-auto whitespace-pre-wrap leading-relaxed">Subject: Application Fee Waiver Request - [Nama Lengkap Siswa] - Common App ID: [ID Kamu]
 
 Dear Admissions Committee at [Nama Universitas],
 
@@ -857,26 +1064,26 @@ Common App ID: [ID Kamu]
 [Nama SMA Kamu], Indonesia</pre>
             </div>
 
-            <!-- Template 2: LoR Request to Teacher -->
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+            <!-- Template 2 -->
+            <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <div>
-                  <h4 class="text-xs font-bold text-white">2. Permohonan Surat Rekomendasi (LoR) ke Guru / Kepala Sekolah</h4>
-                  <p class="text-[10px] text-slate-400">Gunakan bahasa sopan dan sertakan ringkasan prestasimu di kelasnya.</p>
+                  <h4 class="text-xs font-bold text-stone-900">2. Permohonan Surat Rekomendasi (LoR) ke Guru / Kepala Sekolah</h4>
+                  <p class="text-[10px] text-stone-500">Gunakan bahasa santun dan lampirkan rangkuman prestasimu.</p>
                 </div>
-                <button onclick="copyTemplate('tpl-lor-teacher')" class="self-start sm:self-auto px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-brand-400 rounded-lg text-xs font-semibold border border-slate-700 flex items-center gap-1">
+                <button onclick="copyTemplate('tpl-lor-teacher')" class="px-3 py-1.5 bg-white hover:bg-stone-50 text-amber-800 rounded-xl text-xs font-bold border border-stone-300 flex items-center gap-1 shadow-xs">
                   <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Teks
                 </button>
               </div>
-              <pre id="tpl-lor-teacher" class="p-3 bg-slate-900 rounded-lg text-[10px] sm:text-[11px] text-slate-300 font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed">Assalamu'alaikum Wr. Wb. / Selamat Pagi Bapak/Ibu [Nama Guru],
+              <pre id="tpl-lor-teacher" class="p-3.5 bg-white rounded-xl text-xs text-stone-800 font-mono border border-stone-200 overflow-x-auto whitespace-pre-wrap leading-relaxed">Assalamu'alaikum Wr. Wb. / Selamat Pagi Bapak/Ibu [Nama Guru],
 
 Semoga Bapak/Ibu senantiasa dalam keadaan sehat walafiat.
 
 Saya [Nama Lengkap Siswa] dari kelas [Kelas Kamu]. Saat ini saya sedang dalam proses mempersiapkan aplikasi pendaftaran beasiswa dan studi S-1 ke [Sebutkan Target Kampus / Beasiswa].
 
-Mengingat pengalaman belajar yang sangat berharga selama mengikuti mata pelajaran [Nama Mapel, misal: Matematika/Fisika/Ekonomi] di kelas Bapak/Ibu, serta proyek [Sebutkan 1 proyek/tugas terbaikmu], dengan segala kerendahan hati saya ingin memohon kesediaan Bapak/Ibu untuk menjadi pemberi Surat Rekomendasi (Letter of Recommendation) dalam aplikasi saya.
+Mengingat pengalaman belajar yang sangat berharga selama mengikuti mata pelajaran [Nama Mapel] di kelas Bapak/Ibu, dengan segala kerendahan hati saya ingin memohon kesediaan Bapak/Ibu untuk menjadi pemberi Surat Rekomendasi (Letter of Recommendation) dalam aplikasi saya.
 
-Sebagai bahan pertimbangan Bapak/Ibu, saya telah melampirkan Curriculum Vitae (CV) dan ringkasan riwayat capaian akademik saya selama di SMA.
+Sebagai bahan pertimbangan, saya telah melampirkan Curriculum Vitae (CV) dan ringkasan riwayat capaian akademik saya selama di SMA.
 
 Batas waktu pengunggahan rekomendasi adalah tanggal [Sebutkan Deadline]. Jika Bapak/Ibu berkenan, saya siap membantu seluruh kelengkapan format maupun teknis pengisian di portal resmi.
 
@@ -891,233 +1098,295 @@ NISN: [NISN Kamu]</pre>
         </div>
       </section>
 
-      <!-- ==================== TAB 7: PORTOFOLIO JURUSAN ==================== -->
-      <section id="tab-portfolio" class="tab-content space-y-5 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-white mb-1.5">Blueprint Portofolio & Spike Profile per Jurusan</h2>
-          <p class="text-xs text-slate-400 mb-5">Pilih rumpun keilmuanmu untuk melihat rekomendasi kompetisi resmi, proyek nyata, dan tautan pendaftaran lomba/organisasi.</p>
+      <!-- ==================== TAB 8: PORTOFOLIO JURUSAN ==================== -->
+      <section id="tab-portfolio" class="tab-content space-y-6 hidden">
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          
+          <div>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 border border-indigo-200 inline-block mb-2">Spike Blueprint</span>
+            <h2 class="text-2xl font-bold text-stone-900">Blueprint Portofolio Jurusan</h2>
+            <p class="text-xs text-stone-600 mt-1">Pilih rumpun keilmuanmu untuk melihat rekomendasi kompetisi resmi, proyek nyata, dan profil pembeda.</p>
+          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             
             <!-- STEM -->
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+            <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-stone-200 flex flex-col justify-between">
               <div>
-                <div class="flex items-center gap-2 text-brand-400 font-bold text-xs sm:text-sm mb-2.5">
+                <div class="flex items-center gap-2 text-blue-800 font-bold text-sm mb-2.5">
                   <i data-lucide="cpu" class="w-4 h-4"></i>
-                  <span>STEM, CS & Engineering</span>
+                  <span>STEM, CS &amp; Engineering</span>
                 </div>
-                <div class="space-y-1.5 text-xs text-slate-300">
-                  <p><strong>Kompetisi:</strong> <a href="https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/osn/" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">OSN Puspresnas</a>, <a href="https://bebras.or.id/" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">Bebras Indonesia</a>, <a href="https://www.societyforscience.org/isef/" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">ISEF Science Fair</a>, <a href="https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/opsi/" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">OPSI Riset</a>.</p>
-                  <p><strong>Proyek Nyata:</strong> Akun GitHub aktif melalui <a href="https://education.github.com/pack" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline">GitHub Student Pack</a>, aplikasi open-source, paper riset mandiri.</p>
+                <div class="space-y-1.5 text-xs text-stone-700">
+                  <p><strong>Kompetisi:</strong> OSN Informatika/Fisika/Math Puspresnas, Bebras Indonesia, ISEF Science Fair, OPSI Riset.</p>
+                  <p><strong>Proyek Nyata:</strong> Portofolio GitHub aktif, proyek open-source, paper riset mandiri.</p>
                 </div>
               </div>
-              <span class="text-[9px] text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded mt-3.5 inline-block self-start">Target: KAIST, NUS, MIT, ITB IUP</span>
+              <span class="text-[10px] font-bold text-blue-900 bg-blue-100 px-2.5 py-1 rounded-lg mt-4 inline-block self-start border border-blue-200">Target: KAIST, NUS, MIT, ITB IUP</span>
             </div>
 
-            <!-- Business -->
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+            <!-- Bisnis -->
+            <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-stone-200 flex flex-col justify-between">
               <div>
-                <div class="flex items-center gap-2 text-brand-accent font-bold text-xs sm:text-sm mb-2.5">
+                <div class="flex items-center gap-2 text-amber-800 font-bold text-sm mb-2.5">
                   <i data-lucide="trending-up" class="w-4 h-4"></i>
-                  <span>Bisnis, Finance & Manajemen</span>
+                  <span>Bisnis, Finance &amp; Manajemen</span>
                 </div>
-                <div class="space-y-1.5 text-xs text-slate-300">
-                  <p><strong>Kompetisi:</strong> <a href="https://globalyouth.wharton.upenn.edu/competitions/investment-competition/" target="_blank" rel="noopener noreferrer" class="text-brand-accent underline">Wharton Investment Comp</a>, Business Case Competition, Olimpiade Ekonomi Puspresnas.</p>
-                  <p><strong>Proyek Nyata:</strong> Mini-startup beromzet, pengelolaan kas sosial transparan, student company, publikasi analisis ekonomi.</p>
-                </div>
-              </div>
-              <span class="text-[9px] text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded mt-3.5 inline-block self-start">Target: Wharton, NUS BBA, IUP FEB UGM</span>
-            </div>
-
-            <!-- Social / Law / IR -->
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center gap-2 text-amber-400 font-bold text-xs sm:text-sm mb-2.5">
-                  <i data-lucide="scale" class="w-4 h-4"></i>
-                  <span>Hukum, HI & Humaniora</span>
-                </div>
-                <div class="space-y-1.5 text-xs text-slate-300">
-                  <p><strong>Kompetisi:</strong> <a href="https://bestdelegate.com/" target="_blank" rel="noopener noreferrer" class="text-amber-400 underline">Model United Nations (MUN)</a>, Debat Nasional <a href="https://pusatprestasinasional.kemdikbud.go.id/event/seni-budaya-dan-bahasa/nsdc/" target="_blank" rel="noopener noreferrer" class="text-amber-400 underline">LDBI / NSDC</a>, LKTI Sosial.</p>
-                  <p><strong>Proyek Nyata:</strong> Artikel opini di media massa nasional, inisiator petisi advokasi, peran Presiden MUN Club.</p>
+                <div class="space-y-1.5 text-xs text-stone-700">
+                  <p><strong>Kompetisi:</strong> Wharton Investment Competition, Olimpiade Ekonomi Puspresnas, Business Case Challenge.</p>
+                  <p><strong>Proyek Nyata:</strong> Mini-startup beromzet, pengelolaan kas sosial transparan, student company.</p>
                 </div>
               </div>
-              <span class="text-[9px] text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded mt-3.5 inline-block self-start">Target: Oxford, Leiden, IUP HI/FH UGM & UI</span>
+              <span class="text-[10px] font-bold text-amber-900 bg-amber-100 px-2.5 py-1 rounded-lg mt-4 inline-block self-start border border-amber-200">Target: Wharton, NUS BBA, IUP FEB UGM</span>
             </div>
 
-            <!-- Art & Design -->
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+            <!-- Kedokteran -->
+            <div class="p-5 rounded-2xl bg-[#FAF7F2] border border-stone-200 flex flex-col justify-between">
               <div>
-                <div class="flex items-center gap-2 text-purple-400 font-bold text-xs sm:text-sm mb-2.5">
-                  <i data-lucide="palette" class="w-4 h-4"></i>
-                  <span>Desain, Seni & Arsitektur</span>
-                </div>
-                <div class="space-y-1.5 text-xs text-slate-300">
-                  <p><strong>Kompetisi:</strong> <a href="https://pusatprestasinasional.kemdikbud.go.id/event/seni-budaya-dan-bahasa/fls2n/" target="_blank" rel="noopener noreferrer" class="text-purple-400 underline">FLS2N Seni & Desain Puspresnas</a>, Lomba Poster/Kriya Internasional.</p>
-                  <p><strong>Portofolio:</strong> 10-15 karya terkurasi dengan *process sketchbook*, dipublikasikan di <a href="https://www.behance.net/" target="_blank" rel="noopener noreferrer" class="text-purple-400 underline">Behance</a> atau ArtStation.</p>
-                </div>
-              </div>
-              <span class="text-[9px] text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded mt-3.5 inline-block self-start">Target: RISD, UAL, IUP FSRD ITB</span>
-            </div>
-
-            <!-- Medicine -->
-            <div class="p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs sm:text-sm mb-2.5">
+                <div class="flex items-center gap-2 text-emerald-800 font-bold text-sm mb-2.5">
                   <i data-lucide="heart-pulse" class="w-4 h-4"></i>
-                  <span>Kedokteran & Kesehatan</span>
+                  <span>Kedokteran &amp; Kesehatan (FK)</span>
                 </div>
-                <div class="space-y-1.5 text-xs text-slate-300">
-                  <p><strong>Kompetisi:</strong> <a href="https://www.ibo-info.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline">International Biology Olympiad (IBO)</a>, OSN Biologi/Kimia, LKTI Biomedik.</p>
-                  <p><strong>Proyek Nyata:</strong> *Shadowing* di klinik, sertifikasi First Aid <a href="https://pmi.or.id/" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline">PMI (Palang Merah)</a>, kampanye cegah stunting.</p>
+                <div class="space-y-1.5 text-xs text-stone-700">
+                  <p><strong>Kompetisi:</strong> IBO (Biology Olympiad), OSN Biologi/Kimia, LKTI Biomedik SMA.</p>
+                  <p><strong>Proyek Nyata:</strong> Shadowing klinik, relawan PMI Palang Merah, kampanye kesehatan stunting.</p>
                 </div>
               </div>
-              <span class="text-[9px] text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded mt-3.5 inline-block self-start">Target: Turkiye Med, KKI UI FK, IUP FK UGM</span>
+              <span class="text-[10px] font-bold text-emerald-900 bg-emerald-100 px-2.5 py-1 rounded-lg mt-4 inline-block self-start border border-emerald-200">Target: Turkiye Med, KKI UI FK, IUP FK UGM</span>
             </div>
 
           </div>
         </div>
       </section>
 
-      <!-- ==================== TAB 8: MENTOR / ADMIN DASHBOARD (STRICT ACCESS ONLY) ==================== -->
+      <!-- ==================== TAB 9: PRIVATE CONTROL CENTER MENTOR ==================== -->
       <section id="tab-admin" class="tab-content space-y-6 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-8">
+        <div class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-800">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-200">
             <div>
-              <div class="flex items-center gap-2 text-amber-400 font-bold text-[11px] uppercase tracking-wider mb-1">
+              <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider mb-1">
                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                 <span>Private Mentor Control Center (Maesa)</span>
               </div>
-              <h2 class="text-xl sm:text-2xl font-bold text-white">Pemantauan & Manajemen Siswa Binaan</h2>
-              <p class="text-xs text-slate-400">Hanya kamu yang dapat melihat halaman ini. Pantau aktivitas, kelola passcode siswa, dan review draft esai.</p>
+              <h2 class="text-2xl font-bold text-stone-900">Pusat Kendali &amp; Manajemen Siswa</h2>
+              <p class="text-xs text-stone-600 mt-0.5">Kelola passcode, publikasikan info lomba baru, review esai masuk, dan pantau database siswa.</p>
             </div>
 
             <div class="flex items-center gap-2">
-              <button onclick="exportAnalyticsCSV()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition">
+              <button onclick="exportAnalyticsCSV()" class="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold border border-stone-300 flex items-center gap-1.5 transition">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
               </button>
-              <button onclick="clearAnalyticsLog()" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl text-xs font-semibold border border-red-500/30 flex items-center gap-1.5 transition">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Reset
+              <button onclick="clearAnalyticsLog()" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-xl text-xs font-bold border border-red-300 flex items-center gap-1.5 transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Reset Log
               </button>
             </div>
           </div>
 
           <!-- Stats Overview -->
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-5">
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Siswa Terdaftar</p>
-              <p id="stat-total-students" class="text-xl sm:text-2xl font-bold text-white mt-0.5">0</p>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Total Siswa Terdaftar</p>
+              <p id="stat-total-students" class="text-2xl font-bold text-stone-900 mt-1">0</p>
             </div>
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Sesi Login</p>
-              <p id="stat-total-logins" class="text-xl sm:text-2xl font-bold text-brand-400 mt-0.5">0</p>
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Total Sesi Masuk</p>
+              <p id="stat-total-logins" class="text-2xl font-bold text-amber-800 mt-1">0</p>
             </div>
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Modul Dibaca</p>
-              <p id="stat-total-views" class="text-xl sm:text-2xl font-bold text-brand-accent mt-0.5">0</p>
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Modul Dibaca</p>
+              <p id="stat-total-views" class="text-2xl font-bold text-blue-800 mt-1">0</p>
             </div>
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Tautan Diklik</p>
-              <p id="stat-total-links" class="text-xl sm:text-2xl font-bold text-purple-400 mt-0.5">0</p>
+            <div class="p-4 rounded-2xl bg-[#FAF7F2] border border-stone-200">
+              <p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tautan Diklik</p>
+              <p id="stat-total-links" class="text-2xl font-bold text-emerald-800 mt-1">0</p>
             </div>
           </div>
 
-          <!-- Student Passcode Management (Mentor Controlled) -->
-          <div class="mt-6 p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+          <!-- 1. FEATURE: PUBLISH NEW COMPETITION (INFO LOMBA) -->
+          <div class="mt-8 p-6 bg-[#FAF7F2] rounded-2xl border border-stone-200 space-y-4">
             <div class="flex items-center gap-2">
-              <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
-              <h3 class="text-xs sm:text-sm font-bold text-white">Kelola Passcode Siswa (Akses dari Mentor)</h3>
+              <i data-lucide="plus-circle" class="w-5 h-5 text-amber-800"></i>
+              <div>
+                <h3 class="text-sm font-bold text-stone-900">Publikasikan Info Lomba Baru ke Portal Siswa</h3>
+                <p class="text-xs text-stone-500">Lomba yang kamu submit di sini akan langsung tampil di tab 'Info Lomba' seluruh siswa.</p>
+              </div>
             </div>
-            <p class="text-xs text-slate-400">Siswa hanya bisa masuk jika menggunakan salah satu passcode yang terdaftar di bawah ini:</p>
+
+            <form id="form-add-competition" onsubmit="addNewCompetitionByMentor(event)" class="space-y-4 pt-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Judul Lomba</label>
+                  <input type="text" id="new-comp-title" required placeholder="Contoh: Kompetisi Esai Nasional 2027"
+                    class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Penyelenggara</label>
+                  <input type="text" id="new-comp-organizer" required placeholder="Contoh: BEM FEB UI / Puspresnas"
+                    class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Kategori</label>
+                  <select id="new-comp-category" class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-medium">
+                    <option value="STEM">STEM & Sains</option>
+                    <option value="RISET">Riset & Karya Tulis</option>
+                    <option value="BISNIS">Bisnis & Finance</option>
+                    <option value="HUMANIORA">Debat & Humaniora</option>
+                    <option value="KEDOKTERAN">Kedokteran & Biologi</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Deadline Pendaftaran</label>
+                  <input type="text" id="new-comp-deadline" placeholder="Contoh: 15 Maret 2027"
+                    class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Benefit / Hadiah</label>
+                  <input type="text" id="new-comp-perks" placeholder="Contoh: Hadiah Rp 20 Juta & Sertifikat"
+                    class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Upload Gambar / Banner Poster</label>
+                <div class="flex items-center gap-3">
+                  <input type="file" id="new-comp-image-file" accept="image/*" onchange="handleCompetitionImageUpload(event)"
+                    class="block w-full text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200 cursor-pointer">
+                  <img id="new-comp-image-preview" src="" alt="Preview" class="hidden w-12 h-12 object-cover rounded-xl border border-stone-300">
+                  <input type="hidden" id="new-comp-image-data">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Deskripsi Singkat Lomba</label>
+                  <textarea id="new-comp-desc" rows="2" placeholder="Jelaskan mengenai lomba ini..."
+                    class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800"></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-stone-700 uppercase mb-1">Link Pendaftaran / Panduan Resmi</label>
+                  <input type="url" id="new-comp-link" required placeholder="https://..."
+                    class="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 font-mono">
+                </div>
+              </div>
+
+              <button type="submit" class="py-2.5 px-5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                <i data-lucide="check" class="w-4 h-4"></i>
+                <span>Publikasikan Info Lomba ke Siswa</span>
+              </button>
+            </form>
+
+            <!-- Current Custom Competitions List -->
+            <div class="pt-4 border-t border-stone-200">
+              <h4 class="text-xs font-bold text-stone-800 mb-2.5">Daftar Lomba yang Kamu Terbitkan:</h4>
+              <div id="admin-competitions-list" class="space-y-2">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. PASSCODE MANAGEMENT -->
+          <div class="mt-6 p-6 bg-[#FAF7F2] rounded-2xl border border-stone-200 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-800 flex items-center gap-2">
+              <i data-lucide="key" class="w-4 h-4 text-amber-800"></i>
+              <span>Kelola Passcode Pendaftaran Siswa</span>
+            </h3>
+            <p class="text-xs text-stone-600">Siswa hanya bisa masuk jika memasukkan salah satu passcode resmi berikut:</p>
             
             <div id="admin-passcodes-list" class="flex flex-wrap gap-2 pt-1">
               <!-- Injected by JS -->
             </div>
 
             <div class="flex gap-2 pt-2">
-              <input type="text" id="new-student-passcode" placeholder="Tambah Passcode Baru (misal: SUCCESS2027)" class="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-brand-400 uppercase font-mono">
-              <button onclick="addStudentPasscode()" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold rounded-lg text-xs transition">
-                + Tambah
+              <input type="text" id="new-student-passcode" placeholder="Tambah Passcode Baru (misal: SUCCESS2027)"
+                class="px-3 py-1.5 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 focus:outline-none focus:border-amber-800 uppercase font-mono">
+              <button onclick="addStudentPasscode()" class="px-4 py-1.5 bg-stone-900 hover:bg-stone-800 text-white font-bold rounded-xl text-xs transition shadow-sm">
+                + Tambah Passcode
               </button>
             </div>
           </div>
 
-          <!-- Submitted Essays by Students Queue -->
+          <!-- 3. ESSAYS QUEUE -->
           <div class="mt-6 space-y-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="inbox" class="w-4 h-4 text-brand-400"></i>
-              <h3 class="text-sm font-bold text-white">Antrean Draft Esai Masuk (Otomatis juga dikirim ke maesa.am222@gmail.com)</h3>
-            </div>
+            <h3 class="text-sm font-bold text-stone-900 flex items-center gap-2">
+              <i data-lucide="inbox" class="w-4 h-4 text-amber-800"></i>
+              <span>Antrean Draft Esai Masuk (Terkirim juga ke Google Sheets &amp; maesa.am222@gmail.com)</span>
+            </h3>
             <div id="admin-draft-stream" class="space-y-2.5">
               <!-- Injected by JS -->
             </div>
           </div>
 
-          <!-- Registered Students Directory (Email & Profiles) -->
-          <div class="mt-6 space-y-3">
+          <!-- 4. STUDENT DATABASE TABLE -->
+          <div class="mt-8 space-y-3">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <div class="flex items-center gap-2">
-                  <i data-lucide="users" class="w-4 h-4 text-brand-accent"></i>
-                  <h3 class="text-sm font-bold text-white">Database Email & Profil Siswa Terdaftar</h3>
-                </div>
-                <p class="text-[11px] text-slate-400">Daftar siswa yang telah mendaftar dengan email aktif dan passcode.</p>
+                <h3 class="text-sm font-bold text-stone-900 flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4 text-blue-800"></i>
+                  <span>Database Siswa Binaan Terdaftar</span>
+                </h3>
+                <p class="text-[11px] text-stone-500">Tersinkronisasi otomatis dengan Google Spreadsheet kamu.</p>
               </div>
-              <div class="flex items-center gap-2 self-start sm:self-auto">
-                <button onclick="toggleAddStudentForm()" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+              <div class="flex items-center gap-2">
+                <button onclick="toggleAddStudentForm()" class="px-3 py-1.5 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-xs">
                   <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> + Tambah Siswa Manual
                 </button>
-                <button onclick="exportStudentsCSV()" class="px-3 py-1.5 bg-brand-accent/10 hover:bg-brand-accent/20 text-brand-accent rounded-xl text-xs font-semibold border border-brand-accent/30 flex items-center gap-1.5 transition">
+                <button onclick="exportStudentsCSV()" class="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-semibold border border-stone-300 transition flex items-center gap-1 shadow-xs">
                   <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
                 </button>
               </div>
             </div>
 
             <!-- Expandable Manual Add Student Form -->
-            <div id="manual-student-form" class="hidden p-4 rounded-xl bg-slate-950 border border-brand-500/30 space-y-3">
-              <h4 class="text-xs font-bold text-brand-400 flex items-center gap-1.5">
-                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Tambah Akun Siswa Baru Secara Manual
-              </h4>
+            <div id="manual-student-form" class="hidden p-4 rounded-2xl bg-[#FAF7F2] border border-amber-300 space-y-3">
+              <h4 class="text-xs font-bold text-amber-900">Tambah Akun Siswa Baru Secara Manual</h4>
               <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-                <input type="text" id="manual-std-name" placeholder="Nama Lengkap Siswa" class="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-brand-400">
-                <input type="email" id="manual-std-email" placeholder="Email (nama@gmail.com)" class="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-brand-400">
-                <select id="manual-std-grade" class="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-brand-400">
-                  <option value="Kelas 10 (Fase Eksplorasi)">Kelas 10 (Fase Eksplorasi)</option>
-                  <option value="Kelas 11 (Fase Standarisasi)">Kelas 11 (Fase Standarisasi)</option>
-                  <option value="Kelas 12 (Fase Eksekusi)" selected>Kelas 12 (Fase Eksekusi)</option>
+                <input type="text" id="manual-std-name" placeholder="Nama Lengkap Siswa" class="px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900">
+                <input type="email" id="manual-std-email" placeholder="Email (nama@gmail.com)" class="px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900">
+                <select id="manual-std-grade" class="px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 font-medium">
+                  <option value="Kelas 10">Kelas 10</option>
+                  <option value="Kelas 11">Kelas 11</option>
+                  <option value="Kelas 12" selected>Kelas 12</option>
                   <option value="Gap Year / Alumnus">Gap Year / Alumnus</option>
                 </select>
-                <button onclick="addManualStudent()" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold rounded-lg text-xs transition flex items-center justify-center gap-1">
-                  <i data-lucide="check" class="w-3.5 h-3.5"></i> Simpan Akun
+                <button onclick="addManualStudent()" class="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl text-xs transition">
+                  Simpan Siswa
                 </button>
               </div>
             </div>
 
-            <div class="overflow-x-auto border border-slate-800 rounded-xl max-h-72 overflow-y-auto">
+            <div class="overflow-x-auto border border-stone-200 rounded-2xl bg-white shadow-xs">
               <table class="w-full text-left text-xs">
-                <thead class="bg-slate-950 text-slate-300 font-semibold sticky top-0 border-b border-slate-800">
+                <thead class="bg-[#FAF7F2] text-stone-700 font-bold border-b border-stone-200">
                   <tr>
-                    <th class="p-3">No</th>
-                    <th class="p-3">Nama Lengkap</th>
-                    <th class="p-3">Email Siswa</th>
-                    <th class="p-3">Kelas</th>
-                    <th class="p-3">Waktu Daftar</th>
-                    <th class="p-3 text-right">Aksi</th>
+                    <th class="p-3.5">No</th>
+                    <th class="p-3.5">Nama Siswa</th>
+                    <th class="p-3.5">Email Siswa</th>
+                    <th class="p-3.5">Kelas</th>
+                    <th class="p-3.5">Waktu Daftar</th>
+                    <th class="p-3.5 text-right">Aksi</th>
                   </tr>
                 </thead>
-                <tbody id="admin-students-body" class="divide-y divide-slate-800 text-slate-300">
+                <tbody id="admin-students-body" class="divide-y divide-stone-200 text-stone-800">
                   <!-- Injected via JS -->
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- Real-Time Activity Log Table -->
-          <div class="mt-6 space-y-3">
-            <h3 class="text-sm font-bold text-white">Live Activity Stream (Log Aktivitas Siswa Terkini)</h3>
-            <div class="overflow-x-auto border border-slate-800 rounded-xl max-h-80 overflow-y-auto">
+          <!-- 5. REAL-TIME ACTIVITY LOG TABLE -->
+          <div class="mt-8 space-y-3">
+            <h3 class="text-sm font-bold text-stone-900">Live Activity Stream (Log Aktivitas Siswa Terkini)</h3>
+            <div class="overflow-x-auto border border-stone-200 rounded-2xl bg-white shadow-xs max-h-72 overflow-y-auto">
               <table class="w-full text-left text-xs">
-                <thead class="bg-slate-950 text-slate-300 font-semibold sticky top-0 border-b border-slate-800">
+                <thead class="bg-[#FAF7F2] text-stone-700 font-bold border-b border-stone-200 sticky top-0">
                   <tr>
                     <th class="p-3">Waktu</th>
                     <th class="p-3">Nama Siswa</th>
@@ -1126,7 +1395,7 @@ NISN: [NISN Kamu]</pre>
                     <th class="p-3">Detail Aksi</th>
                   </tr>
                 </thead>
-                <tbody id="activity-log-body" class="divide-y divide-slate-800 text-slate-300">
+                <tbody id="activity-log-body" class="divide-y divide-stone-200 text-stone-800">
                   <!-- Injected via JS -->
                 </tbody>
               </table>
@@ -1138,33 +1407,9 @@ NISN: [NISN Kamu]</pre>
 
     </main>
 
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 flex lg:hidden items-center justify-around py-2 px-2 text-[10px] text-slate-400">
-      <button onclick="switchTab('roadmap')" class="flex flex-col items-center gap-1 focus:text-brand-400">
-        <i data-lucide="map" class="w-4 h-4"></i>
-        <span>Roadmap</span>
-      </button>
-      <button onclick="switchTab('scholarships')" class="flex flex-col items-center gap-1 focus:text-brand-400">
-        <i data-lucide="award" class="w-4 h-4"></i>
-        <span>Beasiswa</span>
-      </button>
-      <button onclick="switchTab('tests')" class="flex flex-col items-center gap-1 focus:text-brand-400">
-        <i data-lucide="calculator" class="w-4 h-4"></i>
-        <span>SAT & Calc</span>
-      </button>
-      <button onclick="switchTab('essays')" class="flex flex-col items-center gap-1 focus:text-brand-400">
-        <i data-lucide="file-edit" class="w-4 h-4"></i>
-        <span>Esai</span>
-      </button>
-      <button onclick="switchTab('templates')" class="flex flex-col items-center gap-1 focus:text-brand-400">
-        <i data-lucide="copy" class="w-4 h-4"></i>
-        <span>Template</span>
-      </button>
-    </nav>
-
     <!-- Footer -->
-    <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500 hidden md:block">
-      <p>© 2026 Ngambis Bareng Mentorship Ecosystem • Private Access Only</p>
+    <footer class="bg-white border-t border-stone-200 py-5 text-center text-xs text-stone-500 mt-auto">
+      <p>© 2026 Ngambis Bareng Mentorship Ecosystem • Private &amp; Secured Partner Network</p>
     </footer>
 
   </div>

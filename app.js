@@ -1,15 +1,20 @@
-// ==========================================
-// NGAMBIS BARENG PORTAL ENGINE (AUTH & EMAIL DIRECTORY V4)
-// ==========================================
+// ================================================================
+// NGAMBIS BARENG PORTAL ENGINE V5 (WHITE IVORY & BRAND IDENTITY)
+// ================================================================
 
 const MENTOR_EMAIL = "maesa.am222@gmail.com";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6NV9cv1iPsFDN1B2x0TExZDiJn8GSC0hhgjvdsPimL3Ftv_Ut2z4BMKnDGdBAA8tqKQ/exec";
+const CLOUD_SYNC_URL = "https://kvdb.io/7zD9XyN19dJ51TqA5Vv9P4/ngambis_students_db_v1";
+const COMPETITIONS_SYNC_URL = "https://kvdb.io/7zD9XyN19dJ51TqA5Vv9P4/ngambis_competitions_db_v1";
 
-// State Management
+// ==========================================
+// STATE MANAGEMENT
+// ==========================================
 const STATE = {
   currentUser: null,
   mentorAuth: {
     email: "maesa.am222@gmail.com",
-    password: "MaesaNgambis2026!" // Private Mentor Master Password
+    password: "MaesaNgambis2026!"
   },
   registrationPasscodes: [
     "SUCCESS2026",
@@ -19,14 +24,90 @@ const STATE = {
   ],
   deadlines: [
     { name: "US Early Action / Early Decision", date: "2026-11-01T23:59:59", category: "USA (Common App)" },
-    { name: "Oxford & Cambridge Deadline", date: "2026-10-15T18:00:00", category: "UK (UCAS)" },
+    { name: "Oxford & Cambridge UCAS", date: "2026-10-15T18:00:00", category: "UK (UCAS)" },
     { name: "GKS-U Korea Selatan (Embassy)", date: "2026-10-20T23:59:59", category: "Korea Selatan" },
     { name: "Stipendium Hungaricum", date: "2027-01-15T23:59:59", category: "Hungaria (Eropa)" },
     { name: "US Regular Decision (RD)", date: "2027-01-05T23:59:59", category: "USA (Common App)" },
-    { name: "Türkiye Bursları S-1 Deadline", date: "2027-02-20T23:59:59", category: "Turki" },
+    { name: "Türkiye Bursları S-1", date: "2027-02-20T23:59:59", category: "Turki" },
     { name: "IUP UGM Gelombang 1 Intake", date: "2027-02-15T15:00:00", category: "IUP Indonesia" },
+    { name: "IUP ITB Gelombang 1", date: "2027-02-28T23:59:59", category: "IUP Indonesia" },
+    { name: "SIMAK KKI UI Intake", date: "2027-05-15T23:59:59", category: "IUP Indonesia" },
     { name: "MEXT Gakubu S-1 Jepang", date: "2027-05-10T23:59:59", category: "Jepang" },
-    { name: "BIM S-1 Luar Negeri", date: "2027-05-25T23:59:59", category: "Puspresnas RI" }
+    { name: "BIM S-1 Luar Negeri (Puspresnas)", date: "2027-05-25T23:59:59", category: "Puspresnas RI" }
+  ],
+  competitions: [
+    {
+      id: "comp_osn",
+      title: "Olimpiade Sains Nasional (OSN SMA)",
+      organizer: "Pusat Prestasi Nasional (Puspresnas) Kemendikbudristek",
+      category: "STEM",
+      deadline: "Sekitar Februari - Maret (Tahunan)",
+      perks: "Medalis Nasional otomatis memenuhi syarat Beasiswa Indonesia Maju (BIM) S-1 Luar Negeri & Bebas Tes IUP PTN.",
+      description: "Ajang talenta sains paling bergengsi di Indonesia (Matematika, Fisika, Kimia, Biologi, Informatika, Astronomi, Kebumian, Ekonomi, Geografi).",
+      link: "https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/osn/",
+      image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=60",
+      badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
+    },
+    {
+      id: "comp_opsi",
+      title: "Olimpiade Penelitian Siswa Indonesia (OPSI)",
+      organizer: "Puspresnas RI & Kemendikbudristek",
+      category: "RISET",
+      deadline: "Sekitar Maret - April (Tahunan)",
+      perks: "Sertifikat resmi kurasi Puspresnas, peluang mewakili Indonesia ke ajang ISEF di Amerika Serikat.",
+      description: "Kompetisi riset ilmiah SMA terbesar untuk bidang Matematika, Sains, Teknologi Terapan, serta Ilmu Sosial dan Humaniora.",
+      link: "https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/opsi/",
+      image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=800&auto=format&fit=crop&q=60",
+      badgeColor: "bg-blue-100 text-blue-800 border-blue-300"
+    },
+    {
+      id: "comp_wharton",
+      title: "Wharton Global High School Investment Competition",
+      organizer: "The Wharton School, University of Pennsylvania (USA)",
+      category: "BISNIS",
+      deadline: "September - Desember (Tahunan)",
+      perks: "Pengalaman simulasi portofolio investasi nyata $100.000, sertifikat global, booster esai Common App & IUP Bisnis.",
+      description: "Kompetisi bisnis & investasi internasional tim SMA paling prestisius di dunia yang dinilai langsung oleh profesor Wharton Business School.",
+      link: "https://globalyouth.wharton.upenn.edu/competitions/investment-competition/",
+      image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&auto=format&fit=crop&q=60",
+      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+    },
+    {
+      id: "comp_nsdc",
+      title: "National Schools Debating Championship (NSDC / LDBI)",
+      organizer: "Pusat Prestasi Nasional (Kemendikbudristek RI)",
+      category: "HUMANIORA",
+      deadline: "Sekitar Mei - Juni",
+      perks: "Pemenang didelegasikan ke WSDC (World Schools Debating Championship) & jalur talenta BIM.",
+      description: "Kompetisi debat parlemen bahasa Inggris resmi tingkat nasional untuk mengasah kemampuan berpikir kritis, logika diplomasi, dan public speaking.",
+      link: "https://pusatprestasinasional.kemdikbud.go.id/event/seni-budaya-dan-bahasa/nsdc/",
+      image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=60",
+      badgeColor: "bg-rose-100 text-rose-800 border-rose-300"
+    },
+    {
+      id: "comp_bebras",
+      title: "Bebras Indonesia Computational Thinking Challenge",
+      organizer: "Bebras International & NBO Bebras Indonesia (ITB / UI)",
+      category: "STEM",
+      deadline: "Oktober - November (Tahunan)",
+      perks: "Sertifikat internasional, uji kemampuan logika algoritma untuk persiapan OSN Informatika & IUP STEI ITB.",
+      description: "Tantangan logika komputasional dan pemecahan masalah algoritma tanpa perlu coding dasar, terbuka untuk seluruh siswa SMA.",
+      link: "https://bebras.or.id/",
+      image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=60",
+      badgeColor: "bg-teal-100 text-teal-800 border-teal-300"
+    },
+    {
+      id: "comp_crimson",
+      title: "Harvard Crimson Global Essay Competition (HCGEC)",
+      organizer: "The Harvard Crimson (Harvard University)",
+      category: "HUMANIORA",
+      deadline: "Januari - Maret",
+      perks: "Hadiah ribuan dolar, publikasi internasional, feedback eksklusif dari jurnalis Harvard.",
+      description: "Kompetisi penulisan esai kreatif, argumentatif, dan jurnalisme global terbesar untuk siswa SMA sedunia.",
+      link: "https://www.essaycomp.org/",
+      image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop&q=60",
+      badgeColor: "bg-purple-100 text-purple-800 border-purple-300"
+    }
   ],
   scholarships: [
     {
@@ -34,12 +115,12 @@ const STATE = {
       title: "Beasiswa Indonesia Maju (BIM) S-1 Luar Negeri",
       provider: "Puspresnas / Kemendikbudristek & LPDP",
       category: "RI_GOV",
-      coverage: "Full Funded: SPP penuh, biaya hidup bulanan, tiket pesawat PP, asuransi, tunjangan buku, visa, dan pembinaan persiapan",
+      coverage: "Full Funded: SPP penuh, biaya hidup bulanan, tiket pesawat PP, asuransi, buku, visa, dan pembinaan persiapan",
       country: "Global (Top 100 World Universities)",
       deadline: "Sekitar April - Mei (Tahunan)",
       requirements: "Medalis OSN / FLS2N / OPSI / LDBI / NSDC atau lomba internasional terkurasi Puspresnas. Nilai rapor min. 80-85, sertifikat IELTS/TOEFL, Unconditional LoA kampus mitra top dunia.",
       link: "https://pusatprestasinasional.kemdikbud.go.id/",
-      badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+      badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
     },
     {
       id: "bim_persiapan",
@@ -51,7 +132,7 @@ const STATE = {
       deadline: "Sekitar Oktober - November (Khusus Siswa Kelas 11)",
       requirements: "Siswa aktif kelas 11 SMA sederajat peraih prestasi talenta sains/seni/olahraga/riset tingkat nasional/internasional yang tercatat di Puspresnas.",
       link: "https://pusatprestasinasional.kemdikbud.go.id/",
-      badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+      badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
     },
     {
       id: "beasiswa_unggulan",
@@ -63,19 +144,19 @@ const STATE = {
       deadline: "Sekitar Juli - Agustus",
       requirements: "Memiliki LoA Unconditional S-1 (bisa untuk IUP PTN tertentu), sertifikat prestasi minimal tingkat kabupaten/nasional, esai personal komitmen kontribusi 1.500 kata.",
       link: "https://beasiswaunggulan.kemdikbud.go.id/",
-      badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+      badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
     },
     {
       id: "mext_s1",
       title: "MEXT (Monbukagakusho) Gakubu S-1",
-      provider: "Kementerian Pendidikan, Kebudayaan, Olahraga, Sains & Teknologi Jepang",
+      provider: "Kementerian Pendidikan Jepang (MEXT)",
       category: "INTL_GOV",
       coverage: "Full Tuition + Uang Saku Bulanan (~¥117.000/bln) + Tiket Pesawat PP + 1 Tahun Sekolah Persiapan Bahasa Jepang",
       country: "🇯🇵 Jepang",
       deadline: "April - Mei",
-      requirements: "Usia 17-25 tahun, nilai rapor Matematika & Bahasa Inggris kuat, lulus ujian tulis Kedubes Jepang (Math, English, Kimia/Fisika/Biologi untuk IPA, Math & English untuk IPS).",
+      requirements: "Usia 17-25 tahun, nilai rapor Matematika & Bahasa Inggris kuat, lulus ujian tulis Kedubes Jepang (Math, English, IPA/IPS).",
       link: "https://www.id.emb-japan.go.jp/sch_gakubu.html",
-      badgeColor: "bg-red-500/10 text-red-400 border-red-500/20"
+      badgeColor: "bg-red-100 text-red-800 border-red-300"
     },
     {
       id: "gks_u",
@@ -85,21 +166,21 @@ const STATE = {
       coverage: "Full Tuition + Uang Saku (~₩900.000/bln) + Tiket Pesawat PP + Asuransi Kesehatan + 1 Tahun Kursus Bahasa Korea di Universitas",
       country: "🇰🇷 Korea Selatan",
       deadline: "September - Oktober",
-      requirements: "Rata-rata nilai rapor ≥ 80% atau ranking top 20%, usia di bawah 25 tahun, Personal Statement & Study Plan orisinal, Surat Rekomendasi dari Kepala Sekolah/Guru.",
+      requirements: "Rata-rata nilai rapor ≥ 80% atau ranking top 20%, usia di bawah 25 tahun, Personal Statement & Study Plan orisinal, Surat Rekomendasi.",
       link: "https://www.studyinkorea.go.kr/",
-      badgeColor: "bg-sky-500/10 text-sky-400 border-sky-500/20"
+      badgeColor: "bg-blue-100 text-blue-800 border-blue-300"
     },
     {
       id: "turkiye_burslari",
       title: "Türkiye Bursları Undergraduate Scholarship",
       provider: "Pemerintah Republik Turki (YTB)",
       category: "INTL_GOV",
-      coverage: "Full Tuition + Uang Saku Bulanan + Akomodasi Asrama Gratis + Tiket Pesawat PP + Asuransi Kesehatan + 1 Tahun Kursus Bahasa Turki (TÖMER)",
+      coverage: "Full Tuition + Uang Saku Bulanan + Akomodasi Asrama Gratis + Tiket Pesawat PP + Asuransi Kesehatan + 1 Tahun Kursus Bahasa Turki",
       country: "🇹🇷 Turki",
       deadline: "10 Januari - 20 Februari (Tahunan)",
-      requirements: "Nilai rata-rata ijazah/rapor min. 70% (Non-Kedokteran) atau min. 90% (Kedokteran/Farmasi/Kedokteran Gigi), esai Letter of Intent yang mendalam.",
+      requirements: "Nilai rata-rata rapor min. 70% (Non-Kedokteran) atau min. 90% (Kedokteran/Farmasi), esai Letter of Intent yang mendalam.",
       link: "https://www.turkiyeburslari.gov.tr/",
-      badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20"
+      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
     },
     {
       id: "stipendium_hungaricum",
@@ -109,21 +190,21 @@ const STATE = {
       coverage: "Full Tuition + Tunjangan Bulanan (HUF 43.700/bln) + Kontribusi Akomodasi Asrama + Asuransi Kesehatan",
       country: "🇭🇺 Hungaria",
       deadline: "November - Januari",
-      requirements: "Wajib mendaftar via portal resmi Tempus dan mendapatkan surat rekomendasi/nominasi dari Kemendikbudristek RI sebagai Sending Partner, sertifikat IELTS min. 6.0/6.5.",
+      requirements: "Mendaftar via portal Tempus dan mendapat rekomendasi/nominasi Kemendikbudristek RI sebagai Sending Partner, sertifikat IELTS min. 6.0/6.5.",
       link: "https://stipendiumhungaricum.hu/",
-      badgeColor: "bg-green-500/10 text-green-400 border-green-500/20"
+      badgeColor: "bg-green-100 text-green-800 border-green-300"
     },
     {
       id: "csc_china",
       title: "Chinese Government Scholarship (CSC) - Type A & B",
       provider: "China Scholarship Council (CSC)",
       category: "INTL_GOV",
-      coverage: "Full Tuition + Akomodasi Asrama Kampus + Asuransi Medis Komprehensif + Biaya Hidup (RMB 2.500/bln)",
+      coverage: "Full Tuition + Asrama Kampus + Asuransi Medis + Biaya Hidup (RMB 2.500/bln)",
       country: "🇨🇳 Tiongkok",
       deadline: "Desember - Maret",
-      requirements: "Lulusan SMA, usia di bawah 25 tahun, sertifikat HSK min. Level 3-4 (jika prodi Mandarin) atau IELTS min. 6.0 / TOEFL 80 (jika English-taught), proposal studi & 2 LoR.",
+      requirements: "Lulusan SMA, usia < 25 tahun, HSK min. Level 3-4 (jika prodi Mandarin) atau IELTS min. 6.0 / TOEFL 80 (jika English-taught), 2 LoR.",
       link: "https://www.campuschina.org/",
-      badgeColor: "bg-rose-500/10 text-rose-400 border-rose-500/20"
+      badgeColor: "bg-rose-100 text-rose-800 border-rose-300"
     },
     {
       id: "jardine_oxbridge",
@@ -133,21 +214,21 @@ const STATE = {
       coverage: "Full Ride: Biaya kuliah penuh, tunjangan biaya hidup tahunan, tiket pesawat PP, dan tunjangan buku",
       country: "🇬🇧 United Kingdom",
       deadline: "Agustus - Oktober (Seiring aplikasi UCAS)",
-      requirements: "Keunggulan akademik luar biasa, kepemimpinan orisinal, komitmen pengabdian untuk Asia, LoA dari colleges mitra resmi di Oxford/Cambridge.",
+      requirements: "Keunggulan akademik luar biasa, kepemimpinan orisinal, komitmen pengabdian untuk Asia, LoA dari colleges mitra Oxford/Cambridge.",
       link: "https://www.jardines.com/en/community/jardine-foundation",
-      badgeColor: "bg-purple-500/10 text-purple-400 border-purple-500/20"
+      badgeColor: "bg-purple-100 text-purple-800 border-purple-300"
     },
     {
       id: "pearson_toronto",
       title: "Lester B. Pearson International Scholarship",
       provider: "University of Toronto",
       category: "UNIV_MERIT",
-      coverage: "Full Ride: Biaya kuliah 4 tahun penuh, buku, biaya insidental, dan tempat tinggal asrama penuh selama 4 tahun",
+      coverage: "Full Ride: Biaya kuliah 4 tahun penuh, buku, insidental, dan asrama penuh 4 tahun",
       country: "🇨🇦 Kanada",
       deadline: "November (Batas Nominasi Sekolah) & Januari (Batas Siswa)",
-      requirements: "Wajib dinominasikan resmi oleh sekolah SMA asal (1 sekolah = 1 nominasi), kreativitas luar biasa, kepemimpinan dan dampak sosial terbukti.",
+      requirements: "Wajib dinominasikan resmi oleh sekolah SMA asal (1 sekolah = 1 nominasi), kreativitas luar biasa, kepemimpinan terbukti.",
       link: "https://future.utoronto.ca/pearson/",
-      badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20"
+      badgeColor: "bg-blue-100 text-blue-800 border-blue-300"
     },
     {
       id: "nus_asean",
@@ -159,7 +240,7 @@ const STATE = {
       deadline: "Oktober - Februari (Otomatis saat mendaftar admisi NUS)",
       requirements: "Nilai rapor SMA luar biasa, SAT 1480+ (Math 780-800), kepemimpinan dan prestasi olimpiade sains/riset.",
       link: "https://nus.edu.sg/oam/scholarships/freshmen/undergraduate-scholarships",
-      badgeColor: "bg-orange-500/10 text-orange-400 border-orange-500/20"
+      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
     },
     {
       id: "kaist_full",
@@ -171,7 +252,7 @@ const STATE = {
       deadline: "Early Track: Okt-Des | Regular Track: Des-Jan",
       requirements: "Kemampuan Matematika & Sains luar biasa, skor SAT / AP / olimpiade sains sangat diutamakan, wawancara akademik sains.",
       link: "https://admission.kaist.ac.kr/intl-undergraduate/",
-      badgeColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+      badgeColor: "bg-indigo-100 text-indigo-800 border-indigo-300"
     },
     {
       id: "us_need_blind",
@@ -181,21 +262,21 @@ const STATE = {
       coverage: "100% Demonstrated Financial Need: Biaya kuliah penuh, asrama, makan, asuransi, buku hingga tiket pesawat",
       country: "🇺🇸 Amerika Serikat",
       deadline: "Early Action/Decision: 1 Nov | Regular Decision: 1-5 Jan",
-      requirements: "Diterima melalui Common App (Spike profile, SAT 1520+, Esai reflektif mendalam, 3 LoR super kuat) + Pengisian formulir CSS Profile & bukti finansial orang tua.",
+      requirements: "Diterima melalui Common App (Spike profile, SAT 1520+, Esai reflektif mendalam, 3 LoR super kuat) + Pengisian formulir CSS Profile.",
       link: "https://college.harvard.edu/financial-aid",
-      badgeColor: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+      badgeColor: "bg-cyan-100 text-cyan-800 border-cyan-300"
     },
     {
       id: "nyu_abu_dhabi",
       title: "NYU Abu Dhabi Full Need-Based Support",
       provider: "New York University Abu Dhabi (NYUAD)",
       category: "UNIV_MERIT",
-      coverage: "Full Ride: SPP 100%, akomodasi modern, konsumsi penuh, tiket pesawat pulang-pergi 2x setahun, dana riset musim panas global",
+      coverage: "Full Ride: SPP 100%, akomodasi modern, konsumsi, tiket pesawat PP 2x setahun, dana riset musim panas global",
       country: "🇦🇪 UAE / USA Curricula",
       deadline: "ED 1: 1 Nov | ED 2: 1 Jan | RD: 5 Jan",
       requirements: "Aplikasi via Common App, wawasan global, keterbukaan budaya, rekam jejak kepemimpinan, dan undangan Candidate Weekend.",
       link: "https://nyuad.nyu.edu/en/admissions/undergraduate/financial-support.html",
-      badgeColor: "bg-violet-500/10 text-violet-400 border-violet-500/20"
+      badgeColor: "bg-violet-100 text-violet-800 border-violet-300"
     },
     {
       id: "iup_ugm",
@@ -205,9 +286,9 @@ const STATE = {
       coverage: "Sarjana Kelas Internasional Terakreditasi Global + Kurikulum Berbahasa Inggris + Program Wajib Double Degree / Student Exchange",
       country: "🇮🇩 Indonesia (UGM Yogyakarta)",
       deadline: "Gelombang 1 (Jan-Feb), Gelombang 2 (Apr-Mei), Gelombang 3 (Jun)",
-      requirements: "Ujian GMST (Gadjah Mada Scholastic Test) + AcEPT / IELTS (min. 5.5-6.5) / TOEFL iBT / Duolingo (100+) + Interview / MMI & FGD.",
+      requirements: "Ujian GMST (Gadjah Mada Scholastic Test) + AcEPT / TOEFL ITP (min. 500 umum / min. 550 FK) / IELTS (min. 5.5-6.5) + Interview / MMI & FGD.",
       link: "https://um.ugm.ac.id/international-undergraduate-program-iup/",
-      badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20"
+      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
     },
     {
       id: "kki_ui",
@@ -217,9 +298,9 @@ const STATE = {
       coverage: "Single Degree & Double Degree Mitra Melbourne, Monash, Newcastle, Amsterdam, Tilburg, Groningen, Queensland",
       country: "🇮🇩 Indonesia (UI Depok / Salemba)",
       deadline: "Pendaftaran SIMAK KKI: Mei - Juni",
-      requirements: "Ujian SIMAK KKI Bahasa Inggris (Basic Mathematics & IPA / IPS) + Sertifikat TOEFL ITP (min. 500) / TOEFL iBT (min. 61) / IELTS (min. 5.5) + MMI / Interview.",
+      requirements: "Ujian SIMAK KKI Bahasa Inggris (Basic Mathematics & IPA / IPS) + Sertifikat TOEFL ITP (min. 500 / min. 550 FK UI) / TOEFL iBT / IELTS + Interview.",
       link: "https://penerimaan.ui.ac.id/",
-      badgeColor: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+      badgeColor: "bg-yellow-100 text-yellow-800 border-yellow-300"
     },
     {
       id: "iup_itb",
@@ -229,9 +310,9 @@ const STATE = {
       coverage: "Kelas Internasional STEI (Informatika, Elektro), SBM (Manajemen), FTI, FTMD, FTSL, FSRD + Program Exchange Internasional",
       country: "🇮🇩 Indonesia (ITB Ganesha & Jatinangor)",
       deadline: "Gelombang 1 (Feb), Gelombang 2 (Apr), Gelombang 3 (Jun)",
-      requirements: "Ujian ITB AQAS (Bisa dibebaskan jika melampirkan skor SAT Math resmi ≥ 700) + English Proficiency Test ITB / IELTS + Rapor Semester 1-5.",
+      requirements: "Ujian ITB AQAS (Bebas ujian jika SAT Math ≥ 700) + English Proficiency Test ITB / TOEFL ITP (min. 500) / IELTS + Rapor Semester 1-5.",
       link: "https://admission.itb.ac.id/info/international-undergraduate-program/",
-      badgeColor: "bg-teal-500/10 text-teal-400 border-teal-500/20"
+      badgeColor: "bg-teal-100 text-teal-800 border-teal-300"
     },
     {
       id: "iup_unair",
@@ -241,9 +322,9 @@ const STATE = {
       coverage: "Kelas Internasional Kedokteran Umum, Kedokteran Gigi, Farmasi, Manajemen, Akuntansi, Hukum, Psikologi, Hubungan Internasional",
       country: "🇮🇩 Indonesia (UNAIR Surabaya)",
       deadline: "Gelombang 1 (Feb-Mar), Gelombang 2 (Apr-Mei), Gelombang 3 (Jun)",
-      requirements: "Tes Potensi Akademik Bahasa Inggris + Tes Kemampuan Bahasa Inggris (ELPT/IELTS min. 5.5/Duolingo) + Interview / MMI.",
+      requirements: "Tes Potensi Akademik Bahasa Inggris + TOEFL ITP (min. 500 umum / min. 550 Kedokteran) / IELTS + Interview / MMI.",
       link: "https://ppmb.unair.ac.id/iup/",
-      badgeColor: "bg-sky-500/10 text-sky-400 border-sky-500/20"
+      badgeColor: "bg-sky-100 text-sky-800 border-sky-300"
     },
     {
       id: "iup_its",
@@ -253,24 +334,34 @@ const STATE = {
       coverage: "Kelas Internasional Teknik Informatika, Sistem Informasi, Teknik Mesin, Teknik Elektro, Teknik Sipil, Desain Komunikasi Visual",
       country: "🇮🇩 Indonesia (ITS Surabaya)",
       deadline: "Gelombang 1 (Feb-Mar), Gelombang 2 (Apr-Mei), Gelombang 3 (Jun)",
-      requirements: "Nilai Rapor Semester 1-5 + Sertifikat Prestasi Akademik/Lomba + Tes Tulis TPA Bahasa Inggris + Sertifikat IELTS/TOEFL.",
+      requirements: "Nilai Rapor Semester 1-5 + Sertifikat Prestasi Akademik/Lomba + Tes Tulis TPA Bahasa Inggris + TOEFL ITP (min. 500) / IELTS.",
       link: "https://www.its.ac.id/admission/iup/",
-      badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20"
+      badgeColor: "bg-blue-100 text-blue-800 border-blue-300"
     }
   ]
 };
 
-// Google Apps Script Web App URL (Connected to Maesa's Google Spreadsheet)
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6NV9cv1iPsFDN1B2x0TExZDiJn8GSC0hhgjvdsPimL3Ftv_Ut2z4BMKnDGdBAA8tqKQ/exec";
+// ==========================================
+// SECURITY & DATA SANITIZATION HELPER
+// ==========================================
+function sanitizeHTML(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-// Cloud Remote Sync Endpoint (Allows Cross-Device Sync between Laptop & Mobile)
-const CLOUD_SYNC_URL = "https://kvdb.io/7zD9XyN19dJ51TqA5Vv9P4/ngambis_students_db_v1";
-
+// ==========================================
+// CLOUD SYNC ENGINE (GOOGLE SHEETS & KV STORE)
+// ==========================================
 async function pullCloudStudents() {
   let localData = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
   let merged = [...localData];
 
-  // 1. Try pulling from Google Sheets via Google Apps Script
+  // 1. Google Sheets Pull
   if (GOOGLE_SCRIPT_URL) {
     try {
       const res = await fetch(GOOGLE_SCRIPT_URL, { cache: "no-store" });
@@ -302,7 +393,7 @@ async function pullCloudStudents() {
     }
   }
 
-  // 2. Try pulling from secondary Cloud KV
+  // 2. KV Store Pull
   try {
     const res = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
     if (res.ok) {
@@ -338,6 +429,32 @@ async function pushCloudStudents(students) {
   }
 }
 
+async function pullCloudCompetitions() {
+  const local = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+  try {
+    const res = await fetch(COMPETITIONS_SYNC_URL, { cache: "no-store" });
+    if (res.ok) {
+      const cloud = await res.json();
+      if (Array.isArray(cloud) && cloud.length > 0) {
+        localStorage.setItem("ngambis_custom_competitions", JSON.stringify(cloud));
+        renderCompetitions();
+        return;
+      }
+    }
+  } catch (err) {}
+  renderCompetitions();
+}
+
+async function pushCloudCompetitions(comps) {
+  try {
+    await fetch(COMPETITIONS_SYNC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(comps)
+    });
+  } catch (err) {}
+}
+
 // ==========================================
 // INITIALIZATION
 // ==========================================
@@ -346,15 +463,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   checkExistingSession();
   renderScholarships();
   renderDeadlines();
+  renderCompetitions();
   updateAnalyticsStats();
 
-  // Background Cloud & Google Sheets Sync for Cross-Device Synchronization
   pullCloudStudents().then(() => {
     updateAnalyticsStats();
     if (STATE.currentUser && STATE.currentUser.role === "MENTOR") {
       renderRegisteredStudentsAdmin();
     }
   });
+
+  pullCloudCompetitions();
 });
 
 function loadCustomPasscodes() {
@@ -367,38 +486,113 @@ function loadCustomPasscodes() {
 }
 
 // ==========================================
-// AUTHENTICATION: 2-TAB CLEAN SYSTEM (SISWA & HEAD MENTOR)
+// SIDEBAR DRAWER NAVIGATION (TIMBUL-TENGGELAM)
 // ==========================================
-let currentAuthTab = 'student'; // 'student' | 'mentor'
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar-drawer");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  if (!sidebar) return;
+
+  const isClosed = sidebar.classList.contains("-translate-x-full");
+  if (isClosed) {
+    sidebar.classList.remove("-translate-x-full");
+    sidebar.classList.add("translate-x-0");
+    if (backdrop) backdrop.classList.remove("hidden");
+  } else {
+    sidebar.classList.add("-translate-x-full");
+    sidebar.classList.remove("translate-x-0");
+    if (backdrop) backdrop.classList.add("hidden");
+  }
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById("sidebar-drawer");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  if (sidebar) {
+    sidebar.classList.add("-translate-x-full");
+    sidebar.classList.remove("translate-x-0");
+  }
+  if (backdrop) {
+    backdrop.classList.add("hidden");
+  }
+}
+
+// ==========================================
+// TAB SWITCHING & ROUTING
+// ==========================================
+function switchTab(tabId) {
+  if (tabId === "admin" && (!STATE.currentUser || STATE.currentUser.role !== "MENTOR")) {
+    alert("⛔ Akses Terbatas: Halaman ini khusus untuk Head Mentor.");
+    return;
+  }
+
+  // Hide all tabs
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+  document.querySelectorAll(".nav-menu-item").forEach(btn => {
+    btn.classList.remove("bg-stone-100", "text-amber-900", "font-bold", "border-l-4", "border-amber-700");
+    btn.classList.add("text-stone-700");
+  });
+
+  const activeContent = document.getElementById(`tab-${tabId}`);
+  if (activeContent) {
+    activeContent.classList.remove("hidden");
+  }
+
+  const activeNav = document.getElementById(`nav-${tabId}`);
+  if (activeNav) {
+    activeNav.classList.add("bg-stone-100", "text-amber-900", "font-bold", "border-l-4", "border-amber-700");
+    activeNav.classList.remove("text-stone-700");
+  }
+
+  logActivity("VIEW_TAB", `Membuka modul: ${tabId.toUpperCase()}`);
+
+  if (tabId === "admin" && STATE.currentUser && STATE.currentUser.role === "MENTOR") {
+    renderAnalyticsTable();
+    renderSubmittedDraftsAdmin();
+    renderRegisteredStudentsAdmin();
+    renderPasscodesInAdmin();
+    renderAdminCompetitions();
+  }
+
+  // Close sidebar on mobile
+  if (window.innerWidth < 1024) {
+    closeSidebar();
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ==========================================
+// AUTHENTICATION: 2-TAB CLEAN SYSTEM
+// ==========================================
+let currentAuthTab = 'student';
 
 function switchAuthTab(tab) {
   currentAuthTab = tab;
   const formStudent = document.getElementById("auth-form-student");
   const formMentor = document.getElementById("auth-form-mentor");
   const errorBox = document.getElementById("login-error");
-
   const btnStudent = document.getElementById("tab-btn-student");
   const btnMentor = document.getElementById("tab-btn-mentor");
 
   errorBox.classList.add("hidden");
 
-  // Reset tab button styles
   [btnStudent, btnMentor].forEach(b => {
-    if (b) b.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg text-slate-400 hover:text-white transition";
+    if (b) b.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-stone-600 hover:text-stone-900 transition";
   });
 
   if (tab === 'student') {
     if (formStudent) formStudent.classList.remove("hidden");
     if (formMentor) formMentor.classList.add("hidden");
-    if (btnStudent) btnStudent.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-brand-500 text-slate-950 transition";
+    if (btnStudent) btnStudent.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-amber-700 text-white shadow-sm transition";
   } else if (tab === 'mentor') {
     if (formStudent) formStudent.classList.add("hidden");
     if (formMentor) formMentor.classList.remove("hidden");
-    if (btnMentor) btnMentor.className = "flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg bg-amber-400 text-slate-950 transition";
+    if (btnMentor) btnMentor.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-stone-900 text-white shadow-sm transition";
   }
 }
 
-// 1. SINGLE-GATE STUDENT ACCESS HANDLER (FOOLPROOF ACROSS ALL DEVICES)
+// Student Form Submit Handler
 const studentForm = document.getElementById("auth-form-student");
 if (studentForm) {
   studentForm.addEventListener("submit", async (e) => {
@@ -410,24 +604,22 @@ if (studentForm) {
     const errorBox = document.getElementById("login-error");
     const submitBtn = e.target.querySelector("button[type='submit']");
 
-    // Email format validation
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
-      errorBox.textContent = "Format email tidak valid! Mohon masukkan alamat email aktif yang benar (contoh: nama@gmail.com).";
+      errorBox.textContent = "Format email tidak valid! Masukkan alamat email aktif (contoh: nama@gmail.com).";
       errorBox.classList.remove("hidden");
       return;
     }
 
-    // Passcode validation
     if (!STATE.registrationPasscodes.includes(passcode)) {
-      errorBox.textContent = "Passcode salah! Masukkan passcode resmi dari mentor (contoh: SUCCESS2026).";
+      errorBox.textContent = "Passcode salah! Masukkan passcode pendaftaran resmi (SUCCESS2026).";
       errorBox.classList.remove("hidden");
       return;
     }
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Membuka Portal Siswa...`;
+      submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Menghubungkan ke Portal...`;
     }
 
     const studentUser = {
@@ -440,7 +632,6 @@ if (studentForm) {
       role: "STUDENT"
     };
 
-    // Save to local registered list
     let registeredUsers = getRegisteredStudents();
     const existingIndex = registeredUsers.findIndex(u => u.email && u.email.toLowerCase() === email);
     if (existingIndex === -1) {
@@ -450,10 +641,8 @@ if (studentForm) {
     }
     localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
 
-    // Push to Cloud Sync & Google Sheets
     pushCloudStudents(registeredUsers);
 
-    // If Google Apps Script URL is set, send to Google Sheets
     if (GOOGLE_SCRIPT_URL) {
       try {
         fetch(GOOGLE_SCRIPT_URL, {
@@ -467,18 +656,15 @@ if (studentForm) {
             grade: grade
           })
         });
-      } catch (err) {
-        console.warn("GAS push note:", err);
-      }
+      } catch (err) {}
     }
 
-    // Send email alert to Mentor (maesa.am222@gmail.com)
     try {
       fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          event: "Siswa Masuk / Terdaftar",
+          event: "Siswa Masuk Portal",
           nama_siswa: name,
           email_siswa: email,
           kelas: grade,
@@ -487,23 +673,20 @@ if (studentForm) {
           _replyto: email
         })
       });
-    } catch (err) {
-      console.warn("Dispatch notification note:", err);
-    }
+    } catch (err) {}
 
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = `<span>Masuk ke Portal Siswa</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      submitBtn.innerHTML = `<span>Buka Portal Pembelajaran</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
       if (window.lucide) lucide.createIcons();
     }
 
-    // Log Activity & Login User
     logActivity("LOGIN", `Siswa Masuk: ${email}`, grade);
     loginUser(studentUser);
   });
 }
 
-// 2. MENTOR LOGIN HANDLER
+// Mentor Form Submit Handler
 const mentorForm = document.getElementById("auth-form-mentor");
 if (mentorForm) {
   mentorForm.addEventListener("submit", (e) => {
@@ -534,35 +717,33 @@ function loginUser(user) {
   STATE.currentUser = user;
   localStorage.setItem("ngambis_user_session", JSON.stringify(user));
 
-  // Log activity
-  logActivity("LOGIN", user.role === "MENTOR" ? "Masuk sebagai Head Mentor" : `Login: ${user.email}`, user.grade);
-
-  // Setup UI
   document.getElementById("auth-screen").classList.add("hidden");
   document.getElementById("app-container").classList.remove("hidden");
-  document.getElementById("user-display-name").textContent = user.name;
-  document.getElementById("user-display-role").textContent = user.grade;
 
-  // STRICT ACCESS CONTROL: Only mentor sees Admin Dashboard
-  const adminNav = document.getElementById("nav-admin");
-  const mobileAdminNav = document.getElementById("mobile-nav-admin");
+  // Update UI Displays
+  const nameEls = document.querySelectorAll(".user-name-display");
+  nameEls.forEach(el => el.textContent = user.name);
 
+  const gradeEls = document.querySelectorAll(".user-grade-display");
+  gradeEls.forEach(el => el.textContent = user.grade);
+
+  const emailEls = document.querySelectorAll(".user-email-display");
+  emailEls.forEach(el => el.textContent = user.email || "-");
+
+  // Admin visibility
+  const navAdmin = document.getElementById("nav-admin");
   if (user.role === "MENTOR") {
-    if (adminNav) adminNav.classList.remove("hidden");
-    if (mobileAdminNav) mobileAdminNav.classList.remove("hidden");
+    if (navAdmin) navAdmin.classList.remove("hidden");
     renderRegisteredStudentsAdmin();
     renderPasscodesInAdmin();
+    renderAdminCompetitions();
   } else {
-    if (adminNav) adminNav.classList.add("hidden");
-    if (mobileAdminNav) mobileAdminNav.classList.add("hidden");
-    const tabAdmin = document.getElementById("tab-admin");
-    if (tabAdmin) tabAdmin.classList.add("hidden");
+    if (navAdmin) navAdmin.classList.add("hidden");
   }
 
-  // Setup dynamic watermark
+  // Setup security watermark
   setupWatermark(user.name, user.email || user.grade);
 
-  // Load saved checklist progress & drafts
   loadMilestoneProgress();
   loadSavedDrafts();
 
@@ -592,558 +773,55 @@ function logout() {
 }
 
 // ==========================================
-// SECURITY WATERMARK GENERATOR
+// SECURITY WATERMARK FORENSICS
 // ==========================================
 function setupWatermark(name, emailOrGrade) {
   const container = document.getElementById("watermark-container");
+  if (!container) return;
   container.innerHTML = "";
   container.classList.remove("hidden");
 
-  const watermarkText = `NGAMBIS BARENG • ${name.toUpperCase()} (${emailOrGrade}) • PRIVATE ACCESS`;
-  
-  for (let i = 0; i < 48; i++) {
+  const watermarkText = `NGAMBIS BARENG • ${name.toUpperCase()} (${emailOrGrade}) • CONFIDENTIAL`;
+  for (let i = 0; i < 40; i++) {
     const span = document.createElement("div");
-    span.className = "p-4 tracking-widest text-[11px] font-mono select-none";
+    span.className = "p-4 tracking-wider text-[11px] font-mono select-none text-stone-900/5";
     span.textContent = watermarkText;
     container.appendChild(span);
   }
 }
 
 // ==========================================
-// TAB NAVIGATION & ACTIVITY LOGGING
+// ROADMAP TIMELINES (PTLN VS IUP PTN)
 // ==========================================
-function switchTab(tabId) {
-  if (tabId === "admin" && (!STATE.currentUser || STATE.currentUser.role !== "MENTOR")) {
-    alert("⛔ Akses Terbatas: Halaman ini hanya dapat diakses oleh Mentor.");
-    return;
-  }
+let currentRoadmapTrack = 'ptln'; // 'ptln' | 'iup'
 
-  document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.classList.remove("text-brand-400", "bg-brand-500/10", "border-brand-500/20");
-    btn.classList.add("text-slate-300");
-  });
+function switchRoadmapTrack(track) {
+  currentRoadmapTrack = track;
+  const viewPtln = document.getElementById("roadmap-view-ptln");
+  const viewIup = document.getElementById("roadmap-view-iup");
+  const btnPtln = document.getElementById("btn-track-ptln");
+  const btnIup = document.getElementById("btn-track-iup");
 
-  const activeContent = document.getElementById(`tab-${tabId}`);
-  if (activeContent) {
-    activeContent.classList.remove("hidden");
-  }
-
-  const activeNav = document.getElementById(`nav-${tabId}`);
-  if (activeNav) {
-    activeNav.classList.add("text-brand-400", "bg-brand-500/10", "border-brand-500/20");
-    activeNav.classList.remove("text-slate-300");
-  }
-
-  logActivity("VIEW_TAB", `Membuka modul: ${tabId.toUpperCase()}`);
-
-  if (tabId === "admin" && STATE.currentUser && STATE.currentUser.role === "MENTOR") {
-    renderAnalyticsTable();
-    renderSubmittedDraftsAdmin();
-    renderRegisteredStudentsAdmin();
-    renderPasscodesInAdmin();
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ==========================================
-// REAL-TIME COUNTDOWN TIMER WIDGET
-// ==========================================
-function renderDeadlines() {
-  const container = document.getElementById("deadlines-container");
-  if (!container) return;
-
-  const now = new Date();
-
-  container.innerHTML = STATE.deadlines.map(d => {
-    const deadlineDate = new Date(d.date);
-    const diffTime = deadlineDate - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    let badgeStatus = "";
-    if (diffDays > 0) {
-      badgeStatus = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-500/10 text-brand-400 border border-brand-500/30 whitespace-nowrap">${diffDays} Hari Lagi</span>`;
-    } else {
-      badgeStatus = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-500 border border-slate-700 whitespace-nowrap">Siklus Ditutup</span>`;
-    }
-
-    return `
-      <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-3">
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-2 mb-0.5">
-            <span class="text-[9px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-400 uppercase font-semibold truncate">${d.category}</span>
-          </div>
-          <p class="font-bold text-white text-xs truncate">${d.name}</p>
-          <p class="text-[10px] text-slate-400">${deadlineDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-        </div>
-        ${badgeStatus}
-      </div>
-    `;
-  }).join("");
-}
-
-// ==========================================
-// PROFILE MATCH & CHANCE SIMULATOR
-// ==========================================
-function calculateProfileChance() {
-  const gpa = parseFloat(document.getElementById("calc-gpa").value) || 0;
-  const sat = parseInt(document.getElementById("calc-sat").value) || 0;
-  const ielts = parseFloat(document.getElementById("calc-ielts").value) || 0;
-  const spike = document.getElementById("calc-spike").value;
-  const resultBox = document.getElementById("calc-result");
-
-  let matchTier = "";
-  let recommendation = "";
-  let badgeColor = "";
-
-  if (gpa >= 92 && sat >= 1500 && ielts >= 7.5 && spike === "national_gold") {
-    matchTier = "🌟 Super Competitive Tier (Ivy League / MIT / Oxford / Cambridge / NUS ASEAN)";
-    recommendation = "Profil kamu sangat solid untuk beasiswa Full Ride dunia & Need-Blind US! Maksimalkan narasi esai dan LoR yang tajam.";
-    badgeColor = "border-brand-500 text-brand-400 bg-brand-500/10";
-  } else if (gpa >= 88 && (sat >= 1400 || ielts >= 7.0)) {
-    matchTier = "🎯 High Match Tier (Toronto Pearson, KAIST, HKU, MEXT Gakubu, GKS Korea)";
-    recommendation = "Peluang kamu sangat tinggi di kampus riset top Asia, Kanada, dan Beasiswa Pemerintah. Naikkan skor SAT Math ke 750+ untuk booster ekstra.";
-    badgeColor = "border-brand-accent text-brand-accent bg-brand-accent/10";
-  } else if (gpa >= 83 && ielts >= 6.0) {
-    matchTier = "🇮🇩 Top Match Tier (IUP UGM, KKI UI, IUP ITB, Türkiye Bursları, Hungaria)";
-    recommendation = "Profil kamu sangat ideal untuk menembus Gelombang 1 IUP PTN ternama (UGM, UI, ITB) atau beasiswa pemerintah Turki & Hungaria.";
-    badgeColor = "border-amber-400 text-amber-400 bg-amber-400/10";
+  if (track === 'ptln') {
+    if (viewPtln) viewPtln.classList.remove("hidden");
+    if (viewIup) viewIup.classList.add("hidden");
+    if (btnPtln) btnPtln.className = "flex-1 py-2.5 px-4 text-xs font-bold rounded-xl bg-amber-800 text-white shadow-sm transition";
+    if (btnIup) btnIup.className = "flex-1 py-2.5 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
   } else {
-    matchTier = "📚 Building Phase (Perlu Penguatan Rapor & Tes Standar)";
-    recommendation = "Fokus naikkan rata-rata nilai rapor di semester berjalan dan mulai latihan rutin Khan Academy SAT & kosakata harian.";
-    badgeColor = "border-purple-400 text-purple-400 bg-purple-400/10";
+    if (viewPtln) viewPtln.classList.add("hidden");
+    if (viewIup) viewIup.classList.remove("hidden");
+    if (btnPtln) btnPtln.className = "flex-1 py-2.5 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
+    if (btnIup) btnIup.className = "flex-1 py-2.5 px-4 text-xs font-bold rounded-xl bg-blue-700 text-white shadow-sm transition";
   }
 
-  resultBox.className = `p-4 rounded-xl border mt-4 text-xs ${badgeColor}`;
-  resultBox.innerHTML = `
-    <p class="font-bold text-sm mb-1">${matchTier}</p>
-    <p class="text-slate-300 leading-relaxed">${recommendation}</p>
-  `;
-  resultBox.classList.remove("hidden");
-
-  logActivity("PROFILE_CALCULATOR", `GPA: ${gpa}, SAT: ${sat}, IELTS: ${ielts}`);
+  logActivity("SWITCH_ROADMAP", `Melihat Jalur: ${track.toUpperCase()}`);
 }
 
-// ==========================================
-// ESSAY DRAFT SUBMISSION & EMAIL FORWARDING
-// ==========================================
-async function submitEssayDraft(e) {
-  e.preventDefault();
-  if (!STATE.currentUser) return;
-
-  const essayTitle = document.getElementById("draft-title").value.trim();
-  const essayType = document.getElementById("draft-type").value;
-  const gdocLink = document.getElementById("draft-link").value.trim();
-  const notes = document.getElementById("draft-notes").value.trim();
-  const alertBox = document.getElementById("draft-alert");
-  const submitBtn = document.getElementById("btn-submit-draft");
-
-  if (!gdocLink.includes("docs.google.com")) {
-    alertBox.textContent = "Mohon masukkan tautan Google Docs yang valid (pastikan setting 'Anyone with the link can comment').";
-    alertBox.className = "p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs text-center";
-    alertBox.classList.remove("hidden");
-    return;
-  }
-
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mengirimkan ke Email Mentor...`;
-
-  const draftEntry = {
-    id: "draft_" + Date.now(),
-    timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-    studentName: STATE.currentUser.name,
-    studentEmail: STATE.currentUser.email || "-",
-    studentId: STATE.currentUser.id,
-    grade: STATE.currentUser.grade,
-    title: essayTitle,
-    type: essayType,
-    link: gdocLink,
-    notes: notes,
-    status: "Terkirim ke Email Mentor"
-  };
-
-  const allDrafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
-  allDrafts.unshift(draftEntry);
-  localStorage.setItem("ngambis_submitted_drafts", JSON.stringify(allDrafts));
-
-  try {
-    const payload = {
-      student_name: STATE.currentUser.name,
-      student_email: STATE.currentUser.email || "Tidak tertera",
-      student_grade: STATE.currentUser.grade,
-      essay_title: essayTitle,
-      essay_type: essayType,
-      google_docs_link: gdocLink,
-      notes_from_student: notes || "Tidak ada catatan tambahan.",
-      submission_time: draftEntry.timestamp,
-      _subject: `🚨 [Ngambis Bareng] Draft Esai Baru: ${STATE.currentUser.name} (${essayTitle})`,
-      _replyto: STATE.currentUser.email || MENTOR_EMAIL
-    };
-
-    await fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
-      method: "POST",
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (GOOGLE_SCRIPT_URL) {
-      try {
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "submit_essay",
-            student_name: STATE.currentUser.name,
-            student_email: STATE.currentUser.email || "-",
-            student_grade: STATE.currentUser.grade,
-            essay_title: essayTitle,
-            essay_type: essayType,
-            google_docs_link: gdocLink,
-            notes: notes
-          })
-        });
-      } catch (e) {}
-    }
-  } catch (err) {
-    console.warn("Direct email dispatch note:", err);
-  }
-
-  submitBtn.disabled = false;
-  submitBtn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> <span>Kirim Draft ke Email Mentor</span>`;
-
-  alertBox.className = "p-3.5 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs text-center";
-  alertBox.innerHTML = `✅ <strong>Berhasil Terkirim!</strong> Draft esaimu telah dikirimkan langsung ke email Mentor (<em>${MENTOR_EMAIL}</em>) untuk direview.`;
-  alertBox.classList.remove("hidden");
-
-  logActivity("DRAFT_SUBMITTED", `Judul: ${essayTitle} (${essayType})`);
-
-  document.getElementById("draft-form").reset();
-  loadSavedDrafts();
-  if (window.lucide) lucide.createIcons();
-}
-
-function loadSavedDrafts() {
-  const container = document.getElementById("student-draft-list");
-  if (!container || !STATE.currentUser) return;
-
-  const allDrafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
-  const myDrafts = allDrafts.filter(d => d.studentId === STATE.currentUser.id || (STATE.currentUser.email && d.studentEmail === STATE.currentUser.email));
-
-  if (myDrafts.length === 0) {
-    container.innerHTML = `<p class="text-xs text-slate-500 italic">Kamu belum pernah mengirimkan draft esai.</p>`;
-    return;
-  }
-
-  container.innerHTML = myDrafts.map(d => `
-    <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div class="min-w-0">
-        <div class="flex items-center gap-2 mb-1 flex-wrap">
-          <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-brand-400 font-semibold">${d.type}</span>
-          <p class="font-bold text-white text-xs truncate">${d.title}</p>
-        </div>
-        <p class="text-[11px] text-slate-400">Dikirim: ${d.timestamp}</p>
-      </div>
-      <div class="flex items-center gap-2 self-start sm:self-center">
-        <a href="${d.link}" target="_blank" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs text-brand-accent rounded-lg border border-slate-700 flex items-center gap-1">
-          Buka Docs <i data-lucide="external-link" class="w-3 h-3"></i>
-        </a>
-        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-          ${d.status}
-        </span>
-      </div>
-    </div>
-  `).join("");
-
-  if (window.lucide) lucide.createIcons();
-}
-
-function renderSubmittedDraftsAdmin() {
-  const container = document.getElementById("admin-draft-stream");
-  if (!container) return;
-
-  const allDrafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
-  if (allDrafts.length === 0) {
-    container.innerHTML = `<p class="text-xs text-slate-500">Belum ada draft esai dari siswa yang masuk.</p>`;
-    return;
-  }
-
-  container.innerHTML = allDrafts.map(d => `
-    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div class="min-w-0">
-        <div class="flex items-center gap-2 mb-1 flex-wrap">
-          <span class="text-[10px] font-bold text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded">${d.grade}</span>
-          <span class="font-bold text-white text-xs">${d.studentName}</span>
-          <span class="text-brand-accent text-xs font-mono">(${d.studentEmail || 'No Email'})</span>
-          <span class="text-slate-500 text-xs">•</span>
-          <span class="text-xs text-slate-300 font-semibold">${d.title}</span>
-        </div>
-        <p class="text-[11px] text-slate-400">Waktu: ${d.timestamp} | Catatan Siswa: "${d.notes || 'Tidak ada catatan'}"</p>
-      </div>
-      <div class="flex items-center gap-2">
-        <a href="${d.link}" target="_blank" class="px-3.5 py-2 bg-brand-500 hover:bg-brand-600 text-slate-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-brand-500/20">
-          Buka Docs & Beri Koreksi <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-        </a>
-      </div>
-    </div>
-  `).join("");
-
-  if (window.lucide) lucide.createIcons();
-}
-
-// ==========================================
-// REGISTERED STUDENTS DIRECTORY (AUTO-SYNC & MENTOR DIRECTORY)
-// ==========================================
-function getRegisteredStudents() {
-  let registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
-  const logs = JSON.parse(localStorage.getItem("ngambis_activity_logs") || "[]");
-  const drafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
-  let modified = false;
-
-  // Auto-backfill students recorded in activity logs (e.g. from previous tests)
-  logs.forEach(log => {
-    if (log.studentName && !log.studentName.toLowerCase().includes("mentor") && log.studentName !== "Guest" && log.studentName !== "-") {
-      const email = (log.studentEmail && log.studentEmail !== "-") 
-        ? log.studentEmail.toLowerCase() 
-        : `${log.studentName.toLowerCase().replace(/[^a-z0-9]/g, '')}@student.ngambis`;
-      
-      const exists = registeredUsers.some(u => 
-        (u.email && u.email.toLowerCase() === email) || 
-        (u.name && u.name.toLowerCase() === log.studentName.toLowerCase())
-      );
-
-      if (!exists) {
-        registeredUsers.push({
-          id: log.studentId || "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
-          name: log.studentName,
-          email: email,
-          grade: log.grade || "Kelas 12",
-          password: "SUCCESS2026",
-          registeredAt: log.timestamp || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-          role: "STUDENT"
-        });
-        modified = true;
-      }
-    }
-  });
-
-  // Auto-backfill students from submitted drafts if missing
-  drafts.forEach(draft => {
-    if (draft.studentName && !draft.studentName.toLowerCase().includes("mentor")) {
-      const email = (draft.studentEmail && draft.studentEmail !== "-") 
-        ? draft.studentEmail.toLowerCase() 
-        : `${draft.studentName.toLowerCase().replace(/[^a-z0-9]/g, '')}@student.ngambis`;
-
-      const exists = registeredUsers.some(u => 
-        (u.email && u.email.toLowerCase() === email) || 
-        (u.name && u.name.toLowerCase() === draft.studentName.toLowerCase())
-      );
-
-      if (!exists) {
-        registeredUsers.push({
-          id: draft.studentId || "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
-          name: draft.studentName,
-          email: email,
-          grade: draft.grade || "Kelas 12",
-          password: "SUCCESS2026",
-          registeredAt: draft.timestamp || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-          role: "STUDENT"
-        });
-        modified = true;
-      }
-    }
-  });
-
-  if (modified) {
-    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-  }
-
-  return registeredUsers;
-}
-
-function renderRegisteredStudentsAdmin() {
-  const tbody = document.getElementById("admin-students-body");
-  if (!tbody) return;
-
-  const registeredUsers = getRegisteredStudents();
-  if (registeredUsers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada siswa yang mendaftar. Klik '+ Tambah Siswa Manual' jika ingin menambahkan akun.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = registeredUsers.map((s, idx) => `
-    <tr class="hover:bg-slate-800/40 transition">
-      <td class="p-3 text-slate-400 font-mono">${idx + 1}</td>
-      <td class="p-3 font-semibold text-white">
-        ${s.name}
-      </td>
-      <td class="p-3 font-mono text-brand-accent text-xs">
-        <a href="mailto:${s.email}" class="hover:underline inline-flex items-center gap-1">
-          ${s.email} <i data-lucide="mail" class="w-3 h-3"></i>
-        </a>
-      </td>
-      <td class="p-3 text-slate-300">
-        <span class="px-2 py-0.5 rounded bg-slate-800 text-[11px] font-medium border border-slate-700">
-          ${s.grade}
-        </span>
-      </td>
-      <td class="p-3 text-slate-400 text-[11px] font-mono">${s.registeredAt || '-'}</td>
-      <td class="p-3 text-right">
-        <button onclick="deleteStudentAdmin('${s.email}')" class="px-2.5 py-1 text-[11px] bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg border border-red-500/30 transition inline-flex items-center gap-1">
-          <i data-lucide="trash-2" class="w-3 h-3"></i> Hapus
-        </button>
-      </td>
-    </tr>
-  `).join("");
-
-  if (window.lucide) lucide.createIcons();
-}
-
-function toggleAddStudentForm() {
-  const form = document.getElementById("manual-student-form");
-  if (form) form.classList.toggle("hidden");
-}
-
-function addManualStudent() {
-  const nameInput = document.getElementById("manual-std-name");
-  const emailInput = document.getElementById("manual-std-email");
-  const gradeInput = document.getElementById("manual-std-grade");
-
-  const name = (nameInput.value || "").trim();
-  const email = (emailInput.value || "").trim().toLowerCase();
-  const grade = gradeInput.value;
-
-  if (!name || !email) {
-    alert("Mohon lengkapi nama dan email siswa!");
-    return;
-  }
-
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(email)) {
-    alert("Format email tidak valid (contoh: siswa@gmail.com)!");
-    return;
-  }
-
-  let registeredUsers = getRegisteredStudents();
-  if (registeredUsers.some(u => u.email === email)) {
-    alert("Email ini sudah terdaftar dalam database!");
-    return;
-  }
-
-  const newStudent = {
-    id: "std_" + Date.now(),
-    name: name,
-    email: email,
-    grade: grade,
-    password: "SUCCESS2026",
-    registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Manual)",
-    role: "STUDENT"
-  };
-
-  registeredUsers.push(newStudent);
-  localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-  pushCloudStudents(registeredUsers);
-
-  nameInput.value = "";
-  emailInput.value = "";
-  toggleAddStudentForm();
-
-  renderRegisteredStudentsAdmin();
-  updateAnalyticsStats();
-  alert(`✅ Akun siswa '${name}' (${email}) berhasil didaftarkan secara manual! Password default: SUCCESS2026`);
-}
-
-function deleteStudentAdmin(email) {
-  if (confirm(`Apakah kamu yakin ingin menghapus akun siswa '${email}' dari database?`)) {
-    let registeredUsers = getRegisteredStudents().filter(u => u.email !== email);
-    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-    pushCloudStudents(registeredUsers);
-    renderRegisteredStudentsAdmin();
-    updateAnalyticsStats();
-  }
-}
-
-function exportStudentsCSV() {
-  const registeredUsers = getRegisteredStudents();
-  if (registeredUsers.length === 0) {
-    alert("Belum ada data siswa untuk diexport!");
-    return;
-  }
-
-  let csvContent = "data:text/csv;charset=utf-8,No,Nama Lengkap,Email,Kelas,Waktu Daftar\n";
-  registeredUsers.forEach((s, idx) => {
-    csvContent += `"${idx+1}","${s.name}","${s.email}","${s.grade}","${s.registeredAt || ''}"\n`;
-  });
-
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `Ngambis_Bareng_Database_Email_Siswa_${new Date().toISOString().slice(0, 10)}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-// ==========================================
-// MENTOR PASSCODE MANAGEMENT
-// ==========================================
-function renderPasscodesInAdmin() {
-  const container = document.getElementById("admin-passcodes-list");
-  if (!container) return;
-
-  container.innerHTML = STATE.registrationPasscodes.map(p => `
-    <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-brand-400 flex items-center gap-1.5">
-      <span>${p}</span>
-      <button onclick="removeStudentPasscode('${p}')" class="text-slate-500 hover:text-red-400 ml-1">×</button>
-    </span>
-  `).join("");
-}
-
-function addStudentPasscode() {
-  const input = document.getElementById("new-student-passcode");
-  const code = (input.value || "").trim().toUpperCase();
-  if (!code) return;
-
-  if (!STATE.registrationPasscodes.includes(code)) {
-    STATE.registrationPasscodes.push(code);
-    localStorage.setItem("ngambis_student_passcodes", JSON.stringify(STATE.registrationPasscodes));
-    renderPasscodesInAdmin();
-    input.value = "";
-    alert(`✅ Passcode pendaftaran '${code}' berhasil ditambahkan!`);
-  }
-}
-
-function removeStudentPasscode(code) {
-  if (confirm(`Hapus passcode '${code}'?`)) {
-    STATE.registrationPasscodes = STATE.registrationPasscodes.filter(p => p !== code);
-    localStorage.setItem("ngambis_student_passcodes", JSON.stringify(STATE.registrationPasscodes));
-    renderPasscodesInAdmin();
-  }
-}
-
-// ==========================================
-// TEMPLATE COPY-TO-CLIPBOARD FUNCTION
-// ==========================================
-function copyTemplate(templateId) {
-  const textEl = document.getElementById(templateId);
-  if (!textEl) return;
-
-  navigator.clipboard.writeText(textEl.innerText).then(() => {
-    alert("✅ Template berhasil disalin ke clipboard!");
-    logActivity("COPY_TEMPLATE", `Template: ${templateId}`);
-  });
-}
-
-// ==========================================
-// MILESTONE & ROADMAP TRACKER
-// ==========================================
 function toggleMilestone(milestoneId) {
   if (!STATE.currentUser) return;
   const checkbox = document.getElementById(`ms-${milestoneId}`);
+  if (!checkbox) return;
+
   const key = `progress_${STATE.currentUser.id || STATE.currentUser.email}`;
   let userProgress = JSON.parse(localStorage.getItem(key) || "{}");
 
@@ -1174,54 +852,214 @@ function loadMilestoneProgress() {
 }
 
 function updateProgressPercentage(userProgress) {
-  const totalMilestones = 12; // 4 items per class x 3 classes
+  const totalMilestones = 12;
   const completed = Object.values(userProgress).filter(Boolean).length;
   const percentage = Math.round((completed / totalMilestones) * 100);
 
   const textEl = document.getElementById("overall-progress-text");
   const barEl = document.getElementById("overall-progress-bar");
 
-  if (textEl) textEl.textContent = `${percentage}% Selesai (${completed}/${totalMilestones})`;
+  if (textEl) textEl.textContent = `${percentage}% Capaian (${completed}/${totalMilestones} Target)`;
   if (barEl) barEl.style.width = `${percentage}%`;
 }
 
 // ==========================================
-// SCHOLARSHIP DATABASE & FILTERING
+// COMPETITION FEED & MENTOR MANAGER
+// ==========================================
+function getAllCompetitions() {
+  const custom = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+  return [...custom, ...STATE.competitions];
+}
+
+function renderCompetitions(items = null) {
+  const container = document.getElementById("competition-grid");
+  if (!container) return;
+
+  const list = items || getAllCompetitions();
+  if (list.length === 0) {
+    container.innerHTML = `<div class="col-span-full p-8 text-center bg-white rounded-2xl border border-stone-200 text-stone-500">Belum ada info lomba yang tersedia.</div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(c => `
+    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+      <div>
+        <div class="h-44 w-full bg-stone-100 relative overflow-hidden">
+          <img src="${sanitizeHTML(c.image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800')}" alt="${sanitizeHTML(c.title)}" class="w-full h-full object-cover">
+          <div class="absolute top-3 left-3">
+            <span class="text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider ${c.badgeColor || 'bg-amber-100 text-amber-800 border border-amber-300'}">
+              ${sanitizeHTML(c.category)}
+            </span>
+          </div>
+          <div class="absolute bottom-3 right-3">
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-stone-900/80 text-white backdrop-blur-sm">
+              ⏳ ${sanitizeHTML(c.deadline)}
+            </span>
+          </div>
+        </div>
+
+        <div class="p-5">
+          <h3 class="text-base font-bold text-stone-900 mb-1 leading-snug">${sanitizeHTML(c.title)}</h3>
+          <p class="text-xs font-semibold text-amber-800 mb-3">${sanitizeHTML(c.organizer)}</p>
+          <p class="text-xs text-stone-600 mb-3 line-clamp-3 leading-relaxed">${sanitizeHTML(c.description)}</p>
+          
+          <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-200/70 text-[11px] text-amber-900 mb-2">
+            <strong>💎 Benefit / Prestasi:</strong> ${sanitizeHTML(c.perks)}
+          </div>
+        </div>
+      </div>
+
+      <div class="p-5 pt-0">
+        <a href="${sanitizeHTML(c.link)}" target="_blank" rel="noopener noreferrer" onclick="logActivity('COMPETITION_LINK', '${sanitizeHTML(c.title)}')" class="w-full py-2 px-3 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+          <span>Kunjungi Website Resmi & Daftar</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  `).join("");
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function filterCompetitions() {
+  const query = (document.getElementById("comp-search").value || "").toLowerCase();
+  const category = document.getElementById("comp-cat-filter").value;
+  const all = getAllCompetitions();
+
+  const filtered = all.filter(c => {
+    const matchQ = c.title.toLowerCase().includes(query) || c.organizer.toLowerCase().includes(query) || c.description.toLowerCase().includes(query);
+    const matchCat = category === "ALL" || c.category === category;
+    return matchQ && matchCat;
+  });
+
+  renderCompetitions(filtered);
+}
+
+function handleCompetitionImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById("new-comp-image-preview").src = e.target.result;
+    document.getElementById("new-comp-image-preview").classList.remove("hidden");
+    document.getElementById("new-comp-image-data").value = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function addNewCompetitionByMentor(e) {
+  e.preventDefault();
+  const title = document.getElementById("new-comp-title").value.trim();
+  const organizer = document.getElementById("new-comp-organizer").value.trim();
+  const category = document.getElementById("new-comp-category").value;
+  const deadline = document.getElementById("new-comp-deadline").value.trim();
+  const perks = document.getElementById("new-comp-perks").value.trim();
+  const description = document.getElementById("new-comp-desc").value.trim();
+  const link = document.getElementById("new-comp-link").value.trim();
+  const imageData = document.getElementById("new-comp-image-data").value || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800";
+
+  if (!title || !organizer || !link) {
+    alert("Mohon lengkapi judul lomba, penyelenggara, dan link pendaftaran!");
+    return;
+  }
+
+  const newComp = {
+    id: "custom_comp_" + Date.now(),
+    title: title,
+    organizer: organizer,
+    category: category,
+    deadline: deadline || "Informasi di Website",
+    perks: perks || "Sertifikat Prestasi & Portofolio",
+    description: description || "Lomba terkurasi untuk pembinaan siswa Ngambis Bareng.",
+    link: link,
+    image: imageData,
+    badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+  };
+
+  const currentCustom = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+  currentCustom.unshift(newComp);
+  localStorage.setItem("ngambis_custom_competitions", JSON.stringify(currentCustom));
+  pushCloudCompetitions(currentCustom);
+
+  document.getElementById("form-add-competition").reset();
+  document.getElementById("new-comp-image-preview").classList.add("hidden");
+  document.getElementById("new-comp-image-data").value = "";
+
+  renderCompetitions();
+  renderAdminCompetitions();
+  alert(`✅ Lomba '${title}' berhasil dipublikasikan ke seluruh siswa!`);
+}
+
+function deleteCompetitionByMentor(id) {
+  if (confirm("Hapus info lomba ini dari portal siswa?")) {
+    let currentCustom = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+    currentCustom = currentCustom.filter(c => c.id !== id);
+    localStorage.setItem("ngambis_custom_competitions", JSON.stringify(currentCustom));
+    pushCloudCompetitions(currentCustom);
+    renderCompetitions();
+    renderAdminCompetitions();
+  }
+}
+
+function renderAdminCompetitions() {
+  const container = document.getElementById("admin-competitions-list");
+  if (!container) return;
+
+  const list = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+  if (list.length === 0) {
+    container.innerHTML = `<p class="text-xs text-stone-500 italic">Belum ada lomba custom yang kamu tambahkan.</p>`;
+    return;
+  }
+
+  container.innerHTML = list.map(c => `
+    <div class="p-3 bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <p class="font-bold text-xs text-stone-900 truncate">${sanitizeHTML(c.title)}</p>
+        <p class="text-[11px] text-stone-500">${sanitizeHTML(c.organizer)} • <span class="text-amber-800 font-semibold">${sanitizeHTML(c.category)}</span></p>
+      </div>
+      <button onclick="deleteCompetitionByMentor('${c.id}')" class="px-2.5 py-1 text-[11px] bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg border border-red-300 transition">
+        Hapus
+      </button>
+    </div>
+  `).join("");
+}
+
+// ==========================================
+// SCHOLARSHIP & DEADLINE RENDERING
 // ==========================================
 function renderScholarships(items = STATE.scholarships) {
   const grid = document.getElementById("scholarship-grid");
   if (!grid) return;
 
   grid.innerHTML = items.map(s => `
-    <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition">
+    <div class="p-5 rounded-2xl bg-white border border-stone-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
       <div>
         <div class="flex items-center justify-between gap-2 mb-2">
           <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${s.badgeColor}">
             ${s.country}
           </span>
-          <span class="text-[11px] text-slate-400 font-medium">${s.deadline}</span>
+          <span class="text-[11px] text-stone-500 font-medium">⏳ ${s.deadline}</span>
         </div>
 
-        <h3 class="text-sm font-bold text-white mb-1 leading-snug">${s.title}</h3>
-        <p class="text-xs text-brand-400 font-medium mb-3">${s.provider}</p>
+        <h3 class="text-sm font-bold text-stone-900 mb-1 leading-snug">${s.title}</h3>
+        <p class="text-xs text-amber-800 font-semibold mb-3">${s.provider}</p>
 
-        <div class="space-y-2 text-xs text-slate-300">
-          <p><strong class="text-slate-400">Coverage:</strong> ${s.coverage}</p>
-          <p><strong class="text-slate-400">Syarat Inti:</strong> ${s.requirements}</p>
+        <div class="space-y-2 text-xs text-stone-700">
+          <p><strong class="text-stone-900">Coverage:</strong> ${s.coverage}</p>
+          <p><strong class="text-stone-900">Syarat Inti:</strong> ${s.requirements}</p>
         </div>
       </div>
 
-      <div class="pt-4 mt-4 border-t border-slate-800 flex items-center justify-between">
-        <a href="${s.link}" target="_blank" rel="noopener noreferrer" onclick="logActivity('SCHOLARSHIP_LINK', '${s.title}')" class="text-xs text-brand-400 hover:text-brand-300 font-medium inline-flex items-center gap-1">
+      <div class="pt-4 mt-4 border-t border-stone-100 flex items-center justify-between">
+        <a href="${s.link}" target="_blank" rel="noopener noreferrer" onclick="logActivity('SCHOLARSHIP_LINK', '${s.title}')" class="text-xs text-amber-800 hover:text-amber-900 font-bold inline-flex items-center gap-1">
           Kunjungi Website Resmi <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
       </div>
     </div>
   `).join("");
 
-  if (window.lucide) {
-    lucide.createIcons();
-  }
+  if (window.lucide) lucide.createIcons();
 }
 
 function filterScholarships() {
@@ -1239,8 +1077,479 @@ function filterScholarships() {
   renderScholarships(filtered);
 }
 
+function renderDeadlines() {
+  const container = document.getElementById("deadlines-container");
+  if (!container) return;
+
+  const now = new Date();
+  container.innerHTML = STATE.deadlines.map(d => {
+    const deadlineDate = new Date(d.date);
+    const diffTime = deadlineDate - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    let badgeStatus = "";
+    if (diffDays > 0) {
+      badgeStatus = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 whitespace-nowrap">${diffDays} Hari Lagi</span>`;
+    } else {
+      badgeStatus = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 border border-stone-300 whitespace-nowrap">Siklus Ditutup</span>`;
+    }
+
+    return `
+      <div class="p-3 rounded-xl bg-white border border-stone-200 shadow-sm flex items-center justify-between gap-3">
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="text-[9px] bg-stone-100 px-1.5 py-0.5 rounded text-stone-600 font-semibold uppercase truncate">${d.category}</span>
+          </div>
+          <p class="font-bold text-stone-900 text-xs truncate">${d.name}</p>
+          <p class="text-[10px] text-stone-500">${deadlineDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+        </div>
+        ${badgeStatus}
+      </div>
+    `;
+  }).join("");
+}
+
 // ==========================================
-// ACTIVITY LOGGING & ANALYTICS ENGINE
+// PROFILE MATCH SIMULATOR (WITH TOEFL ITP)
+// ==========================================
+function calculateProfileChance() {
+  const gpa = parseFloat(document.getElementById("calc-gpa").value) || 0;
+  const sat = parseInt(document.getElementById("calc-sat").value) || 0;
+  const ielts = parseFloat(document.getElementById("calc-ielts").value) || 0;
+  const toeflItp = parseInt(document.getElementById("calc-toefl-itp").value) || 0;
+  const target = document.getElementById("calc-target-track").value;
+  const spike = document.getElementById("calc-spike").value;
+  const resultBox = document.getElementById("calc-result");
+
+  let matchTier = "";
+  let recommendation = "";
+  let badgeColor = "";
+
+  // 1. Check IUP PTN Track with TOEFL ITP Guidelines
+  if (target === "IUP_FK") {
+    if (toeflItp >= 550 || ielts >= 6.5) {
+      matchTier = "🩺 Lolos Standar Fakultas Kedokteran IUP (FK UGM, KKI UI, IUP UNAIR)";
+      recommendation = `Skor TOEFL ITP kamu (${toeflItp}) / IELTS (${ielts}) telah melampaui batas minimal 550 untuk FK IUP! Maksimalkan latihan tes GMST/SIMAK IPA dan persiapan Mini Multiple Interview (MMI).`;
+      badgeColor = "border-emerald-300 text-emerald-900 bg-emerald-50";
+    } else {
+      matchTier = "⚠️ Di Bawah Standar Khusus FK IUP (Minimal 550 TOEFL ITP)";
+      recommendation = `Skor TOEFL ITP kamu (${toeflItp}) masih di bawah standar 550 untuk Kedokteran IUP. Ambil program intensif Structure & Reading TOEFL ITP untuk mencapai target 550+.`;
+      badgeColor = "border-red-300 text-red-900 bg-red-50";
+    }
+  } else if (target === "IUP_REGULAR") {
+    if (toeflItp >= 500 || ielts >= 5.5) {
+      matchTier = "🇮🇩 Lolos Standar IUP Umum (UGM, ITB, UI KKI, UNAIR, ITS)";
+      recommendation = `Skor TOEFL ITP kamu (${toeflItp}) sudah memenuhi syarat minimal pendaftaran Gelombang 1 IUP PTN (min. 500). Fokus pada tes potensi akademik (GMST/AQAS/TPA).`;
+      badgeColor = "border-blue-300 text-blue-900 bg-blue-50";
+    } else {
+      matchTier = "⚠️ Di Bawah Standar IUP Umum (Minimal 500 TOEFL ITP)";
+      recommendation = `Skor TOEFL ITP kamu (${toeflItp}) masih di bawah batas aman 500. Lakukan simulasi berkala untuk mengejar min. 500 sebelum pendaftaran Gelombang 1 dibuka.`;
+      badgeColor = "border-amber-300 text-amber-900 bg-amber-50";
+    }
+  } else {
+    // PTLN Global Track
+    if (gpa >= 92 && sat >= 1500 && ielts >= 7.5 && spike === "national_gold") {
+      matchTier = "🌟 Super Competitive Tier (Ivy League / MIT / Oxford / Cambridge / NUS ASEAN)";
+      recommendation = "Profil kamu sangat solid untuk beasiswa Full Ride dunia & Need-Blind US! Maksimalkan narasi esai dan LoR yang tajam.";
+      badgeColor = "border-purple-300 text-purple-900 bg-purple-50";
+    } else if (gpa >= 88 && (sat >= 1400 || ielts >= 7.0)) {
+      matchTier = "🎯 High Match Tier (Toronto Pearson, KAIST, HKU, MEXT Gakubu, GKS Korea)";
+      recommendation = "Peluang kamu sangat tinggi di kampus riset top Asia, Kanada, dan Beasiswa Pemerintah. Naikkan skor SAT Math ke 750+ untuk booster ekstra.";
+      badgeColor = "border-blue-300 text-blue-900 bg-blue-50";
+    } else {
+      matchTier = "📚 Building Phase (Perlu Penguatan Rapor & Tes Standar)";
+      recommendation = "Fokus naikkan rata-rata nilai rapor di semester berjalan dan mulai latihan rutin Khan Academy SAT & kosakata harian.";
+      badgeColor = "border-amber-300 text-amber-900 bg-amber-50";
+    }
+  }
+
+  resultBox.className = `p-4 rounded-xl border mt-4 text-xs ${badgeColor}`;
+  resultBox.innerHTML = `
+    <p class="font-bold text-sm mb-1">${matchTier}</p>
+    <p class="leading-relaxed">${recommendation}</p>
+  `;
+  resultBox.classList.remove("hidden");
+
+  logActivity("PROFILE_CALCULATOR", `Target: ${target}, TOEFL: ${toeflItp}, GPA: ${gpa}`);
+}
+
+// ==========================================
+// ESSAY DRAFT SUBMISSION
+// ==========================================
+async function submitEssayDraft(e) {
+  e.preventDefault();
+  if (!STATE.currentUser) return;
+
+  const essayTitle = document.getElementById("draft-title").value.trim();
+  const essayType = document.getElementById("draft-type").value;
+  const gdocLink = document.getElementById("draft-link").value.trim();
+  const notes = document.getElementById("draft-notes").value.trim();
+  const alertBox = document.getElementById("draft-alert");
+  const submitBtn = document.getElementById("btn-submit-draft");
+
+  if (!gdocLink.includes("docs.google.com")) {
+    alertBox.textContent = "Mohon masukkan tautan Google Docs yang valid (pastikan setting 'Anyone with the link can comment').";
+    alertBox.className = "p-3 rounded-lg bg-red-100 border border-red-300 text-red-800 text-xs text-center";
+    alertBox.classList.remove("hidden");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mengirimkan ke Mentor...`;
+
+  const draftEntry = {
+    id: "draft_" + Date.now(),
+    timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+    studentName: STATE.currentUser.name,
+    studentEmail: STATE.currentUser.email || "-",
+    studentId: STATE.currentUser.id,
+    grade: STATE.currentUser.grade,
+    title: essayTitle,
+    type: essayType,
+    link: gdocLink,
+    notes: notes,
+    status: "Terkirim ke Mentor"
+  };
+
+  const allDrafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
+  allDrafts.unshift(draftEntry);
+  localStorage.setItem("ngambis_submitted_drafts", JSON.stringify(allDrafts));
+
+  try {
+    const payload = {
+      student_name: STATE.currentUser.name,
+      student_email: STATE.currentUser.email || "Tidak tertera",
+      student_grade: STATE.currentUser.grade,
+      essay_title: essayTitle,
+      essay_type: essayType,
+      google_docs_link: gdocLink,
+      notes_from_student: notes || "Tidak ada catatan tambahan.",
+      submission_time: draftEntry.timestamp,
+      _subject: `🚨 [Ngambis Bareng] Draft Esai Baru: ${STATE.currentUser.name} (${essayTitle})`,
+      _replyto: STATE.currentUser.email || MENTOR_EMAIL
+    };
+
+    await fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (GOOGLE_SCRIPT_URL) {
+      try {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "submit_essay",
+            student_name: STATE.currentUser.name,
+            student_email: STATE.currentUser.email || "-",
+            student_grade: STATE.currentUser.grade,
+            essay_title: essayTitle,
+            essay_type: essayType,
+            google_docs_link: gdocLink,
+            notes: notes
+          })
+        });
+      } catch (e) {}
+    }
+  } catch (err) {}
+
+  submitBtn.disabled = false;
+  submitBtn.innerHTML = `<span>Kirim Draft ke Mentor</span> <i data-lucide="upload-cloud" class="w-4 h-4"></i>`;
+
+  alertBox.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs text-center";
+  alertBox.innerHTML = `✅ <strong>Berhasil Terkirim!</strong> Draft esaimu telah masuk ke antrean review Mentor Maesa (<em>${MENTOR_EMAIL}</em>).`;
+  alertBox.classList.remove("hidden");
+
+  logActivity("DRAFT_SUBMITTED", `Judul: ${essayTitle} (${essayType})`);
+  document.getElementById("draft-form").reset();
+  loadSavedDrafts();
+  if (window.lucide) lucide.createIcons();
+}
+
+function loadSavedDrafts() {
+  const container = document.getElementById("student-draft-list");
+  if (!container || !STATE.currentUser) return;
+
+  const allDrafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
+  const myDrafts = allDrafts.filter(d => d.studentId === STATE.currentUser.id || (STATE.currentUser.email && d.studentEmail === STATE.currentUser.email));
+
+  if (myDrafts.length === 0) {
+    container.innerHTML = `<p class="text-xs text-stone-500 italic">Kamu belum pernah mengirimkan draft esai.</p>`;
+    return;
+  }
+
+  container.innerHTML = myDrafts.map(d => `
+    <div class="p-3.5 rounded-xl bg-white border border-stone-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="text-[10px] bg-stone-100 px-2 py-0.5 rounded text-stone-700 font-semibold">${sanitizeHTML(d.type)}</span>
+          <p class="font-bold text-stone-900 text-xs truncate">${sanitizeHTML(d.title)}</p>
+        </div>
+        <p class="text-[11px] text-stone-500">Dikirim: ${d.timestamp}</p>
+      </div>
+      <div class="flex items-center gap-2 self-start sm:self-center">
+        <a href="${sanitizeHTML(d.link)}" target="_blank" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-xs text-stone-800 rounded-lg border border-stone-300 flex items-center gap-1 font-semibold">
+          Buka Docs <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+          ${d.status}
+        </span>
+      </div>
+    </div>
+  `).join("");
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderSubmittedDraftsAdmin() {
+  const container = document.getElementById("admin-draft-stream");
+  if (!container) return;
+
+  const allDrafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
+  if (allDrafts.length === 0) {
+    container.innerHTML = `<p class="text-xs text-stone-500 italic">Belum ada draft esai dari siswa yang masuk.</p>`;
+    return;
+  }
+
+  container.innerHTML = allDrafts.map(d => `
+    <div class="p-4 rounded-xl bg-white border border-stone-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">${sanitizeHTML(d.grade)}</span>
+          <span class="font-bold text-stone-900 text-xs">${sanitizeHTML(d.studentName)}</span>
+          <span class="text-stone-500 text-xs font-mono">(${sanitizeHTML(d.studentEmail)})</span>
+          <span class="text-stone-300 text-xs">•</span>
+          <span class="text-xs text-amber-900 font-semibold">${sanitizeHTML(d.title)}</span>
+        </div>
+        <p class="text-[11px] text-stone-500">Waktu: ${d.timestamp} | Catatan: "${sanitizeHTML(d.notes || 'Tidak ada catatan')}"</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="${sanitizeHTML(d.link)}" target="_blank" class="px-3.5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          Buka Docs & Koreksi <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  `).join("");
+
+  if (window.lucide) lucide.createIcons();
+}
+
+// ==========================================
+// REGISTERED STUDENTS & MENTOR DIRECTORY
+// ==========================================
+function getRegisteredStudents() {
+  let registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+  const logs = JSON.parse(localStorage.getItem("ngambis_activity_logs") || "[]");
+  const drafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
+  let modified = false;
+
+  logs.forEach(log => {
+    if (log.studentName && !log.studentName.toLowerCase().includes("mentor") && log.studentName !== "Guest" && log.studentName !== "-") {
+      const email = (log.studentEmail && log.studentEmail !== "-") 
+        ? log.studentEmail.toLowerCase() 
+        : `${log.studentName.toLowerCase().replace(/[^a-z0-9]/g, '')}@student.ngambis`;
+      
+      const exists = registeredUsers.some(u => 
+        (u.email && u.email.toLowerCase() === email) || 
+        (u.name && u.name.toLowerCase() === log.studentName.toLowerCase())
+      );
+
+      if (!exists) {
+        registeredUsers.push({
+          id: log.studentId || "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
+          name: log.studentName,
+          email: email,
+          grade: log.grade || "Kelas 12",
+          registeredAt: log.timestamp || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+          role: "STUDENT"
+        });
+        modified = true;
+      }
+    }
+  });
+
+  if (modified) {
+    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+  }
+
+  return registeredUsers;
+}
+
+function renderRegisteredStudentsAdmin() {
+  const tbody = document.getElementById("admin-students-body");
+  if (!tbody) return;
+
+  const registeredUsers = getRegisteredStudents();
+  if (registeredUsers.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-500">Belum ada siswa yang mendaftar.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = registeredUsers.map((s, idx) => `
+    <tr class="hover:bg-stone-50 transition">
+      <td class="p-3 text-stone-500 font-mono">${idx + 1}</td>
+      <td class="p-3 font-semibold text-stone-900">${sanitizeHTML(s.name)}</td>
+      <td class="p-3 font-mono text-stone-700 text-xs">
+        <a href="mailto:${s.email}" class="hover:underline inline-flex items-center gap-1 text-amber-900 font-medium">
+          ${sanitizeHTML(s.email)} <i data-lucide="mail" class="w-3 h-3"></i>
+        </a>
+      </td>
+      <td class="p-3 text-stone-700">
+        <span class="px-2 py-0.5 rounded bg-stone-100 text-[11px] font-semibold border border-stone-200">
+          ${sanitizeHTML(s.grade)}
+        </span>
+      </td>
+      <td class="p-3 text-stone-500 text-[11px] font-mono">${s.registeredAt || '-'}</td>
+      <td class="p-3 text-right">
+        <button onclick="deleteStudentAdmin('${s.email}')" class="px-2.5 py-1 text-[11px] bg-red-100 hover:bg-red-200 text-red-700 rounded-lg border border-red-300 transition inline-flex items-center gap-1 font-semibold">
+          <i data-lucide="trash-2" class="w-3 h-3"></i> Hapus
+        </button>
+      </td>
+    </tr>
+  `).join("");
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function toggleAddStudentForm() {
+  const form = document.getElementById("manual-student-form");
+  if (form) form.classList.toggle("hidden");
+}
+
+function addManualStudent() {
+  const nameInput = document.getElementById("manual-std-name");
+  const emailInput = document.getElementById("manual-std-email");
+  const gradeInput = document.getElementById("manual-std-grade");
+
+  const name = (nameInput.value || "").trim();
+  const email = (emailInput.value || "").trim().toLowerCase();
+  const grade = gradeInput.value;
+
+  if (!name || !email) {
+    alert("Mohon lengkapi nama dan email siswa!");
+    return;
+  }
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(email)) {
+    alert("Format email tidak valid!");
+    return;
+  }
+
+  let registeredUsers = getRegisteredStudents();
+  if (registeredUsers.some(u => u.email === email)) {
+    alert("Email ini sudah terdaftar dalam database!");
+    return;
+  }
+
+  const newStudent = {
+    id: "std_" + Date.now(),
+    name: name,
+    email: email,
+    grade: grade,
+    registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Manual)",
+    role: "STUDENT"
+  };
+
+  registeredUsers.push(newStudent);
+  localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+  pushCloudStudents(registeredUsers);
+
+  nameInput.value = "";
+  emailInput.value = "";
+  toggleAddStudentForm();
+
+  renderRegisteredStudentsAdmin();
+  updateAnalyticsStats();
+  alert(`✅ Akun siswa '${name}' (${email}) berhasil didaftarkan secara manual!`);
+}
+
+function deleteStudentAdmin(email) {
+  if (confirm(`Hapus akun siswa '${email}' dari database?`)) {
+    let registeredUsers = getRegisteredStudents().filter(u => u.email !== email);
+    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+    pushCloudStudents(registeredUsers);
+    renderRegisteredStudentsAdmin();
+    updateAnalyticsStats();
+  }
+}
+
+function exportStudentsCSV() {
+  const registeredUsers = getRegisteredStudents();
+  if (registeredUsers.length === 0) {
+    alert("Belum ada data siswa untuk diexport!");
+    return;
+  }
+
+  let csvContent = "data:text/csv;charset=utf-8,No,Nama Lengkap,Email,Kelas,Waktu Daftar\n";
+  registeredUsers.forEach((s, idx) => {
+    csvContent += `"${idx+1}","${s.name}","${s.email}","${s.grade}","${s.registeredAt || ''}"\n`;
+  });
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `Ngambis_Bareng_Database_Siswa_${new Date().toISOString().slice(0, 10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// ==========================================
+// PASSCODE MANAGEMENT
+// ==========================================
+function renderPasscodesInAdmin() {
+  const container = document.getElementById("admin-passcodes-list");
+  if (!container) return;
+
+  container.innerHTML = STATE.registrationPasscodes.map(p => `
+    <span class="px-2.5 py-1 rounded-lg bg-stone-100 border border-stone-300 text-xs font-mono text-stone-800 flex items-center gap-1.5 font-bold">
+      <span>${p}</span>
+      <button onclick="removeStudentPasscode('${p}')" class="text-stone-400 hover:text-red-600 ml-1">×</button>
+    </span>
+  `).join("");
+}
+
+function addStudentPasscode() {
+  const input = document.getElementById("new-student-passcode");
+  const code = (input.value || "").trim().toUpperCase();
+  if (!code) return;
+
+  if (!STATE.registrationPasscodes.includes(code)) {
+    STATE.registrationPasscodes.push(code);
+    localStorage.setItem("ngambis_student_passcodes", JSON.stringify(STATE.registrationPasscodes));
+    renderPasscodesInAdmin();
+    input.value = "";
+    alert(`✅ Passcode pendaftaran '${code}' berhasil ditambahkan!`);
+  }
+}
+
+function removeStudentPasscode(code) {
+  if (confirm(`Hapus passcode '${code}'?`)) {
+    STATE.registrationPasscodes = STATE.registrationPasscodes.filter(p => p !== code);
+    localStorage.setItem("ngambis_student_passcodes", JSON.stringify(STATE.registrationPasscodes));
+    renderPasscodesInAdmin();
+  }
+}
+
+// ==========================================
+// TEMPLATE COPY FUNCTION
+// ==========================================
+function copyTemplate(templateId) {
+  const textEl = document.getElementById(templateId);
+  if (!textEl) return;
+
+  navigator.clipboard.writeText(textEl.innerText).then(() => {
+    alert("✅ Template berhasil disalin ke clipboard!");
+    logActivity("COPY_TEMPLATE", `Template: ${templateId}`);
+  });
+}
+
+// ==========================================
+// ACTIVITY LOGGING & ANALYTICS
 // ==========================================
 function logActivity(action, details, extra = "") {
   const user = STATE.currentUser || { name: "Guest", grade: "-", id: "anon", email: "-" };
@@ -1269,23 +1578,23 @@ function renderAnalyticsTable() {
 
   const logs = JSON.parse(localStorage.getItem("ngambis_activity_logs") || "[]");
   if (logs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada aktivitas tercatat.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-stone-500">Belum ada aktivitas tercatat.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = logs.slice(0, 50).map(l => `
-    <tr class="hover:bg-slate-800/40 transition">
-      <td class="p-3 text-slate-400 font-mono text-[11px] whitespace-nowrap">${l.timestamp}</td>
-      <td class="p-3 font-semibold text-white whitespace-nowrap">
-        ${l.studentName} <span class="text-[10px] text-slate-400 block">${l.studentEmail}</span>
+    <tr class="hover:bg-stone-50 transition">
+      <td class="p-3 text-stone-500 font-mono text-[11px] whitespace-nowrap">${l.timestamp}</td>
+      <td class="p-3 font-semibold text-stone-900 whitespace-nowrap">
+        ${sanitizeHTML(l.studentName)} <span class="text-[10px] text-stone-500 block">${sanitizeHTML(l.studentEmail)}</span>
       </td>
-      <td class="p-3 text-slate-400 whitespace-nowrap">${l.grade}</td>
+      <td class="p-3 text-stone-600 whitespace-nowrap">${sanitizeHTML(l.grade)}</td>
       <td class="p-3 whitespace-nowrap">
-        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-brand-400 border border-slate-700">
-          ${l.action}
+        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-stone-100 text-amber-900 border border-stone-200">
+          ${sanitizeHTML(l.action)}
         </span>
       </td>
-      <td class="p-3 text-slate-300 min-w-[200px]">${l.details}</td>
+      <td class="p-3 text-stone-700 min-w-[200px]">${sanitizeHTML(l.details)}</td>
     </tr>
   `).join("");
 }
@@ -1325,14 +1634,14 @@ function exportAnalyticsCSV() {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `Ngambis_Bareng_Activity_Log_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute("download", `Ngambis_Bareng_Log_Aktivitas_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
 
 function clearAnalyticsLog() {
-  if (confirm("Apakah kamu yakin ingin mereset seluruh riwayat aktivitas siswa?")) {
+  if (confirm("Reset seluruh log riwayat aktivitas?")) {
     localStorage.removeItem("ngambis_activity_logs");
     renderAnalyticsTable();
     updateAnalyticsStats();
