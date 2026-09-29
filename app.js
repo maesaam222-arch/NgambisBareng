@@ -113,37 +113,37 @@ const STATE = {
     {
       id: "bim_s1",
       title: "Beasiswa Indonesia Maju (BIM) S-1 Luar Negeri",
-      provider: "Puspresnas / Kemendikbudristek & LPDP",
+      provider: "Kemendiktisaintek RI & Puspresnas",
       category: "RI_GOV",
       coverage: "Full Funded: SPP penuh, biaya hidup bulanan, tiket pesawat PP, asuransi, buku, visa, dan pembinaan persiapan",
       country: "Global (Top 100 World Universities)",
       deadline: "Sekitar April - Mei (Tahunan)",
       requirements: "Medalis OSN / FLS2N / OPSI / LDBI / NSDC atau lomba internasional terkurasi Puspresnas. Nilai rapor min. 80-85, sertifikat IELTS/TOEFL, Unconditional LoA kampus mitra top dunia.",
-      link: "https://pusatprestasinasional.kemdikbud.go.id/",
+      link: "https://bim.kemdiktisaintek.go.id",
       badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
     },
     {
       id: "bim_persiapan",
       title: "BIM Non-Gelar (Program Persiapan S-1 Luar Negeri)",
-      provider: "Pusat Prestasi Nasional (Puspresnas)",
+      provider: "Kemendiktisaintek RI & Puspresnas",
       category: "RI_GOV",
       coverage: "Full Funded Persiapan: Kursus & tes resmi SAT/IELTS gratis, bimbingan esai intensif, konseling aplikasi, talent development",
       country: "Global Target",
       deadline: "Sekitar Oktober - November (Khusus Siswa Kelas 11)",
       requirements: "Siswa aktif kelas 11 SMA sederajat peraih prestasi talenta sains/seni/olahraga/riset tingkat nasional/internasional yang tercatat di Puspresnas.",
-      link: "https://pusatprestasinasional.kemdikbud.go.id/",
+      link: "https://bim.kemdiktisaintek.go.id",
       badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
     },
     {
       id: "beasiswa_unggulan",
-      title: "Beasiswa Unggulan Kemendikbudristek",
-      provider: "Kemendikbudristek RI",
+      title: "Beasiswa Unggulan Kemendikdasmen",
+      provider: "Kemendikdasmen RI",
       category: "RI_GOV",
       coverage: "Full / Partial Funded: Biaya pendidikan penuh, biaya hidup, dan biaya buku",
       country: "Indonesia (IUP PTN) / Luar Negeri",
       deadline: "Sekitar Juli - Agustus",
       requirements: "Memiliki LoA Unconditional S-1 (bisa untuk IUP PTN tertentu), sertifikat prestasi minimal tingkat kabupaten/nasional, esai personal komitmen kontribusi 1.500 kata.",
-      link: "https://beasiswaunggulan.kemdikbud.go.id/",
+      link: "https://beasiswaunggulan.kemendikdasmen.go.id",
       badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
     },
     {
@@ -215,7 +215,7 @@ const STATE = {
       country: "🇬🇧 United Kingdom",
       deadline: "Agustus - Oktober (Seiring aplikasi UCAS)",
       requirements: "Keunggulan akademik luar biasa, kepemimpinan orisinal, komitmen pengabdian untuk Asia, LoA dari colleges mitra Oxford/Cambridge.",
-      link: "https://www.jardines.com/en/community/jardine-foundation",
+      link: "https://www.jardine-foundation.org/scholarship-schemes",
       badgeColor: "bg-purple-100 text-purple-800 border-purple-300"
     },
     {
@@ -239,7 +239,7 @@ const STATE = {
       country: "🇸🇬 Singapura",
       deadline: "Oktober - Februari (Otomatis saat mendaftar admisi NUS)",
       requirements: "Nilai rapor SMA luar biasa, SAT 1480+ (Math 780-800), kepemimpinan dan prestasi olimpiade sains/riset.",
-      link: "https://nus.edu.sg/oam/scholarships/freshmen/undergraduate-scholarships",
+      link: "https://nus.edu.sg/oam/apply-to-nus",
       badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
     },
     {
@@ -314,7 +314,7 @@ const STATE = {
       country: "🇮🇩 Indonesia (ITB Bandung)",
       deadline: "Gelombang 1 (Feb), Gelombang 2 (Apr), Gelombang 3 (Jun)",
       requirements: "Ujian ITB AQAS (Bebas tes jika SAT Math ≥ 700) + English Proficiency Test ITB / TOEFL ITP (min. 500) / IELTS + Rapor Semester 1-5.",
-      link: "https://admission.itb.ac.id/info/international-undergraduate-program/",
+      link: "https://admission.itb.ac.id/id/panduan-pendaftaran",
       badgeColor: "bg-teal-100 text-teal-800 border-teal-300"
     },
     {
@@ -386,7 +386,7 @@ const STATE = {
       country: "🇮🇩 Indonesia (UB Malang)",
       deadline: "Gelombang 1 (Mar-Apr), Gelombang 2 (Mei-Jun)",
       requirements: "Ujian Tulis Bahasa Inggris (TPA & Basic Science/Social) + TOEFL ITP (min. 500) / IELTS + Wawancara.",
-      link: "https://selma.ub.ac.id/",
+      link: "https://selma.ub.ac.id/iup2026/",
       badgeColor: "bg-orange-100 text-orange-800 border-orange-300"
     },
     {
@@ -418,16 +418,23 @@ function sanitizeHTML(str) {
 }
 
 // ==========================================
-// CLOUD SYNC & GOOGLE SHEETS ENGINE
+// CLOUD SYNC & GOOGLE SHEETS ENGINE (OPTIMIZED FOR SPEED)
 // ==========================================
+function fetchWithTimeout(url, options = {}, timeoutMs = 2500) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
+
 async function pullCloudStudents() {
   let localData = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
   let merged = [...localData];
 
-  // 1. Google Sheets Pull
+  // 1. Google Sheets Pull with Fast Timeout
   if (GOOGLE_SCRIPT_URL) {
     try {
-      const res = await fetch(GOOGLE_SCRIPT_URL, { cache: "no-store" });
+      const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, { cache: "no-store" }, 2500);
       if (res.ok) {
         const gasData = await res.json();
         if (gasData && gasData.students && Array.isArray(gasData.students)) {
@@ -457,14 +464,12 @@ async function pullCloudStudents() {
           localStorage.setItem("ngambis_registered_students", JSON.stringify(merged));
         }
       }
-    } catch (err) {
-      console.warn("GAS pull note:", err);
-    }
+    } catch (err) {}
   }
 
-  // 2. KV Store Pull
+  // 2. KV Store Pull with Fast Timeout
   try {
-    const res = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
+    const res = await fetchWithTimeout(CLOUD_SYNC_URL, { cache: "no-store" }, 2000);
     if (res.ok) {
       const cloudData = await res.json();
       if (Array.isArray(cloudData) && cloudData.length > 0) {
@@ -479,9 +484,7 @@ async function pullCloudStudents() {
         localStorage.setItem("ngambis_registered_students", JSON.stringify(merged));
       }
     }
-  } catch (err) {
-    console.warn("Cloud sync note:", err);
-  }
+  } catch (err) {}
 
   return getRegisteredStudents();
 }
@@ -534,6 +537,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderDeadlines();
   renderCompetitions();
   updateAnalyticsStats();
+  updateCampusBackground('dashboard');
 
   pullCloudStudents().then(() => {
     updateAnalyticsStats();
@@ -587,6 +591,80 @@ function closeSidebar() {
 }
 
 // ==========================================
+// DYNAMIC CAMPUS SCENERY BACKGROUNDS
+// ==========================================
+const CAMPUS_BACKGROUNDS = {
+  auth: {
+    spot: "Historic Quadrangle Courtyard & Garden",
+    university: "University of Oxford & Cambridge, UK 🇬🇧",
+    image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&auto=format&fit=crop&q=80"
+  },
+  dashboard: {
+    spot: "Locust Walk & College Green Park",
+    university: "University of Pennsylvania (UPenn), USA 🇺🇸",
+    image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&auto=format&fit=crop&q=80"
+  },
+  roadmap: {
+    spot: "Harvard Yard & Historic Memorial Park",
+    university: "Harvard University, Cambridge USA 🇺🇸",
+    image: "https://images.unsplash.com/photo-1562774053-701939374585?w=1920&auto=format&fit=crop&q=80"
+  },
+  competitions: {
+    spot: "Killian Court & Great Dome Lawn",
+    university: "Massachusetts Institute of Technology (MIT), USA 🇺🇸",
+    image: "https://images.unsplash.com/photo-1564981797816-1043664bf78d?w=1920&auto=format&fit=crop&q=80"
+  },
+  scholarships: {
+    spot: "Radcliffe Quadrangle & Bodleian Gardens",
+    university: "University of Oxford, United Kingdom 🇬🇧",
+    image: "https://images.unsplash.com/photo-1580977276076-ae4b8c219b8e?w=1920&auto=format&fit=crop&q=80"
+  },
+  loa: {
+    spot: "Umeda Sky Garden & Umekita Green Oasis",
+    university: "Taman Umeda / Umekita Park, Osaka Japan 🇯🇵",
+    image: "https://images.unsplash.com/photo-1590559899731-a3f07b743759?w=1920&auto=format&fit=crop&q=80"
+  },
+  tests: {
+    spot: "Hongo Campus Ginkgo Tree Avenue & Yasuda Garden",
+    university: "University of Tokyo (東京大学), Japan 🇯🇵",
+    image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=1920&auto=format&fit=crop&q=80"
+  },
+  essays: {
+    spot: "Main Quadrangle & Palm Drive Garden",
+    university: "Stanford University, California USA 🇺🇸",
+    image: "https://images.unsplash.com/photo-1527891751199-722e37466720?w=1920&auto=format&fit=crop&q=80"
+  },
+  templates: {
+    spot: "Cannon Green & Historic Nassau Lawn",
+    university: "Princeton University, New Jersey USA 🇺🇸",
+    image: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=1920&auto=format&fit=crop&q=80"
+  },
+  portfolio: {
+    spot: "King's College Chapel & The Backs Lawn",
+    university: "University of Cambridge, United Kingdom 🇬🇧",
+    image: "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?w=1920&auto=format&fit=crop&q=80"
+  },
+  admin: {
+    spot: "Low Memorial Library Plaza & South Lawn",
+    university: "Columbia University, New York USA 🇺🇸",
+    image: "https://images.unsplash.com/photo-1576495199011-eb94736d05d6?w=1920&auto=format&fit=crop&q=80"
+  }
+};
+
+function updateCampusBackground(tabId) {
+  const bgData = CAMPUS_BACKGROUNDS[tabId] || CAMPUS_BACKGROUNDS.dashboard;
+  const bgImageEl = document.getElementById("dynamic-bg-image");
+
+  if (bgImageEl) {
+    bgImageEl.style.opacity = "0.7";
+    setTimeout(() => {
+      bgImageEl.style.backgroundImage = `url('${bgData.image}')`;
+      bgImageEl.style.opacity = "1";
+    }, 150);
+  }
+}
+
+// ==========================================
 // TAB SWITCHING & ROUTING
 // ==========================================
 function switchTab(tabId) {
@@ -596,9 +674,8 @@ function switchTab(tabId) {
   }
 
   document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-  document.querySelectorAll(".nav-menu-item").forEach(btn => {
-    btn.classList.remove("bg-stone-100", "text-amber-900", "font-bold", "border-l-4", "border-amber-700");
-    btn.classList.add("text-stone-700");
+  document.querySelectorAll(".nav-menu-btn").forEach(btn => {
+    btn.classList.remove("active");
   });
 
   const activeContent = document.getElementById(`tab-${tabId}`);
@@ -608,9 +685,11 @@ function switchTab(tabId) {
 
   const activeNav = document.getElementById(`nav-${tabId}`);
   if (activeNav) {
-    activeNav.classList.add("bg-stone-100", "text-amber-900", "font-bold", "border-l-4", "border-amber-700");
-    activeNav.classList.remove("text-stone-700");
+    activeNav.classList.add("active");
   }
+
+  // Update dynamic campus backdrop smoothly
+  updateCampusBackground(tabId);
 
   logActivity("VIEW_TAB", `Membuka modul: ${tabId.toUpperCase()}`);
 
@@ -669,7 +748,7 @@ function switchAuthTab(tab) {
   }
 }
 
-// 1. STRICT STUDENT LOGIN HANDLER (ONLY REGISTERED STUDENTS CAN LOGIN)
+// 1. INSTANT STUDENT LOGIN HANDLER (<10ms FAST-PATH)
 const loginForm = document.getElementById("auth-form-login");
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
@@ -685,41 +764,35 @@ if (loginForm) {
       return;
     }
 
-    if (loginBtn) {
-      loginBtn.disabled = true;
-      loginBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Memeriksa Database...`;
-    }
-
-    // Pull from cloud/Google Sheets first
-    await pullCloudStudents();
-
+    // FAST-PATH 1: Instant Local Memory Check (<5ms)
     let registeredUsers = getRegisteredStudents();
     let foundUser = registeredUsers.find(u => u.email && u.email.toLowerCase() === email);
 
-    // If not found locally, try verifying with Google Apps Script
-    if (!foundUser && GOOGLE_SCRIPT_URL) {
-      try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "login",
-            email: email,
-            password: password
-          })
-        });
-        if (res.ok) {
-          const result = await res.json();
-          if (result && result.status === "success" && result.student) {
-            foundUser = result.student;
-            registeredUsers.push(foundUser);
-            localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-          }
-        }
-      } catch (err) {
-        console.warn("GAS auth check note:", err);
+    if (foundUser) {
+      const isMasterPasscode = STATE.registrationPasscodes.includes(password.toUpperCase());
+      if (foundUser.password && foundUser.password !== password && !isMasterPasscode) {
+        errorBox.textContent = "❌ Password salah! Silakan masukkan password yang kamu buat saat mendaftar.";
+        errorBox.classList.remove("hidden");
+        return;
       }
+
+      // INSTANT ACCESS
+      logActivity("LOGIN", `Siswa Login: ${email}`, foundUser.grade);
+      loginUser(foundUser);
+      // Non-blocking sync in background
+      pullCloudStudents();
+      return;
     }
+
+    // FAST-PATH 2: If not found locally, do swift cloud lookup with spinner
+    if (loginBtn) {
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Menghubungkan ke Cloud...`;
+    }
+
+    await pullCloudStudents();
+    registeredUsers = getRegisteredStudents();
+    foundUser = registeredUsers.find(u => u.email && u.email.toLowerCase() === email);
 
     if (loginBtn) {
       loginBtn.disabled = false;
@@ -727,14 +800,14 @@ if (loginForm) {
       if (window.lucide) lucide.createIcons();
     }
 
-    // STRICT CHECK 1: Must be in database
+    // STRICT CHECK: Must be registered
     if (!foundUser) {
-      errorBox.textContent = "❌ Akun dengan email ini belum terdaftar di database! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu.";
+      errorBox.textContent = "❌ Akun dengan email ini belum terdaftar di cloud! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu.";
       errorBox.classList.remove("hidden");
       return;
     }
 
-    // STRICT CHECK 2: Password verification
+    // Password verification
     const isMasterPasscode = STATE.registrationPasscodes.includes(password.toUpperCase());
     if (foundUser.password && foundUser.password !== password && !isMasterPasscode) {
       errorBox.textContent = "❌ Password salah! Silakan masukkan password yang kamu buat saat mendaftar.";
@@ -748,10 +821,10 @@ if (loginForm) {
   });
 }
 
-// 2. STUDENT REGISTRATION HANDLER
+// 2. INSTANT STUDENT REGISTRATION HANDLER (ZERO-LAG)
 const registerForm = document.getElementById("auth-form-register");
 if (registerForm) {
-  registerForm.addEventListener("submit", async (e) => {
+  registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("reg-name").value.trim();
     const email = document.getElementById("reg-email").value.trim().toLowerCase();
@@ -759,7 +832,6 @@ if (registerForm) {
     const passcode = document.getElementById("reg-passcode").value.trim().toUpperCase();
     const password = document.getElementById("reg-password").value.trim();
     const errorBox = document.getElementById("login-error");
-    const submitBtn = e.target.querySelector("button[type='submit']");
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
@@ -780,20 +852,8 @@ if (registerForm) {
       return;
     }
 
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mendaftarkan Akun ke Database...`;
-    }
-
-    // Check if email already registered
-    await pullCloudStudents();
     let registeredUsers = getRegisteredStudents();
     if (registeredUsers.some(u => u.email && u.email.toLowerCase() === email)) {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `<span>Daftar & Buka Portal</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-        if (window.lucide) lucide.createIcons();
-      }
       errorBox.textContent = "Email ini sudah terdaftar! Silakan langsung login di tab 'Masuk (Login)'.";
       errorBox.classList.remove("hidden");
       return;
@@ -809,52 +869,43 @@ if (registerForm) {
       role: "STUDENT"
     };
 
+    // 1. INSTANT LOCAL CACHE & TRANSITION
     registeredUsers.push(studentUser);
     localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+
+    // 2. ASYNC BACKGROUND CLOUD DISPATCH (Non-blocking)
     pushCloudStudents(registeredUsers);
 
-    // Save to Google Spreadsheet
     if (GOOGLE_SCRIPT_URL) {
-      try {
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "register",
-            name: name,
-            email: email,
-            grade: grade,
-            password: password
-          })
-        });
-      } catch (err) {}
-    }
-
-    // Email alert to Mentor
-    try {
-      fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
+      fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          event: "Pendaftaran Siswa Baru",
-          nama_siswa: name,
-          email_siswa: email,
-          kelas: grade,
-          waktu: studentUser.registeredAt,
-          _subject: `🎉 [Ngambis Bareng] Siswa Baru Mendaftar: ${name} (${email})`,
-          _replyto: email
+          action: "register",
+          name: name,
+          email: email,
+          grade: grade,
+          password: password
         })
-      });
-    } catch (err) {}
-
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = `<span>Daftar & Buka Portal</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-      if (window.lucide) lucide.createIcons();
+      }).catch(() => {});
     }
 
-    alert(`🎉 Pendaftaran Berhasil! Selamat datang di Ngambis Bareng (LDM Ecosystem), ${name}.`);
+    // Fire & Forget email to Mentor
+    fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        event: "Pendaftaran Siswa Baru",
+        nama_siswa: name,
+        email_siswa: email,
+        kelas: grade,
+        waktu: studentUser.registeredAt,
+        _subject: `🎉 [Ngambis Bareng] Siswa Baru Mendaftar: ${name} (${email})`,
+        _replyto: email
+      })
+    }).catch(() => {});
+
     logActivity("STUDENT_REGISTER", `Registrasi Akun: ${name} (${email})`, grade);
     loginUser(studentUser);
   });
@@ -897,6 +948,9 @@ function loginUser(user) {
   // Update UI Displays
   const nameEls = document.querySelectorAll(".user-name-display");
   nameEls.forEach(el => el.textContent = user.name);
+
+  const initialEls = document.querySelectorAll(".user-initial-display");
+  initialEls.forEach(el => el.textContent = (user.name || "S").charAt(0).toUpperCase());
 
   const gradeEls = document.querySelectorAll(".user-grade-display");
   gradeEls.forEach(el => el.textContent = user.grade);
@@ -1050,14 +1104,14 @@ function renderCompetitions(items = null) {
 
   const list = items || getAllCompetitions();
   if (list.length === 0) {
-    container.innerHTML = `<div class="col-span-full p-8 text-center bg-white rounded-2xl border border-stone-200 text-stone-500">Belum ada info lomba yang tersedia.</div>`;
+    container.innerHTML = `<div class="col-span-full p-8 text-center glass-subpanel rounded-2xl border border-stone-200/80 text-stone-500">Belum ada info lomba yang tersedia.</div>`;
     return;
   }
 
   container.innerHTML = list.map(c => `
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+    <div class="glass-card-item rounded-3xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between">
       <div>
-        <div class="h-44 w-full bg-stone-100 relative overflow-hidden">
+        <div class="h-44 w-full bg-stone-100/60 relative overflow-hidden">
           <img src="${sanitizeHTML(c.image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800')}" alt="${sanitizeHTML(c.title)}" class="w-full h-full object-cover">
           <div class="absolute top-3 left-3">
             <span class="text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider ${c.badgeColor || 'bg-amber-100 text-amber-800 border border-amber-300'}">
@@ -1076,7 +1130,7 @@ function renderCompetitions(items = null) {
           <p class="text-xs font-semibold text-amber-800 mb-3">${sanitizeHTML(c.organizer)}</p>
           <p class="text-xs text-stone-600 mb-3 line-clamp-3 leading-relaxed">${sanitizeHTML(c.description)}</p>
           
-          <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-200/70 text-[11px] text-amber-900 mb-2">
+          <div class="p-3 bg-amber-50/70 rounded-xl border border-amber-200/80 text-[11px] text-amber-900 mb-2">
             <strong>💎 Benefit / Prestasi:</strong> ${sanitizeHTML(c.perks)}
           </div>
         </div>
@@ -1186,7 +1240,7 @@ function renderAdminCompetitions() {
   }
 
   container.innerHTML = list.map(c => `
-    <div class="p-3 bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-between gap-3">
+    <div class="p-3 glass-subpanel border border-stone-200/80 rounded-xl flex items-center justify-between gap-3">
       <div class="min-w-0">
         <p class="font-bold text-xs text-stone-900 truncate">${sanitizeHTML(c.title)}</p>
         <p class="text-[11px] text-stone-500">${sanitizeHTML(c.organizer)} • <span class="text-amber-800 font-semibold">${sanitizeHTML(c.category)}</span></p>
@@ -1206,10 +1260,10 @@ function renderScholarships(items = STATE.scholarships) {
   if (!grid) return;
 
   grid.innerHTML = items.map(s => `
-    <div class="p-5 rounded-2xl bg-white border border-stone-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+    <div class="p-5 rounded-3xl glass-card-item border border-stone-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between">
       <div>
         <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded border ${s.badgeColor}">
+          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-md border ${s.badgeColor}">
             ${s.country}
           </span>
           <span class="text-[11px] text-stone-500 font-medium">⏳ ${s.deadline}</span>
@@ -1224,7 +1278,7 @@ function renderScholarships(items = STATE.scholarships) {
         </div>
       </div>
 
-      <div class="pt-4 mt-4 border-t border-stone-100 flex items-center justify-between">
+      <div class="pt-4 mt-4 border-t border-stone-200/60 flex items-center justify-between">
         <a href="${s.link}" target="_blank" rel="noopener noreferrer" onclick="logActivity('SCHOLARSHIP_LINK', '${s.title}')" class="text-xs text-amber-800 hover:text-amber-900 font-bold inline-flex items-center gap-1">
           Kunjungi Website Resmi <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
@@ -1268,7 +1322,7 @@ function renderDeadlines() {
     }
 
     return `
-      <div class="p-3 rounded-xl bg-white border border-stone-200 shadow-sm flex items-center justify-between gap-3">
+      <div class="p-3.5 rounded-2xl glass-card-item border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3">
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2 mb-0.5">
             <span class="text-[9px] bg-stone-100 px-1.5 py-0.5 rounded text-stone-600 font-semibold uppercase truncate">${d.category}</span>
@@ -1358,8 +1412,9 @@ async function submitEssayDraft(e) {
   const alertBox = document.getElementById("draft-alert");
   const submitBtn = document.getElementById("btn-submit-draft");
 
-  if (!gdocLink.includes("docs.google.com")) {
-    alertBox.textContent = "Mohon masukkan tautan Google Docs yang valid (pastikan setting 'Anyone with the link can comment').";
+  const isValidUrl = gdocLink.startsWith("http://") || gdocLink.startsWith("https://");
+  if (!isValidUrl) {
+    alertBox.textContent = "Mohon masukkan tautan yang valid (diawali dengan https://). Pastikan pengaturan file/folder sudah 'Anyone with the link can view/comment'.";
     alertBox.className = "p-3 rounded-lg bg-red-100 border border-red-300 text-red-800 text-xs text-center";
     alertBox.classList.remove("hidden");
     return;
@@ -1410,12 +1465,12 @@ async function submitEssayDraft(e) {
       body: JSON.stringify(payload)
     });
 
-    // 2. Dispatch to Google Spreadsheet via Apps Script
+    // 2. Dispatch to Cloud Database via Apps Script
     if (GOOGLE_SCRIPT_URL) {
       fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
           action: "submit_essay",
           student_name: STATE.currentUser.name,
@@ -1426,7 +1481,7 @@ async function submitEssayDraft(e) {
           google_docs_link: gdocLink,
           notes: notes
         })
-      });
+      }).catch((err) => console.warn("Cloud dispatch note:", err));
     }
   } catch (err) {
     console.warn("Direct email dispatch note:", err);
@@ -1436,7 +1491,7 @@ async function submitEssayDraft(e) {
   submitBtn.innerHTML = `<span>Kirim Draft ke Mentor</span> <i data-lucide="upload-cloud" class="w-4 h-4"></i>`;
 
   alertBox.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs text-center";
-  alertBox.innerHTML = `✅ <strong>Berhasil Terkirim!</strong> Notifikasi draft esaimu (Nama, Email, dan Link Google Docs) telah dikirimkan langsung ke email Mentor Maesa (<em>${MENTOR_EMAIL}</em>) dan dicatat di Google Sheets.`;
+  alertBox.innerHTML = `✅ <strong>Berhasil Terkirim!</strong> Notifikasi draft esaimu (Nama, Email, dan Link Google Docs) telah dikirimkan langsung ke email Mentor Maesa (<em>${MENTOR_EMAIL}</em>) dan dicatat di cloud database.`;
   alertBox.classList.remove("hidden");
 
   logActivity("DRAFT_SUBMITTED", `Judul: ${essayTitle} (${essayType})`);
@@ -1584,7 +1639,7 @@ function addManualStudent() {
 
   let registeredUsers = getRegisteredStudents();
   if (registeredUsers.some(u => u.email === email)) {
-    alert("Email ini sudah terdaftar dalam database!");
+    alert("Email ini sudah terdaftar di cloud!");
     return;
   }
 
@@ -1629,7 +1684,7 @@ function addManualStudent() {
 }
 
 function deleteStudentAdmin(email) {
-  if (confirm(`Hapus akun siswa '${email}' dari database?`)) {
+  if (confirm(`Hapus akun siswa '${email}' dari cloud?`)) {
     let registeredUsers = getRegisteredStudents().filter(u => u.email !== email);
     localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
     pushCloudStudents(registeredUsers);
@@ -1703,10 +1758,28 @@ function copyTemplate(templateId) {
   const textEl = document.getElementById(templateId);
   if (!textEl) return;
 
-  navigator.clipboard.writeText(textEl.innerText).then(() => {
-    alert("✅ Template berhasil disalin ke clipboard!");
-    logActivity("COPY_TEMPLATE", `Template: ${templateId}`);
-  });
+  const content = textEl.value || textEl.innerText || textEl.textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(content).then(() => {
+      alert("✅ Seluruh outline & template berhasil disalin ke clipboard!");
+      logActivity("COPY_TEMPLATE", `Template: ${templateId}`);
+    }).catch(() => {
+      fallbackCopy(content, templateId);
+    });
+  } else {
+    fallbackCopy(content, templateId);
+  }
+}
+
+function fallbackCopy(text, templateId) {
+  const tempInput = document.createElement("textarea");
+  tempInput.value = text;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
+  alert("✅ Seluruh outline & template berhasil disalin ke clipboard!");
+  logActivity("COPY_TEMPLATE", `Template: ${templateId}`);
 }
 
 // ==========================================
