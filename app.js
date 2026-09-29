@@ -1,5 +1,5 @@
 // ================================================================
-// NGAMBIS BARENG PORTAL ENGINE V5 (WHITE IVORY & BRAND IDENTITY)
+// NGAMBIS BARENG (LDM ECOSYSTEM) - MASTER PORTAL ENGINE V6
 // ================================================================
 
 const MENTOR_EMAIL = "maesa.am222@gmail.com";
@@ -24,13 +24,13 @@ const STATE = {
   ],
   deadlines: [
     { name: "US Early Action / Early Decision", date: "2026-11-01T23:59:59", category: "USA (Common App)" },
-    { name: "Oxford & Cambridge UCAS", date: "2026-10-15T18:00:00", category: "UK (UCAS)" },
-    { name: "GKS-U Korea Selatan (Embassy)", date: "2026-10-20T23:59:59", category: "Korea Selatan" },
-    { name: "Stipendium Hungaricum", date: "2027-01-15T23:59:59", category: "Hungaria (Eropa)" },
+    { name: "Oxford & Cambridge UCAS Deadline", date: "2026-10-15T18:00:00", category: "UK (UCAS)" },
+    { name: "GKS-U Korea Selatan (Embassy Track)", date: "2026-10-20T23:59:59", category: "Korea Selatan" },
+    { name: "Stipendium Hungaricum Deadline", date: "2027-01-15T23:59:59", category: "Hungaria (Eropa)" },
     { name: "US Regular Decision (RD)", date: "2027-01-05T23:59:59", category: "USA (Common App)" },
-    { name: "Türkiye Bursları S-1", date: "2027-02-20T23:59:59", category: "Turki" },
+    { name: "Türkiye Bursları S-1 Deadline", date: "2027-02-20T23:59:59", category: "Turki" },
     { name: "IUP UGM Gelombang 1 Intake", date: "2027-02-15T15:00:00", category: "IUP Indonesia" },
-    { name: "IUP ITB Gelombang 1", date: "2027-02-28T23:59:59", category: "IUP Indonesia" },
+    { name: "IUP ITB & SSU Gelombang 1", date: "2027-02-28T23:59:59", category: "IUP Indonesia" },
     { name: "SIMAK KKI UI Intake", date: "2027-05-15T23:59:59", category: "IUP Indonesia" },
     { name: "MEXT Gakubu S-1 Jepang", date: "2027-05-10T23:59:59", category: "Jepang" },
     { name: "BIM S-1 Luar Negeri (Puspresnas)", date: "2027-05-25T23:59:59", category: "Puspresnas RI" }
@@ -39,11 +39,11 @@ const STATE = {
     {
       id: "comp_osn",
       title: "Olimpiade Sains Nasional (OSN SMA)",
-      organizer: "Pusat Prestasi Nasional (Puspresnas) Kemendikbudristek",
+      organizer: "Puspresnas / Kemendikbudristek RI",
       category: "STEM",
-      deadline: "Sekitar Februari - Maret (Tahunan)",
-      perks: "Medalis Nasional otomatis memenuhi syarat Beasiswa Indonesia Maju (BIM) S-1 Luar Negeri & Bebas Tes IUP PTN.",
-      description: "Ajang talenta sains paling bergengsi di Indonesia (Matematika, Fisika, Kimia, Biologi, Informatika, Astronomi, Kebumian, Ekonomi, Geografi).",
+      deadline: "Februari - Maret (Tahunan)",
+      perks: "Medalis Nasional berhak atas Beasiswa Indonesia Maju (BIM) S-1 Luar Negeri & Bebas Tes Masuk IUP PTN.",
+      description: "Ajang talenta sains resmi paling bergengsi di Indonesia (Matematika, Fisika, Kimia, Biologi, Informatika, Astronomi, Kebumian, Ekonomi, Geografi).",
       link: "https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/osn/",
       image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=60",
       badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
@@ -51,10 +51,10 @@ const STATE = {
     {
       id: "comp_opsi",
       title: "Olimpiade Penelitian Siswa Indonesia (OPSI)",
-      organizer: "Puspresnas RI & Kemendikbudristek",
+      organizer: "Pusat Prestasi Nasional (Puspresnas)",
       category: "RISET",
-      deadline: "Sekitar Maret - April (Tahunan)",
-      perks: "Sertifikat resmi kurasi Puspresnas, peluang mewakili Indonesia ke ajang ISEF di Amerika Serikat.",
+      deadline: "Maret - April (Tahunan)",
+      perks: "Sertifikat resmi kurasi Puspresnas RI, tiket delegasi Indonesia ke ajang ISEF di Amerika Serikat.",
       description: "Kompetisi riset ilmiah SMA terbesar untuk bidang Matematika, Sains, Teknologi Terapan, serta Ilmu Sosial dan Humaniora.",
       link: "https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/opsi/",
       image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=800&auto=format&fit=crop&q=60",
@@ -63,10 +63,10 @@ const STATE = {
     {
       id: "comp_wharton",
       title: "Wharton Global High School Investment Competition",
-      organizer: "The Wharton School, University of Pennsylvania (USA)",
+      organizer: "The Wharton School, Univ of Pennsylvania (USA)",
       category: "BISNIS",
       deadline: "September - Desember (Tahunan)",
-      perks: "Pengalaman simulasi portofolio investasi nyata $100.000, sertifikat global, booster esai Common App & IUP Bisnis.",
+      perks: "Simulasi portofolio investasi nyata $100.000, sertifikat global, booster esai Common App & IUP Bisnis.",
       description: "Kompetisi bisnis & investasi internasional tim SMA paling prestisius di dunia yang dinilai langsung oleh profesor Wharton Business School.",
       link: "https://globalyouth.wharton.upenn.edu/competitions/investment-competition/",
       image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&auto=format&fit=crop&q=60",
@@ -77,9 +77,9 @@ const STATE = {
       title: "National Schools Debating Championship (NSDC / LDBI)",
       organizer: "Pusat Prestasi Nasional (Kemendikbudristek RI)",
       category: "HUMANIORA",
-      deadline: "Sekitar Mei - Juni",
+      deadline: "Mei - Juni",
       perks: "Pemenang didelegasikan ke WSDC (World Schools Debating Championship) & jalur talenta BIM.",
-      description: "Kompetisi debat parlemen bahasa Inggris resmi tingkat nasional untuk mengasah kemampuan berpikir kritis, logika diplomasi, dan public speaking.",
+      description: "Kompetisi debat parlemen bahasa Inggris resmi tingkat nasional untuk mengasah logika diplomasi dan public speaking.",
       link: "https://pusatprestasinasional.kemdikbud.go.id/event/seni-budaya-dan-bahasa/nsdc/",
       image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=60",
       badgeColor: "bg-rose-100 text-rose-800 border-rose-300"
@@ -278,12 +278,15 @@ const STATE = {
       link: "https://nyuad.nyu.edu/en/admissions/undergraduate/financial-support.html",
       badgeColor: "bg-violet-100 text-violet-800 border-violet-300"
     },
+    // ==========================================
+    // COMPLETE INDONESIAN IUP PTN DATABASE (ALL UNIVERSITIES + SSU ITB)
+    // ==========================================
     {
       id: "iup_ugm",
       title: "IUP Universitas Gadjah Mada (UGM)",
       provider: "Universitas Gadjah Mada (Yogyakarta)",
       category: "IUP_PTN",
-      coverage: "Sarjana Kelas Internasional Terakreditasi Global + Kurikulum Berbahasa Inggris + Program Wajib Double Degree / Student Exchange",
+      coverage: "Sarjana Kelas Internasional Terakreditasi Global + Kurikulum Berbahasa Inggris + Double Degree / Exchange Wajib",
       country: "🇮🇩 Indonesia (UGM Yogyakarta)",
       deadline: "Gelombang 1 (Jan-Feb), Gelombang 2 (Apr-Mei), Gelombang 3 (Jun)",
       requirements: "Ujian GMST (Gadjah Mada Scholastic Test) + AcEPT / TOEFL ITP (min. 500 umum / min. 550 FK) / IELTS (min. 5.5-6.5) + Interview / MMI & FGD.",
@@ -304,13 +307,13 @@ const STATE = {
     },
     {
       id: "iup_itb",
-      title: "IUP Institut Teknologi Bandung (ITB)",
-      provider: "Institut Teknologi Bandung",
+      title: "IUP & SSU Institut Teknologi Bandung (ITB)",
+      provider: "Institut Teknologi Bandung (Ganesha & Jatinangor)",
       category: "IUP_PTN",
-      coverage: "Kelas Internasional STEI (Informatika, Elektro), SBM (Manajemen), FTI, FTMD, FTSL, FSRD + Program Exchange Internasional",
-      country: "🇮🇩 Indonesia (ITB Ganesha & Jatinangor)",
+      coverage: "Kelas Internasional STEI, SBM, FTI, FTMD, FTSL, FMIPA, SAPPK, SITH, FSRD + Program Sarjana Sekolah Unggulan (SSU)",
+      country: "🇮🇩 Indonesia (ITB Bandung)",
       deadline: "Gelombang 1 (Feb), Gelombang 2 (Apr), Gelombang 3 (Jun)",
-      requirements: "Ujian ITB AQAS (Bebas ujian jika SAT Math ≥ 700) + English Proficiency Test ITB / TOEFL ITP (min. 500) / IELTS + Rapor Semester 1-5.",
+      requirements: "Ujian ITB AQAS (Bebas tes jika SAT Math ≥ 700) + English Proficiency Test ITB / TOEFL ITP (min. 500) / IELTS + Rapor Semester 1-5.",
       link: "https://admission.itb.ac.id/info/international-undergraduate-program/",
       badgeColor: "bg-teal-100 text-teal-800 border-teal-300"
     },
@@ -331,12 +334,72 @@ const STATE = {
       title: "IUP Institut Teknologi Sepuluh Nopember (ITS)",
       provider: "ITS Surabaya",
       category: "IUP_PTN",
-      coverage: "Kelas Internasional Teknik Informatika, Sistem Informasi, Teknik Mesin, Teknik Elektro, Teknik Sipil, Desain Komunikasi Visual",
+      coverage: "Kelas Internasional Teknik Informatika, Sistem Informasi, Teknik Mesin, Teknik Elektro, Teknik Sipil, Desain Komunikasi Visual, Statistika Bisnis",
       country: "🇮🇩 Indonesia (ITS Surabaya)",
       deadline: "Gelombang 1 (Feb-Mar), Gelombang 2 (Apr-Mei), Gelombang 3 (Jun)",
       requirements: "Nilai Rapor Semester 1-5 + Sertifikat Prestasi Akademik/Lomba + Tes Tulis TPA Bahasa Inggris + TOEFL ITP (min. 500) / IELTS.",
       link: "https://www.its.ac.id/admission/iup/",
       badgeColor: "bg-blue-100 text-blue-800 border-blue-300"
+    },
+    {
+      id: "iup_undip",
+      title: "IUP Universitas Diponegoro (UNDIP)",
+      provider: "Universitas Diponegoro (Semarang)",
+      category: "IUP_PTN",
+      coverage: "Kelas Internasional Manajemen, Akuntansi, Ilmu Ekonomi, Hukum, Ilmu Komunikasi, Teknik Industri, Teknik Kimia, Teknik Sipil, Teknik Lingkungan",
+      country: "🇮🇩 Indonesia (UNDIP Semarang)",
+      deadline: "Gelombang 1 (Feb-Mar), Gelombang 2 (Apr-Mei), Gelombang 3 (Jun)",
+      requirements: "Scholastic Test Bahasa Inggris + TOEFL ITP (min. 500) / IELTS (min. 5.5) + Interview Bahasa Inggris.",
+      link: "https://pmb.undip.ac.id/international-undergraduate-program-iup/",
+      badgeColor: "bg-indigo-100 text-indigo-800 border-indigo-300"
+    },
+    {
+      id: "iup_unpad",
+      title: "IUP Universitas Padjadjaran (UNPAD)",
+      provider: "Universitas Padjadjaran (Bandung & Jatinangor)",
+      category: "IUP_PTN",
+      coverage: "Kelas Internasional Kedokteran Umum (FK), Akuntansi, Manajemen, Ilmu Ekonomi, Hukum, Hubungan Internasional, Farmasi, Ilmu Komunikasi",
+      country: "🇮🇩 Indonesia (UNPAD Bandung)",
+      deadline: "Gelombang 1 (Mar), Gelombang 2 (Mei), Gelombang 3 (Jun)",
+      requirements: "Nilai Rapor + Sertifikat TOEFL ITP (min. 500 umum / min. 550 FK) / IELTS + Tes Kemampuan Akademik SMUP.",
+      link: "https://smup.unpad.ac.id/international-undergraduate-program/",
+      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+    },
+    {
+      id: "iup_ipb",
+      title: "IUP IPB University (Institut Pertanian Bogor)",
+      provider: "IPB University (Bogor)",
+      category: "IUP_PTN",
+      coverage: "Kelas Internasional Kedokteran Hewan (FKH), Ilmu Komputer, Teknologi Pangan, Manajemen Agribisnis, Teknik Sipil & Lingkungan, Smart Agriculture",
+      country: "🇮🇩 Indonesia (IPB Bogor)",
+      deadline: "Gelombang 1 (Feb-Mar), Gelombang 2 (Mei)",
+      requirements: "Tes Tulis Online Bahasa Inggris (Math & IPA / IPS) + Sertifikat TOEFL ITP (min. 500) / IELTS (min. 5.5).",
+      link: "https://admisi.ipb.ac.id/international-undergraduate-program-iup/",
+      badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
+    },
+    {
+      id: "iup_ub",
+      title: "IUP Universitas Brawijaya (UB)",
+      provider: "Universitas Brawijaya (Malang)",
+      category: "IUP_PTN",
+      coverage: "Kelas Internasional Manajemen, Akuntansi, Ekonomi Pembangunan, Ilmu Hukum, Administrasi Bisnis, Ilmu Komputer (FILKOM)",
+      country: "🇮🇩 Indonesia (UB Malang)",
+      deadline: "Gelombang 1 (Mar-Apr), Gelombang 2 (Mei-Jun)",
+      requirements: "Ujian Tulis Bahasa Inggris (TPA & Basic Science/Social) + TOEFL ITP (min. 500) / IELTS + Wawancara.",
+      link: "https://selma.ub.ac.id/",
+      badgeColor: "bg-orange-100 text-orange-800 border-orange-300"
+    },
+    {
+      id: "iup_uns",
+      title: "IUP Universitas Sebelas Maret (UNS)",
+      provider: "Universitas Sebelas Maret (Solo)",
+      category: "IUP_PTN",
+      coverage: "Kelas Internasional Kedokteran (FK UNS), Akuntansi, Manajemen, Ekonomi Pembangunan",
+      country: "🇮🇩 Indonesia (UNS Solo)",
+      deadline: "Gelombang 1 (Mar), Gelombang 2 (Mei-Jun)",
+      requirements: "Tes Potensi Skolastik Bahasa Inggris + TOEFL ITP (min. 500 umum / min. 550 FK) / IELTS + Wawancara.",
+      link: "https://spmb.uns.ac.id/",
+      badgeColor: "bg-cyan-100 text-cyan-800 border-cyan-300"
     }
   ]
 };
@@ -355,7 +418,7 @@ function sanitizeHTML(str) {
 }
 
 // ==========================================
-// CLOUD SYNC ENGINE (GOOGLE SHEETS & KV STORE)
+// CLOUD SYNC & GOOGLE SHEETS ENGINE
 // ==========================================
 async function pullCloudStudents() {
   let localData = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
@@ -377,11 +440,17 @@ async function pullCloudStudents() {
                   name: gs.name,
                   email: gs.email.toLowerCase(),
                   grade: gs.grade || "Kelas 12",
+                  password: gs.password || "SUCCESS2026",
                   registeredAt: gs.registeredAt || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
                   role: "STUDENT"
                 });
               } else {
-                merged[idx] = { ...merged[idx], name: gs.name || merged[idx].name, grade: gs.grade || merged[idx].grade };
+                merged[idx] = { 
+                  ...merged[idx], 
+                  name: gs.name || merged[idx].name, 
+                  grade: gs.grade || merged[idx].grade,
+                  password: gs.password || merged[idx].password 
+                };
               }
             }
           });
@@ -486,7 +555,7 @@ function loadCustomPasscodes() {
 }
 
 // ==========================================
-// SIDEBAR DRAWER NAVIGATION (TIMBUL-TENGGELAM)
+// SIDEBAR DRAWER NAVIGATION
 // ==========================================
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebar-drawer");
@@ -526,7 +595,6 @@ function switchTab(tabId) {
     return;
   }
 
-  // Hide all tabs
   document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
   document.querySelectorAll(".nav-menu-item").forEach(btn => {
     btn.classList.remove("bg-stone-100", "text-amber-900", "font-bold", "border-l-4", "border-amber-700");
@@ -554,7 +622,6 @@ function switchTab(tabId) {
     renderAdminCompetitions();
   }
 
-  // Close sidebar on mobile
   if (window.innerWidth < 1024) {
     closeSidebar();
   }
@@ -563,44 +630,134 @@ function switchTab(tabId) {
 }
 
 // ==========================================
-// AUTHENTICATION: 2-TAB CLEAN SYSTEM
+// AUTHENTICATION: 3-MODE SYSTEM (LOGIN, REGISTER, MENTOR)
 // ==========================================
-let currentAuthTab = 'student';
+let currentAuthTab = 'login'; // 'login' | 'register' | 'mentor'
 
 function switchAuthTab(tab) {
   currentAuthTab = tab;
-  const formStudent = document.getElementById("auth-form-student");
+  const formLogin = document.getElementById("auth-form-login");
+  const formRegister = document.getElementById("auth-form-register");
   const formMentor = document.getElementById("auth-form-mentor");
   const errorBox = document.getElementById("login-error");
-  const btnStudent = document.getElementById("tab-btn-student");
+
+  const btnLogin = document.getElementById("tab-btn-login");
+  const btnRegister = document.getElementById("tab-btn-register");
   const btnMentor = document.getElementById("tab-btn-mentor");
 
   errorBox.classList.add("hidden");
 
-  [btnStudent, btnMentor].forEach(b => {
+  [btnLogin, btnRegister, btnMentor].forEach(b => {
     if (b) b.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-stone-600 hover:text-stone-900 transition";
   });
 
-  if (tab === 'student') {
-    if (formStudent) formStudent.classList.remove("hidden");
+  if (tab === 'login') {
+    if (formLogin) formLogin.classList.remove("hidden");
+    if (formRegister) formRegister.classList.add("hidden");
     if (formMentor) formMentor.classList.add("hidden");
-    if (btnStudent) btnStudent.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-amber-700 text-white shadow-sm transition";
+    if (btnLogin) btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-amber-800 text-white shadow-sm transition";
+  } else if (tab === 'register') {
+    if (formLogin) formLogin.classList.add("hidden");
+    if (formRegister) formRegister.classList.remove("hidden");
+    if (formMentor) formMentor.classList.add("hidden");
+    if (btnRegister) btnRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-700 text-white shadow-sm transition";
   } else if (tab === 'mentor') {
-    if (formStudent) formStudent.classList.add("hidden");
+    if (formLogin) formLogin.classList.add("hidden");
+    if (formRegister) formRegister.classList.add("hidden");
     if (formMentor) formMentor.classList.remove("hidden");
     if (btnMentor) btnMentor.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-stone-900 text-white shadow-sm transition";
   }
 }
 
-// Student Form Submit Handler
-const studentForm = document.getElementById("auth-form-student");
-if (studentForm) {
-  studentForm.addEventListener("submit", async (e) => {
+// 1. STRICT STUDENT LOGIN HANDLER (ONLY REGISTERED STUDENTS CAN LOGIN)
+const loginForm = document.getElementById("auth-form-login");
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = document.getElementById("std-name").value.trim();
-    const email = document.getElementById("std-email").value.trim().toLowerCase();
-    const grade = document.getElementById("std-grade").value;
-    const passcode = document.getElementById("std-passcode").value.trim().toUpperCase();
+    const email = document.getElementById("login-email").value.trim().toLowerCase();
+    const password = document.getElementById("login-password").value.trim();
+    const errorBox = document.getElementById("login-error");
+    const loginBtn = e.target.querySelector("button[type='submit']");
+
+    if (!email || !password) {
+      errorBox.textContent = "Mohon masukkan email dan password akun kamu.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    if (loginBtn) {
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Memeriksa Database...`;
+    }
+
+    // Pull from cloud/Google Sheets first
+    await pullCloudStudents();
+
+    let registeredUsers = getRegisteredStudents();
+    let foundUser = registeredUsers.find(u => u.email && u.email.toLowerCase() === email);
+
+    // If not found locally, try verifying with Google Apps Script
+    if (!foundUser && GOOGLE_SCRIPT_URL) {
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "login",
+            email: email,
+            password: password
+          })
+        });
+        if (res.ok) {
+          const result = await res.json();
+          if (result && result.status === "success" && result.student) {
+            foundUser = result.student;
+            registeredUsers.push(foundUser);
+            localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+          }
+        }
+      } catch (err) {
+        console.warn("GAS auth check note:", err);
+      }
+    }
+
+    if (loginBtn) {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = `<span>Masuk ke Portal Siswa</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // STRICT CHECK 1: Must be in database
+    if (!foundUser) {
+      errorBox.textContent = "❌ Akun dengan email ini belum terdaftar di database! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    // STRICT CHECK 2: Password verification
+    const isMasterPasscode = STATE.registrationPasscodes.includes(password.toUpperCase());
+    if (foundUser.password && foundUser.password !== password && !isMasterPasscode) {
+      errorBox.textContent = "❌ Password salah! Silakan masukkan password yang kamu buat saat mendaftar.";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    // Grant access
+    logActivity("LOGIN", `Siswa Login: ${email}`, foundUser.grade);
+    loginUser(foundUser);
+  });
+}
+
+// 2. STUDENT REGISTRATION HANDLER
+const registerForm = document.getElementById("auth-form-register");
+if (registerForm) {
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("reg-name").value.trim();
+    const email = document.getElementById("reg-email").value.trim().toLowerCase();
+    const grade = document.getElementById("reg-grade").value;
+    const passcode = document.getElementById("reg-passcode").value.trim().toUpperCase();
+    const password = document.getElementById("reg-password").value.trim();
     const errorBox = document.getElementById("login-error");
     const submitBtn = e.target.querySelector("button[type='submit']");
 
@@ -612,14 +769,34 @@ if (studentForm) {
     }
 
     if (!STATE.registrationPasscodes.includes(passcode)) {
-      errorBox.textContent = "Passcode salah! Masukkan passcode pendaftaran resmi (SUCCESS2026).";
+      errorBox.textContent = "Passcode Pendaftaran salah! Masukkan passcode resmi dari mentor (SUCCESS2026).";
+      errorBox.classList.remove("hidden");
+      return;
+    }
+
+    if (password.length < 4) {
+      errorBox.textContent = "Password minimal 4 karakter demi keamanan akun kamu.";
       errorBox.classList.remove("hidden");
       return;
     }
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Menghubungkan ke Portal...`;
+      submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mendaftarkan Akun ke Database...`;
+    }
+
+    // Check if email already registered
+    await pullCloudStudents();
+    let registeredUsers = getRegisteredStudents();
+    if (registeredUsers.some(u => u.email && u.email.toLowerCase() === email)) {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<span>Daftar & Buka Portal</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+      errorBox.textContent = "Email ini sudah terdaftar! Silakan langsung login di tab 'Masuk (Login)'.";
+      errorBox.classList.remove("hidden");
+      return;
     }
 
     const studentUser = {
@@ -627,22 +804,16 @@ if (studentForm) {
       name: name,
       email: email,
       grade: grade,
-      passcode: passcode,
+      password: password,
       registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
       role: "STUDENT"
     };
 
-    let registeredUsers = getRegisteredStudents();
-    const existingIndex = registeredUsers.findIndex(u => u.email && u.email.toLowerCase() === email);
-    if (existingIndex === -1) {
-      registeredUsers.push(studentUser);
-    } else {
-      registeredUsers[existingIndex] = { ...registeredUsers[existingIndex], name: name, grade: grade, registeredAt: studentUser.registeredAt };
-    }
+    registeredUsers.push(studentUser);
     localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-
     pushCloudStudents(registeredUsers);
 
+    // Save to Google Spreadsheet
     if (GOOGLE_SCRIPT_URL) {
       try {
         fetch(GOOGLE_SCRIPT_URL, {
@@ -653,23 +824,25 @@ if (studentForm) {
             action: "register",
             name: name,
             email: email,
-            grade: grade
+            grade: grade,
+            password: password
           })
         });
       } catch (err) {}
     }
 
+    // Email alert to Mentor
     try {
       fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          event: "Siswa Masuk Portal",
+          event: "Pendaftaran Siswa Baru",
           nama_siswa: name,
           email_siswa: email,
           kelas: grade,
           waktu: studentUser.registeredAt,
-          _subject: `🎓 [Ngambis Bareng] Siswa Masuk: ${name} (${email})`,
+          _subject: `🎉 [Ngambis Bareng] Siswa Baru Mendaftar: ${name} (${email})`,
           _replyto: email
         })
       });
@@ -677,16 +850,17 @@ if (studentForm) {
 
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = `<span>Buka Portal Pembelajaran</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      submitBtn.innerHTML = `<span>Daftar & Buka Portal</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
       if (window.lucide) lucide.createIcons();
     }
 
-    logActivity("LOGIN", `Siswa Masuk: ${email}`, grade);
+    alert(`🎉 Pendaftaran Berhasil! Selamat datang di Ngambis Bareng (LDM Ecosystem), ${name}.`);
+    logActivity("STUDENT_REGISTER", `Registrasi Akun: ${name} (${email})`, grade);
     loginUser(studentUser);
   });
 }
 
-// Mentor Form Submit Handler
+// 3. MENTOR LOGIN HANDLER
 const mentorForm = document.getElementById("auth-form-mentor");
 if (mentorForm) {
   mentorForm.addEventListener("submit", (e) => {
@@ -741,7 +915,6 @@ function loginUser(user) {
     if (navAdmin) navAdmin.classList.add("hidden");
   }
 
-  // Setup security watermark
   setupWatermark(user.name, user.email || user.grade);
 
   loadMilestoneProgress();
@@ -781,7 +954,7 @@ function setupWatermark(name, emailOrGrade) {
   container.innerHTML = "";
   container.classList.remove("hidden");
 
-  const watermarkText = `NGAMBIS BARENG • ${name.toUpperCase()} (${emailOrGrade}) • CONFIDENTIAL`;
+  const watermarkText = `NGAMBIS BARENG • LDM ECOSYSTEM • ${name.toUpperCase()} (${emailOrGrade}) • CONFIDENTIAL`;
   for (let i = 0; i < 40; i++) {
     const span = document.createElement("div");
     span.className = "p-4 tracking-wider text-[11px] font-mono select-none text-stone-900/5";
@@ -805,13 +978,13 @@ function switchRoadmapTrack(track) {
   if (track === 'ptln') {
     if (viewPtln) viewPtln.classList.remove("hidden");
     if (viewIup) viewIup.classList.add("hidden");
-    if (btnPtln) btnPtln.className = "flex-1 py-2.5 px-4 text-xs font-bold rounded-xl bg-amber-800 text-white shadow-sm transition";
-    if (btnIup) btnIup.className = "flex-1 py-2.5 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
+    if (btnPtln) btnPtln.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-amber-800 text-white shadow-sm transition";
+    if (btnIup) btnIup.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
   } else {
     if (viewPtln) viewPtln.classList.add("hidden");
     if (viewIup) viewIup.classList.remove("hidden");
-    if (btnPtln) btnPtln.className = "flex-1 py-2.5 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
-    if (btnIup) btnIup.className = "flex-1 py-2.5 px-4 text-xs font-bold rounded-xl bg-blue-700 text-white shadow-sm transition";
+    if (btnPtln) btnPtln.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
+    if (btnIup) btnIup.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-blue-700 text-white shadow-sm transition";
   }
 
   logActivity("SWITCH_ROADMAP", `Melihat Jalur: ${track.toUpperCase()}`);
@@ -910,7 +1083,7 @@ function renderCompetitions(items = null) {
       </div>
 
       <div class="p-5 pt-0">
-        <a href="${sanitizeHTML(c.link)}" target="_blank" rel="noopener noreferrer" onclick="logActivity('COMPETITION_LINK', '${sanitizeHTML(c.title)}')" class="w-full py-2 px-3 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+        <a href="${sanitizeHTML(c.link)}" target="_blank" rel="noopener noreferrer" onclick="logActivity('COMPETITION_LINK', '${sanitizeHTML(c.title)}')" class="w-full py-2.5 px-3 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
           <span>Kunjungi Website Resmi & Daftar</span>
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
@@ -1036,7 +1209,7 @@ function renderScholarships(items = STATE.scholarships) {
     <div class="p-5 rounded-2xl bg-white border border-stone-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
       <div>
         <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${s.badgeColor}">
+          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded border ${s.badgeColor}">
             ${s.country}
           </span>
           <span class="text-[11px] text-stone-500 font-medium">⏳ ${s.deadline}</span>
@@ -1125,10 +1298,9 @@ function calculateProfileChance() {
   let recommendation = "";
   let badgeColor = "";
 
-  // 1. Check IUP PTN Track with TOEFL ITP Guidelines
   if (target === "IUP_FK") {
     if (toeflItp >= 550 || ielts >= 6.5) {
-      matchTier = "🩺 Lolos Standar Fakultas Kedokteran IUP (FK UGM, KKI UI, IUP UNAIR)";
+      matchTier = "🩺 Lolos Standar Fakultas Kedokteran IUP (FK UGM, KKI UI, UNAIR FK, UNPAD FK)";
       recommendation = `Skor TOEFL ITP kamu (${toeflItp}) / IELTS (${ielts}) telah melampaui batas minimal 550 untuk FK IUP! Maksimalkan latihan tes GMST/SIMAK IPA dan persiapan Mini Multiple Interview (MMI).`;
       badgeColor = "border-emerald-300 text-emerald-900 bg-emerald-50";
     } else {
@@ -1138,7 +1310,7 @@ function calculateProfileChance() {
     }
   } else if (target === "IUP_REGULAR") {
     if (toeflItp >= 500 || ielts >= 5.5) {
-      matchTier = "🇮🇩 Lolos Standar IUP Umum (UGM, ITB, UI KKI, UNAIR, ITS)";
+      matchTier = "🇮🇩 Lolos Standar IUP Umum (UGM, ITB, UI KKI, UNAIR, ITS, UNDIP, UNPAD, IPB)";
       recommendation = `Skor TOEFL ITP kamu (${toeflItp}) sudah memenuhi syarat minimal pendaftaran Gelombang 1 IUP PTN (min. 500). Fokus pada tes potensi akademik (GMST/AQAS/TPA).`;
       badgeColor = "border-blue-300 text-blue-900 bg-blue-50";
     } else {
@@ -1147,7 +1319,6 @@ function calculateProfileChance() {
       badgeColor = "border-amber-300 text-amber-900 bg-amber-50";
     }
   } else {
-    // PTLN Global Track
     if (gpa >= 92 && sat >= 1500 && ielts >= 7.5 && spike === "national_gold") {
       matchTier = "🌟 Super Competitive Tier (Ivy League / MIT / Oxford / Cambridge / NUS ASEAN)";
       recommendation = "Profil kamu sangat solid untuk beasiswa Full Ride dunia & Need-Blind US! Maksimalkan narasi esai dan LoR yang tajam.";
@@ -1174,7 +1345,7 @@ function calculateProfileChance() {
 }
 
 // ==========================================
-// ESSAY DRAFT SUBMISSION
+// ESSAY DRAFT SUBMISSION (BULLETPROOF DISPATCH)
 // ==========================================
 async function submitEssayDraft(e) {
   e.preventDefault();
@@ -1195,7 +1366,7 @@ async function submitEssayDraft(e) {
   }
 
   submitBtn.disabled = true;
-  submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mengirimkan ke Mentor...`;
+  submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mengirimkan Notifikasi ke Mentor...`;
 
   const draftEntry = {
     id: "draft_" + Date.now(),
@@ -1217,50 +1388,55 @@ async function submitEssayDraft(e) {
 
   try {
     const payload = {
-      student_name: STATE.currentUser.name,
-      student_email: STATE.currentUser.email || "Tidak tertera",
-      student_grade: STATE.currentUser.grade,
-      essay_title: essayTitle,
-      essay_type: essayType,
-      google_docs_link: gdocLink,
-      notes_from_student: notes || "Tidak ada catatan tambahan.",
-      submission_time: draftEntry.timestamp,
-      _subject: `🚨 [Ngambis Bareng] Draft Esai Baru: ${STATE.currentUser.name} (${essayTitle})`,
+      nama_siswa: STATE.currentUser.name,
+      email_siswa: STATE.currentUser.email || "Tidak tertera",
+      kelas_siswa: STATE.currentUser.grade,
+      judul_esai: essayTitle,
+      tipe_esai: essayType,
+      link_google_docs: gdocLink,
+      catatan_siswa: notes || "Tidak ada catatan tambahan.",
+      waktu_pengiriman: draftEntry.timestamp,
+      _subject: `🚨 [Ngambis Bareng] Draft Esai Masuk: ${STATE.currentUser.name} (${essayTitle})`,
       _replyto: STATE.currentUser.email || MENTOR_EMAIL
     };
 
+    // 1. Dispatch to FormSubmit -> sends real email to maesa.am222@gmail.com
     await fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
       method: "POST",
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify(payload)
     });
 
+    // 2. Dispatch to Google Spreadsheet via Apps Script
     if (GOOGLE_SCRIPT_URL) {
-      try {
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "submit_essay",
-            student_name: STATE.currentUser.name,
-            student_email: STATE.currentUser.email || "-",
-            student_grade: STATE.currentUser.grade,
-            essay_title: essayTitle,
-            essay_type: essayType,
-            google_docs_link: gdocLink,
-            notes: notes
-          })
-        });
-      } catch (e) {}
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "submit_essay",
+          student_name: STATE.currentUser.name,
+          student_email: STATE.currentUser.email || "-",
+          student_grade: STATE.currentUser.grade,
+          essay_title: essayTitle,
+          essay_type: essayType,
+          google_docs_link: gdocLink,
+          notes: notes
+        })
+      });
     }
-  } catch (err) {}
+  } catch (err) {
+    console.warn("Direct email dispatch note:", err);
+  }
 
   submitBtn.disabled = false;
   submitBtn.innerHTML = `<span>Kirim Draft ke Mentor</span> <i data-lucide="upload-cloud" class="w-4 h-4"></i>`;
 
   alertBox.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs text-center";
-  alertBox.innerHTML = `✅ <strong>Berhasil Terkirim!</strong> Draft esaimu telah masuk ke antrean review Mentor Maesa (<em>${MENTOR_EMAIL}</em>).`;
+  alertBox.innerHTML = `✅ <strong>Berhasil Terkirim!</strong> Notifikasi draft esaimu (Nama, Email, dan Link Google Docs) telah dikirimkan langsung ke email Mentor Maesa (<em>${MENTOR_EMAIL}</em>) dan dicatat di Google Sheets.`;
   alertBox.classList.remove("hidden");
 
   logActivity("DRAFT_SUBMITTED", `Judul: ${essayTitle} (${essayType})`);
@@ -1342,39 +1518,6 @@ function renderSubmittedDraftsAdmin() {
 // ==========================================
 function getRegisteredStudents() {
   let registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
-  const logs = JSON.parse(localStorage.getItem("ngambis_activity_logs") || "[]");
-  const drafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
-  let modified = false;
-
-  logs.forEach(log => {
-    if (log.studentName && !log.studentName.toLowerCase().includes("mentor") && log.studentName !== "Guest" && log.studentName !== "-") {
-      const email = (log.studentEmail && log.studentEmail !== "-") 
-        ? log.studentEmail.toLowerCase() 
-        : `${log.studentName.toLowerCase().replace(/[^a-z0-9]/g, '')}@student.ngambis`;
-      
-      const exists = registeredUsers.some(u => 
-        (u.email && u.email.toLowerCase() === email) || 
-        (u.name && u.name.toLowerCase() === log.studentName.toLowerCase())
-      );
-
-      if (!exists) {
-        registeredUsers.push({
-          id: log.studentId || "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
-          name: log.studentName,
-          email: email,
-          grade: log.grade || "Kelas 12",
-          registeredAt: log.timestamp || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-          role: "STUDENT"
-        });
-        modified = true;
-      }
-    }
-  });
-
-  if (modified) {
-    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-  }
-
   return registeredUsers;
 }
 
@@ -1450,6 +1593,7 @@ function addManualStudent() {
     name: name,
     email: email,
     grade: grade,
+    password: "SUCCESS2026",
     registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Manual)",
     role: "STUDENT"
   };
@@ -1458,13 +1602,30 @@ function addManualStudent() {
   localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
   pushCloudStudents(registeredUsers);
 
+  if (GOOGLE_SCRIPT_URL) {
+    try {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "register",
+          name: name,
+          email: email,
+          grade: grade,
+          password: "SUCCESS2026"
+        })
+      });
+    } catch (err) {}
+  }
+
   nameInput.value = "";
   emailInput.value = "";
   toggleAddStudentForm();
 
   renderRegisteredStudentsAdmin();
   updateAnalyticsStats();
-  alert(`✅ Akun siswa '${name}' (${email}) berhasil didaftarkan secara manual!`);
+  alert(`✅ Akun siswa '${name}' (${email}) berhasil didaftarkan secara manual! Password default: SUCCESS2026`);
 }
 
 function deleteStudentAdmin(email) {
