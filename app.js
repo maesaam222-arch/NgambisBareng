@@ -260,15 +260,64 @@ const STATE = {
   ]
 };
 
+// Cloud Remote Sync Endpoint (Allows Cross-Device Sync between Laptop & Mobile)
+const CLOUD_SYNC_URL = "https://kvdb.io/7zD9XyN19dJ51TqA5Vv9P4/ngambis_students_db_v1";
+
+async function pullCloudStudents() {
+  try {
+    const res = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
+    if (res.ok) {
+      const cloudData = await res.json();
+      if (Array.isArray(cloudData) && cloudData.length > 0) {
+        let localData = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+        let merged = [...localData];
+        cloudData.forEach(cs => {
+          const idx = merged.findIndex(m => m.email && m.email.toLowerCase() === cs.email.toLowerCase());
+          if (idx === -1) {
+            merged.push(cs);
+          } else {
+            merged[idx] = { ...merged[idx], ...cs };
+          }
+        });
+        localStorage.setItem("ngambis_registered_students", JSON.stringify(merged));
+        return merged;
+      }
+    }
+  } catch (err) {
+    console.warn("Cloud sync note:", err);
+  }
+  return getRegisteredStudents();
+}
+
+async function pushCloudStudents(students) {
+  try {
+    await fetch(CLOUD_SYNC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(students)
+    });
+  } catch (err) {
+    console.warn("Cloud push note:", err);
+  }
+}
+
 // ==========================================
 // INITIALIZATION
 // ==========================================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   loadCustomPasscodes();
   checkExistingSession();
   renderScholarships();
   renderDeadlines();
   updateAnalyticsStats();
+
+  // Background Cloud Sync for Cross-Device Synchronization
+  pullCloudStudents().then(() => {
+    updateAnalyticsStats();
+    if (STATE.currentUser && STATE.currentUser.role === "MENTOR") {
+      renderRegisteredStudentsAdmin();
+    }
+  });
 });
 
 function loadCustomPasscodes() {
@@ -330,6 +379,7 @@ document.getElementById("auth-form-register").addEventListener("submit", async (
   const passcode = document.getElementById("reg-passcode").value.trim().toUpperCase();
   const password = document.getElementById("reg-password").value.trim();
   const errorBox = document.getElementById("login-error");
+  const submitBtn = e.target.querySelector("button[type='submit']");
 
   // Validate Email Format
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -352,9 +402,22 @@ document.getElementById("auth-form-register").addEventListener("submit", async (
     return;
   }
 
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mendaftarkan Akun...`;
+  }
+
+  // Pull latest cloud database before checking
+  await pullCloudStudents();
+
   // Check if email already registered
-  const registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+  const registeredUsers = getRegisteredStudents();
   if (registeredUsers.some(u => u.email === email)) {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `Selesaikan Pendaftaran <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      if (window.lucide) lucide.createIcons();
+    }
     errorBox.textContent = "Email ini sudah terdaftar! Silakan langsung login di tab 'Masuk (Login)'.";
     errorBox.classList.remove("hidden");
     return;
@@ -372,6 +435,9 @@ document.getElementById("auth-form-register").addEventListener("submit", async (
 
   registeredUsers.push(newStudent);
   localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+
+  // Push to Cloud for Cross-Device Sync
+  await pushCloudStudents(registeredUsers);
 
   // Log activity
   logActivity("STUDENT_REGISTER", `Siswa baru mendaftar: ${name} (${email})`, grade);
@@ -395,30 +461,78 @@ document.getElementById("auth-form-register").addEventListener("submit", async (
     console.warn("Dispatch notification note:", err);
   }
 
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = `Selesaikan Pendaftaran <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
   alert(`🎉 Pendaftaran Berhasil! Selamat datang di Ngambis Bareng, ${name}. Kamu akan langsung masuk ke portal.`);
   loginUser(newStudent);
 });
 
-// 2. STRICT STUDENT LOGIN HANDLER (MUST BE REGISTERED FIRST)
-document.getElementById("auth-form-login").addEventListener("submit", (e) => {
+// 2. SMART STUDENT LOGIN HANDLER (CROSS-DEVICE CLOUD SYNC & PASSCODE COMPATIBLE)
+document.getElementById("auth-form-login").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("login-email").value.trim().toLowerCase();
   const password = document.getElementById("login-password").value.trim();
   const errorBox = document.getElementById("login-error");
+  const loginBtn = e.target.querySelector("button[type='submit']");
 
-  const registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
-  const foundUser = registeredUsers.find(u => u.email === email);
-
-  // STRICT CHECK 1: Must be registered
-  if (!foundUser) {
-    errorBox.textContent = "Akun dengan email ini belum terdaftar! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu untuk mendaftar.";
+  if (!email || !password) {
+    errorBox.textContent = "Mohon isi email dan password kamu.";
     errorBox.classList.remove("hidden");
     return;
   }
 
-  // STRICT CHECK 2: Password must match
-  if (foundUser.password !== password) {
-    errorBox.textContent = "Password salah! Silakan periksa kembali password yang kamu buat saat mendaftar.";
+  if (loginBtn) {
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Memeriksa akun...`;
+  }
+
+  // 1. Sync cloud data first so cross-device registration is fetched
+  await pullCloudStudents();
+
+  let registeredUsers = getRegisteredStudents();
+  let foundUser = registeredUsers.find(u => u.email && u.email.toLowerCase() === email);
+
+  // Check if student is using mentor master passcode
+  const isMasterPasscode = STATE.registrationPasscodes.includes(password.toUpperCase());
+
+  // Auto-register if using master passcode on a new device
+  if (!foundUser && isMasterPasscode) {
+    const namePart = email.split("@")[0].replace(/[._]/g, " ");
+    const autoName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+    foundUser = {
+      id: "std_" + Date.now(),
+      name: autoName,
+      email: email,
+      grade: "Kelas 12 (Fase Eksekusi)",
+      password: password,
+      registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Auto-Passcode)",
+      role: "STUDENT"
+    };
+    registeredUsers.push(foundUser);
+    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+    await pushCloudStudents(registeredUsers);
+  }
+
+  if (loginBtn) {
+    loginBtn.disabled = false;
+    loginBtn.innerHTML = `Masuk ke Portal <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  // If still not found
+  if (!foundUser) {
+    errorBox.textContent = "Akun dengan email ini belum terdaftar! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu untuk mendaftar akunmu.";
+    errorBox.classList.remove("hidden");
+    return;
+  }
+
+  // Password Verification (Registered Password OR Mentor Passcode)
+  if (foundUser.password !== password && !isMasterPasscode) {
+    errorBox.textContent = "Password salah! Silakan periksa kembali password yang kamu buat saat mendaftar atau gunakan passcode 'SUCCESS2026'.";
     errorBox.classList.remove("hidden");
     return;
   }
@@ -796,37 +910,179 @@ function renderSubmittedDraftsAdmin() {
 }
 
 // ==========================================
-// REGISTERED STUDENTS DIRECTORY (FOR MENTOR)
+// REGISTERED STUDENTS DIRECTORY (AUTO-SYNC & MENTOR DIRECTORY)
 // ==========================================
+function getRegisteredStudents() {
+  let registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+  const logs = JSON.parse(localStorage.getItem("ngambis_activity_logs") || "[]");
+  const drafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
+  let modified = false;
+
+  // Auto-backfill students recorded in activity logs (e.g. from previous tests)
+  logs.forEach(log => {
+    if (log.studentName && !log.studentName.toLowerCase().includes("mentor") && log.studentName !== "Guest" && log.studentName !== "-") {
+      const email = (log.studentEmail && log.studentEmail !== "-") 
+        ? log.studentEmail.toLowerCase() 
+        : `${log.studentName.toLowerCase().replace(/[^a-z0-9]/g, '')}@student.ngambis`;
+      
+      const exists = registeredUsers.some(u => 
+        (u.email && u.email.toLowerCase() === email) || 
+        (u.name && u.name.toLowerCase() === log.studentName.toLowerCase())
+      );
+
+      if (!exists) {
+        registeredUsers.push({
+          id: log.studentId || "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
+          name: log.studentName,
+          email: email,
+          grade: log.grade || "Kelas 12",
+          password: "SUCCESS2026",
+          registeredAt: log.timestamp || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+          role: "STUDENT"
+        });
+        modified = true;
+      }
+    }
+  });
+
+  // Auto-backfill students from submitted drafts if missing
+  drafts.forEach(draft => {
+    if (draft.studentName && !draft.studentName.toLowerCase().includes("mentor")) {
+      const email = (draft.studentEmail && draft.studentEmail !== "-") 
+        ? draft.studentEmail.toLowerCase() 
+        : `${draft.studentName.toLowerCase().replace(/[^a-z0-9]/g, '')}@student.ngambis`;
+
+      const exists = registeredUsers.some(u => 
+        (u.email && u.email.toLowerCase() === email) || 
+        (u.name && u.name.toLowerCase() === draft.studentName.toLowerCase())
+      );
+
+      if (!exists) {
+        registeredUsers.push({
+          id: draft.studentId || "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
+          name: draft.studentName,
+          email: email,
+          grade: draft.grade || "Kelas 12",
+          password: "SUCCESS2026",
+          registeredAt: draft.timestamp || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+          role: "STUDENT"
+        });
+        modified = true;
+      }
+    }
+  });
+
+  if (modified) {
+    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+  }
+
+  return registeredUsers;
+}
+
 function renderRegisteredStudentsAdmin() {
   const tbody = document.getElementById("admin-students-body");
   if (!tbody) return;
 
-  const registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+  const registeredUsers = getRegisteredStudents();
   if (registeredUsers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada siswa yang mendaftar.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada siswa yang mendaftar. Klik '+ Tambah Siswa Manual' jika ingin menambahkan akun.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = registeredUsers.map((s, idx) => `
     <tr class="hover:bg-slate-800/40 transition">
-      <td class="p-3 text-slate-400">${idx + 1}</td>
-      <td class="p-3 font-semibold text-white">${s.name}</td>
+      <td class="p-3 text-slate-400 font-mono">${idx + 1}</td>
+      <td class="p-3 font-semibold text-white">
+        ${s.name}
+      </td>
       <td class="p-3 font-mono text-brand-accent text-xs">
-        <a href="mailto:${s.email}" class="hover:underline flex items-center gap-1">
+        <a href="mailto:${s.email}" class="hover:underline inline-flex items-center gap-1">
           ${s.email} <i data-lucide="mail" class="w-3 h-3"></i>
         </a>
       </td>
-      <td class="p-3 text-slate-300">${s.grade}</td>
-      <td class="p-3 text-slate-400 text-[11px]">${s.registeredAt || '-'}</td>
+      <td class="p-3 text-slate-300">
+        <span class="px-2 py-0.5 rounded bg-slate-800 text-[11px] font-medium border border-slate-700">
+          ${s.grade}
+        </span>
+      </td>
+      <td class="p-3 text-slate-400 text-[11px] font-mono">${s.registeredAt || '-'}</td>
+      <td class="p-3 text-right">
+        <button onclick="deleteStudentAdmin('${s.email}')" class="px-2.5 py-1 text-[11px] bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg border border-red-500/30 transition inline-flex items-center gap-1">
+          <i data-lucide="trash-2" class="w-3 h-3"></i> Hapus
+        </button>
+      </td>
     </tr>
   `).join("");
 
   if (window.lucide) lucide.createIcons();
 }
 
+function toggleAddStudentForm() {
+  const form = document.getElementById("manual-student-form");
+  if (form) form.classList.toggle("hidden");
+}
+
+function addManualStudent() {
+  const nameInput = document.getElementById("manual-std-name");
+  const emailInput = document.getElementById("manual-std-email");
+  const gradeInput = document.getElementById("manual-std-grade");
+
+  const name = (nameInput.value || "").trim();
+  const email = (emailInput.value || "").trim().toLowerCase();
+  const grade = gradeInput.value;
+
+  if (!name || !email) {
+    alert("Mohon lengkapi nama dan email siswa!");
+    return;
+  }
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(email)) {
+    alert("Format email tidak valid (contoh: siswa@gmail.com)!");
+    return;
+  }
+
+  let registeredUsers = getRegisteredStudents();
+  if (registeredUsers.some(u => u.email === email)) {
+    alert("Email ini sudah terdaftar dalam database!");
+    return;
+  }
+
+  const newStudent = {
+    id: "std_" + Date.now(),
+    name: name,
+    email: email,
+    grade: grade,
+    password: "SUCCESS2026",
+    registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Manual)",
+    role: "STUDENT"
+  };
+
+  registeredUsers.push(newStudent);
+  localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+  pushCloudStudents(registeredUsers);
+
+  nameInput.value = "";
+  emailInput.value = "";
+  toggleAddStudentForm();
+
+  renderRegisteredStudentsAdmin();
+  updateAnalyticsStats();
+  alert(`✅ Akun siswa '${name}' (${email}) berhasil didaftarkan secara manual! Password default: SUCCESS2026`);
+}
+
+function deleteStudentAdmin(email) {
+  if (confirm(`Apakah kamu yakin ingin menghapus akun siswa '${email}' dari database?`)) {
+    let registeredUsers = getRegisteredStudents().filter(u => u.email !== email);
+    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+    pushCloudStudents(registeredUsers);
+    renderRegisteredStudentsAdmin();
+    updateAnalyticsStats();
+  }
+}
+
 function exportStudentsCSV() {
-  const registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+  const registeredUsers = getRegisteredStudents();
   if (registeredUsers.length === 0) {
     alert("Belum ada data siswa untuk diexport!");
     return;
@@ -1050,9 +1306,9 @@ function renderAnalyticsTable() {
 
 function updateAnalyticsStats() {
   const logs = JSON.parse(localStorage.getItem("ngambis_activity_logs") || "[]");
-  const registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
+  const registeredUsers = getRegisteredStudents();
   
-  const totalStudents = registeredUsers.length || new Set(logs.filter(l => !l.studentName.includes("Mentor")).map(l => l.studentName)).size;
+  const totalStudents = registeredUsers.length;
   const totalLogins = logs.filter(l => l.action === "LOGIN").length;
   const totalViews = logs.filter(l => l.action === "VIEW_TAB").length;
   const totalLinks = logs.filter(l => l.action.includes("LINK") || l.action.includes("TEMPLATE")).length;
