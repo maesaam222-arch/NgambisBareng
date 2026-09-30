@@ -39,24 +39,24 @@ const STATE = {
     {
       id: "comp_osn",
       title: "Olimpiade Sains Nasional (OSN SMA)",
-      organizer: "Puspresnas / Kemendikbudristek RI",
+      organizer: "Puspresnas / Kemendikdasmen RI",
       category: "STEM",
       deadline: "Februari - Maret (Tahunan)",
       perks: "Medalis Nasional berhak atas Beasiswa Indonesia Maju (BIM) S-1 Luar Negeri & Bebas Tes Masuk IUP PTN.",
       description: "Ajang talenta sains resmi paling bergengsi di Indonesia (Matematika, Fisika, Kimia, Biologi, Informatika, Astronomi, Kebumian, Ekonomi, Geografi).",
-      link: "https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/osn/",
+      link: "https://pusatprestasinasional.kemendikdasmen.go.id/event/riset-dan-inovasi/sma/olimpiade-sains-nasional-2026-2026-sma",
       image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=60",
       badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
     },
     {
       id: "comp_opsi",
       title: "Olimpiade Penelitian Siswa Indonesia (OPSI)",
-      organizer: "Pusat Prestasi Nasional (Puspresnas)",
+      organizer: "Pusat Prestasi Nasional (Kemendikdasmen RI)",
       category: "RISET",
       deadline: "Maret - April (Tahunan)",
       perks: "Sertifikat resmi kurasi Puspresnas RI, tiket delegasi Indonesia ke ajang ISEF di Amerika Serikat.",
       description: "Kompetisi riset ilmiah SMA terbesar untuk bidang Matematika, Sains, Teknologi Terapan, serta Ilmu Sosial dan Humaniora.",
-      link: "https://pusatprestasinasional.kemdikbud.go.id/event/sains-dan-teknologi/opsi/",
+      link: "https://pusatprestasinasional.kemendikdasmen.go.id/event/riset-dan-inovasi/sma/olimpiade-penelitian-siswa-indonesia-opsi-jenjang-pendidikan-menengah-2026-2026-sma",
       image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=800&auto=format&fit=crop&q=60",
       badgeColor: "bg-blue-100 text-blue-800 border-blue-300"
     },
