@@ -70,7 +70,7 @@ const STATE = {
       description: "Kompetisi bisnis & investasi internasional tim SMA paling prestisius di dunia yang dinilai langsung oleh profesor Wharton Business School.",
       link: "https://globalyouth.wharton.upenn.edu/competitions/investment-competition/",
       image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&auto=format&fit=crop&q=60",
-      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+      badgeColor: "bg-amber-100 text-amber-900 border-amber-300"
     },
     {
       id: "comp_nsdc",
@@ -80,7 +80,7 @@ const STATE = {
       deadline: "Mei - Juni",
       perks: "Pemenang didelegasikan ke WSDC (World Schools Debating Championship) & jalur talenta BIM.",
       description: "Kompetisi debat parlemen bahasa Inggris resmi tingkat nasional untuk mengasah logika diplomasi dan public speaking.",
-      link: "https://pusatprestasinasional.kemdikbud.go.id/event/seni-budaya-dan-bahasa/nsdc/",
+      link: "https://pusatprestasinasional.kemendikdasmen.go.id/event/seni-budaya/sma/lomba-debat-indonesia-2026-2026-sma",
       image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=60",
       badgeColor: "bg-rose-100 text-rose-800 border-rose-300"
     },
@@ -180,7 +180,7 @@ const STATE = {
       deadline: "10 Januari - 20 Februari (Tahunan)",
       requirements: "Nilai rata-rata rapor min. 70% (Non-Kedokteran) atau min. 90% (Kedokteran/Farmasi), esai Letter of Intent yang mendalam.",
       link: "https://www.turkiyeburslari.gov.tr/",
-      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+      badgeColor: "bg-amber-100 text-amber-900 border-amber-300"
     },
     {
       id: "stipendium_hungaricum",
@@ -240,7 +240,7 @@ const STATE = {
       deadline: "Oktober - Februari (Otomatis saat mendaftar admisi NUS)",
       requirements: "Nilai rapor SMA luar biasa, SAT 1480+ (Math 780-800), kepemimpinan dan prestasi olimpiade sains/riset.",
       link: "https://nus.edu.sg/oam/apply-to-nus",
-      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+      badgeColor: "bg-amber-100 text-amber-900 border-amber-300"
     },
     {
       id: "kaist_full",
@@ -291,7 +291,7 @@ const STATE = {
       deadline: "Gelombang 1 (Jan-Feb), Gelombang 2 (Apr-Mei), Gelombang 3 (Jun)",
       requirements: "Ujian GMST (Gadjah Mada Scholastic Test) + AcEPT / TOEFL ITP (min. 500 umum / min. 550 FK) / IELTS (min. 5.5-6.5) + Interview / MMI & FGD.",
       link: "https://um.ugm.ac.id/international-undergraduate-program-iup/",
-      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+      badgeColor: "bg-amber-100 text-amber-900 border-amber-300"
     },
     {
       id: "kki_ui",
@@ -363,7 +363,7 @@ const STATE = {
       deadline: "Gelombang 1 (Mar), Gelombang 2 (Mei), Gelombang 3 (Jun)",
       requirements: "Nilai Rapor + Sertifikat TOEFL ITP (min. 500 umum / min. 550 FK) / IELTS + Tes Kemampuan Akademik SMUP.",
       link: "https://smup.unpad.ac.id/international-undergraduate-program/",
-      badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+      badgeColor: "bg-amber-100 text-amber-900 border-amber-300"
     },
     {
       id: "iup_ipb",
@@ -445,6 +445,7 @@ async function pullCloudStudents() {
                 merged.push({
                   id: "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
                   name: gs.name,
+                  school: gs.school || "SMA Mitra",
                   email: gs.email.toLowerCase(),
                   grade: gs.grade || "Kelas 12",
                   password: gs.password || "SUCCESS2026",
@@ -455,6 +456,7 @@ async function pullCloudStudents() {
                 merged[idx] = { 
                   ...merged[idx], 
                   name: gs.name || merged[idx].name, 
+                  school: gs.school || merged[idx].school || "SMA Mitra",
                   grade: gs.grade || merged[idx].grade,
                   password: gs.password || merged[idx].password 
                 };
@@ -693,12 +695,21 @@ function switchTab(tabId) {
 
   logActivity("VIEW_TAB", `Membuka modul: ${tabId.toUpperCase()}`);
 
+  if (tabId === "roadmap" || tabId === "dashboard") {
+    loadMilestoneProgress();
+  }
+
+  if (tabId === "dashboard") {
+    renderBubbleSemangat();
+  }
+
   if (tabId === "admin" && STATE.currentUser && STATE.currentUser.role === "MENTOR") {
     renderAnalyticsTable();
     renderSubmittedDraftsAdmin();
     renderRegisteredStudentsAdmin();
     renderPasscodesInAdmin();
     renderAdminCompetitions();
+    renderAdminSpiritSubmissions();
   }
 
   if (window.innerWidth < 1024) {
@@ -734,7 +745,7 @@ function switchAuthTab(tab) {
     if (formLogin) formLogin.classList.remove("hidden");
     if (formRegister) formRegister.classList.add("hidden");
     if (formMentor) formMentor.classList.add("hidden");
-    if (btnLogin) btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-amber-800 text-white shadow-sm transition";
+    if (btnLogin) btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-stone-900 text-amber-300 border border-amber-500/40 shadow-sm transition";
   } else if (tab === 'register') {
     if (formLogin) formLogin.classList.add("hidden");
     if (formRegister) formRegister.classList.remove("hidden");
@@ -827,6 +838,7 @@ if (registerForm) {
   registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("reg-name").value.trim();
+    const school = (document.getElementById("reg-school") ? document.getElementById("reg-school").value : "").trim();
     const email = document.getElementById("reg-email").value.trim().toLowerCase();
     const grade = document.getElementById("reg-grade").value;
     const passcode = document.getElementById("reg-passcode").value.trim().toUpperCase();
@@ -862,9 +874,11 @@ if (registerForm) {
     const studentUser = {
       id: "std_" + Date.now(),
       name: name,
+      school: school || "SMA Mitra",
       email: email,
       grade: grade,
       password: password,
+      avatar: "",
       registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
       role: "STUDENT"
     };
@@ -884,6 +898,7 @@ if (registerForm) {
         body: JSON.stringify({
           action: "register",
           name: name,
+          school: school || "SMA Mitra",
           email: email,
           grade: grade,
           password: password
@@ -898,6 +913,7 @@ if (registerForm) {
       body: JSON.stringify({
         event: "Pendaftaran Siswa Baru",
         nama_siswa: name,
+        asal_sekolah: school || "SMA Mitra",
         email_siswa: email,
         kelas: grade,
         waktu: studentUser.registeredAt,
@@ -906,7 +922,7 @@ if (registerForm) {
       })
     }).catch(() => {});
 
-    logActivity("STUDENT_REGISTER", `Registrasi Akun: ${name} (${email})`, grade);
+    logActivity("STUDENT_REGISTER", `Registrasi Akun: ${name} (${email}) - ${school || 'SMA'}`, grade);
     loginUser(studentUser);
   });
 }
@@ -929,6 +945,7 @@ if (mentorForm) {
     const mentorUser = {
       id: "mentor_maesa",
       name: "Maesa (Head Mentor)",
+      school: "Head Mentor LDM",
       email: STATE.mentorAuth.email,
       grade: "Head Mentor",
       role: "MENTOR"
@@ -936,6 +953,45 @@ if (mentorForm) {
 
     loginUser(mentorUser);
   });
+}
+
+// ==========================================
+// AVATAR DISPLAY SYNC (POINT 6)
+// ==========================================
+function updateAvatarDisplays(user) {
+  if (!user) return;
+  const initial = (user.name || "S").charAt(0).toUpperCase();
+
+  const avatarSmallEls = document.querySelectorAll(".user-avatar-small-container");
+  avatarSmallEls.forEach(container => {
+    if (user.avatar) {
+      container.innerHTML = `<img src="${user.avatar}" alt="${sanitizeHTML(user.name)}" class="w-full h-full object-cover">`;
+    } else {
+      container.innerHTML = `<span class="user-initial-display">${initial}</span>`;
+    }
+  });
+
+  const avatarEls = document.querySelectorAll(".user-avatar-container");
+  avatarEls.forEach(container => {
+    if (user.avatar) {
+      container.innerHTML = `<img src="${user.avatar}" alt="${sanitizeHTML(user.name)}" class="w-full h-full object-cover">`;
+    } else {
+      container.innerHTML = `<span class="user-initial-display">${initial}</span>`;
+    }
+  });
+}
+
+// ==========================================
+// WELCOME LANDING MODAL (POINT 2)
+// ==========================================
+function openWelcomeModal() {
+  const modal = document.getElementById("modal-welcome-buddy");
+  if (modal) modal.classList.remove("hidden");
+}
+
+function closeWelcomeModal() {
+  const modal = document.getElementById("modal-welcome-buddy");
+  if (modal) modal.classList.add("hidden");
 }
 
 function loginUser(user) {
@@ -958,6 +1014,12 @@ function loginUser(user) {
   const emailEls = document.querySelectorAll(".user-email-display");
   emailEls.forEach(el => el.textContent = user.email || "-");
 
+  const schoolEls = document.querySelectorAll(".user-school-display");
+  schoolEls.forEach(el => el.textContent = user.school || "Siswa Binaan LDM");
+
+  // Update Avatars
+  updateAvatarDisplays(user);
+
   // Admin visibility
   const navAdmin = document.getElementById("nav-admin");
   if (user.role === "MENTOR") {
@@ -965,6 +1027,7 @@ function loginUser(user) {
     renderRegisteredStudentsAdmin();
     renderPasscodesInAdmin();
     renderAdminCompetitions();
+    renderAdminSpiritSubmissions();
   } else {
     if (navAdmin) navAdmin.classList.add("hidden");
   }
@@ -973,6 +1036,12 @@ function loginUser(user) {
 
   loadMilestoneProgress();
   loadSavedDrafts();
+  renderBubbleSemangat();
+
+  // Show Welcome Modal on every student login/sign-in (Point 2)
+  if (user.role === "STUDENT") {
+    openWelcomeModal();
+  }
 
   if (window.lucide) {
     lucide.createIcons();
@@ -1032,7 +1101,7 @@ function switchRoadmapTrack(track) {
   if (track === 'ptln') {
     if (viewPtln) viewPtln.classList.remove("hidden");
     if (viewIup) viewIup.classList.add("hidden");
-    if (btnPtln) btnPtln.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-amber-800 text-white shadow-sm transition";
+    if (btnPtln) btnPtln.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-stone-900 text-amber-300 border border-amber-500/40 shadow-sm transition";
     if (btnIup) btnIup.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
   } else {
     if (viewPtln) viewPtln.classList.add("hidden");
@@ -1041,6 +1110,7 @@ function switchRoadmapTrack(track) {
     if (btnIup) btnIup.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-blue-700 text-white shadow-sm transition";
   }
 
+  loadMilestoneProgress();
   logActivity("SWITCH_ROADMAP", `Melihat Jalur: ${track.toUpperCase()}`);
 }
 
@@ -1049,7 +1119,7 @@ function toggleMilestone(milestoneId) {
   const checkbox = document.getElementById(`ms-${milestoneId}`);
   if (!checkbox) return;
 
-  const key = `progress_${STATE.currentUser.id || STATE.currentUser.email}`;
+  const key = `progress_${STATE.currentUser.email || STATE.currentUser.id}`;
   let userProgress = JSON.parse(localStorage.getItem(key) || "{}");
 
   userProgress[milestoneId] = checkbox.checked;
@@ -1065,28 +1135,34 @@ function toggleMilestone(milestoneId) {
 
 function loadMilestoneProgress() {
   if (!STATE.currentUser) return;
-  const key = `progress_${STATE.currentUser.id || STATE.currentUser.email}`;
+  const key = `progress_${STATE.currentUser.email || STATE.currentUser.id}`;
   const userProgress = JSON.parse(localStorage.getItem(key) || "{}");
 
-  Object.keys(userProgress).forEach(id => {
-    const cb = document.getElementById(`ms-${id}`);
-    if (cb) {
-      cb.checked = userProgress[id];
-    }
+  const checkboxes = document.querySelectorAll('input[id^="ms-"]');
+  checkboxes.forEach(cb => {
+    const id = cb.id.replace("ms-", "");
+    cb.checked = !!userProgress[id];
   });
 
   updateProgressPercentage(userProgress);
 }
 
 function updateProgressPercentage(userProgress) {
-  const totalMilestones = 12;
-  const completed = Object.values(userProgress).filter(Boolean).length;
-  const percentage = Math.round((completed / totalMilestones) * 100);
+  const milestoneIds = [
+    "k10_rapor", "k11_sat", "k12_essay", "k12_submit_app",
+    "iup_k10_fondasi", "iup_k11_toefl", "iup_k12_gel1", "iup_k12_simak"
+  ];
+  const total = milestoneIds.length;
+  let completed = 0;
+  milestoneIds.forEach(id => {
+    if (userProgress && userProgress[id]) completed++;
+  });
+  const percentage = Math.round((completed / total) * 100);
 
   const textEl = document.getElementById("overall-progress-text");
   const barEl = document.getElementById("overall-progress-bar");
 
-  if (textEl) textEl.textContent = `${percentage}% Capaian (${completed}/${totalMilestones} Target)`;
+  if (textEl) textEl.textContent = `${percentage}% Capaian (${completed}/${total} Target)`;
   if (barEl) barEl.style.width = `${percentage}%`;
 }
 
@@ -1114,7 +1190,7 @@ function renderCompetitions(items = null) {
         <div class="h-44 w-full bg-stone-100/60 relative overflow-hidden">
           <img src="${sanitizeHTML(c.image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800')}" alt="${sanitizeHTML(c.title)}" class="w-full h-full object-cover">
           <div class="absolute top-3 left-3">
-            <span class="text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider ${c.badgeColor || 'bg-amber-100 text-amber-800 border border-amber-300'}">
+            <span class="text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider ${c.badgeColor || 'bg-amber-100 text-amber-900 border border-amber-300'}">
               ${sanitizeHTML(c.category)}
             </span>
           </div>
@@ -1127,7 +1203,7 @@ function renderCompetitions(items = null) {
 
         <div class="p-5">
           <h3 class="text-base font-bold text-stone-900 mb-1 leading-snug">${sanitizeHTML(c.title)}</h3>
-          <p class="text-xs font-semibold text-amber-800 mb-3">${sanitizeHTML(c.organizer)}</p>
+          <p class="text-xs font-semibold text-stone-700 mb-3">${sanitizeHTML(c.organizer)}</p>
           <p class="text-xs text-stone-600 mb-3 line-clamp-3 leading-relaxed">${sanitizeHTML(c.description)}</p>
           
           <div class="p-3 bg-amber-50/70 rounded-xl border border-amber-200/80 text-[11px] text-amber-900 mb-2">
@@ -1201,7 +1277,7 @@ function addNewCompetitionByMentor(e) {
     description: description || "Lomba terkurasi untuk pembinaan siswa Ngambis Bareng.",
     link: link,
     image: imageData,
-    badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+    badgeColor: "bg-amber-100 text-amber-900 border-amber-300"
   };
 
   const currentCustom = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
@@ -1243,7 +1319,7 @@ function renderAdminCompetitions() {
     <div class="p-3 glass-subpanel border border-stone-200/80 rounded-xl flex items-center justify-between gap-3">
       <div class="min-w-0">
         <p class="font-bold text-xs text-stone-900 truncate">${sanitizeHTML(c.title)}</p>
-        <p class="text-[11px] text-stone-500">${sanitizeHTML(c.organizer)} • <span class="text-amber-800 font-semibold">${sanitizeHTML(c.category)}</span></p>
+        <p class="text-[11px] text-stone-500">${sanitizeHTML(c.organizer)} • <span class="text-amber-700 font-semibold">${sanitizeHTML(c.category)}</span></p>
       </div>
       <button onclick="deleteCompetitionByMentor('${c.id}')" class="px-2.5 py-1 text-[11px] bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg border border-red-300 transition">
         Hapus
@@ -1270,7 +1346,7 @@ function renderScholarships(items = STATE.scholarships) {
         </div>
 
         <h3 class="text-sm font-bold text-stone-900 mb-1 leading-snug">${s.title}</h3>
-        <p class="text-xs text-amber-800 font-semibold mb-3">${s.provider}</p>
+        <p class="text-xs text-stone-700 font-semibold mb-3">${s.provider}</p>
 
         <div class="space-y-2 text-xs text-stone-700">
           <p><strong class="text-stone-900">Coverage:</strong> ${s.coverage}</p>
@@ -1279,7 +1355,7 @@ function renderScholarships(items = STATE.scholarships) {
       </div>
 
       <div class="pt-4 mt-4 border-t border-stone-200/60 flex items-center justify-between">
-        <a href="${s.link}" target="_blank" rel="noopener noreferrer" onclick="logActivity('SCHOLARSHIP_LINK', '${s.title}')" class="text-xs text-amber-800 hover:text-amber-900 font-bold inline-flex items-center gap-1">
+        <a href="${s.link}" target="_blank" rel="noopener noreferrer" onclick="logActivity('SCHOLARSHIP_LINK', '${s.title}')" class="text-xs text-stone-900 hover:text-amber-600 font-bold inline-flex items-center gap-1">
           Kunjungi Website Resmi <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
       </div>
@@ -1465,6 +1541,7 @@ async function submitEssayDraft(e) {
           body: JSON.stringify({
             action: "submit_essay",
             student_name: STATE.currentUser.name,
+            student_school: STATE.currentUser.school || "-",
             student_email: STATE.currentUser.email || "-",
             student_grade: STATE.currentUser.grade,
             essay_title: essayTitle,
@@ -1564,7 +1641,7 @@ function renderSubmittedDraftsAdmin() {
         <p class="text-[11px] text-stone-500">Waktu: ${d.timestamp} | Catatan: "${sanitizeHTML(d.notes || 'Tidak ada catatan')}"</p>
       </div>
       <div class="flex items-center gap-2">
-        <a href="${sanitizeHTML(d.link)}" target="_blank" class="px-3.5 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+        <a href="${sanitizeHTML(d.link)}" target="_blank" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
           Buka Docs & Koreksi <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
       </div>
@@ -1588,26 +1665,27 @@ function renderRegisteredStudentsAdmin() {
 
   const registeredUsers = getRegisteredStudents();
   if (registeredUsers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-500">Belum ada siswa yang mendaftar.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-stone-500">Belum ada siswa yang mendaftar.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = registeredUsers.map((s, idx) => `
     <tr class="hover:bg-stone-50 transition">
-      <td class="p-3 text-stone-500 font-mono">${idx + 1}</td>
-      <td class="p-3 font-semibold text-stone-900">${sanitizeHTML(s.name)}</td>
-      <td class="p-3 font-mono text-stone-700 text-xs">
+      <td class="p-3.5 text-stone-500 font-mono">${idx + 1}</td>
+      <td class="p-3.5 font-semibold text-stone-900">${sanitizeHTML(s.name)}</td>
+      <td class="p-3.5 font-mono text-stone-700 text-xs">
         <a href="mailto:${s.email}" class="hover:underline inline-flex items-center gap-1 text-amber-900 font-medium">
           ${sanitizeHTML(s.email)} <i data-lucide="mail" class="w-3 h-3"></i>
         </a>
       </td>
-      <td class="p-3 text-stone-700">
+      <td class="p-3.5 text-stone-700 text-xs font-medium">${sanitizeHTML(s.school || '-')}</td>
+      <td class="p-3.5 text-stone-700">
         <span class="px-2 py-0.5 rounded bg-stone-100 text-[11px] font-semibold border border-stone-200">
           ${sanitizeHTML(s.grade)}
         </span>
       </td>
-      <td class="p-3 text-stone-500 text-[11px] font-mono">${s.registeredAt || '-'}</td>
-      <td class="p-3 text-right">
+      <td class="p-3.5 text-stone-500 text-[11px] font-mono">${s.registeredAt || '-'}</td>
+      <td class="p-3.5 text-right">
         <button onclick="deleteStudentAdmin('${s.email}')" class="px-2.5 py-1 text-[11px] bg-red-100 hover:bg-red-200 text-red-700 rounded-lg border border-red-300 transition inline-flex items-center gap-1 font-semibold">
           <i data-lucide="trash-2" class="w-3 h-3"></i> Hapus
         </button>
@@ -1626,10 +1704,12 @@ function toggleAddStudentForm() {
 function addManualStudent() {
   const nameInput = document.getElementById("manual-std-name");
   const emailInput = document.getElementById("manual-std-email");
+  const schoolInput = document.getElementById("manual-std-school");
   const gradeInput = document.getElementById("manual-std-grade");
 
   const name = (nameInput.value || "").trim();
   const email = (emailInput.value || "").trim().toLowerCase();
+  const school = (schoolInput ? schoolInput.value : "").trim();
   const grade = gradeInput.value;
 
   if (!name || !email) {
@@ -1652,9 +1732,11 @@ function addManualStudent() {
   const newStudent = {
     id: "std_" + Date.now(),
     name: name,
+    school: school || "SMA Mitra",
     email: email,
     grade: grade,
     password: "SUCCESS2026",
+    avatar: "",
     registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Manual)",
     role: "STUDENT"
   };
@@ -1672,6 +1754,7 @@ function addManualStudent() {
         body: JSON.stringify({
           action: "register",
           name: name,
+          school: school || "SMA Mitra",
           email: email,
           grade: grade,
           password: "SUCCESS2026"
@@ -1682,6 +1765,7 @@ function addManualStudent() {
 
   nameInput.value = "";
   emailInput.value = "";
+  if (schoolInput) schoolInput.value = "";
   toggleAddStudentForm();
 
   renderRegisteredStudentsAdmin();
@@ -1706,9 +1790,9 @@ function exportStudentsCSV() {
     return;
   }
 
-  let csvContent = "data:text/csv;charset=utf-8,No,Nama Lengkap,Email,Kelas,Waktu Daftar\n";
+  let csvContent = "data:text/csv;charset=utf-8,No,Nama Lengkap,Email,Asal Sekolah,Kelas,Waktu Daftar\n";
   registeredUsers.forEach((s, idx) => {
-    csvContent += `"${idx+1}","${s.name}","${s.email}","${s.grade}","${s.registeredAt || ''}"\n`;
+    csvContent += `"${idx+1}","${s.name}","${s.email}","${s.school || ''}","${s.grade}","${s.registeredAt || ''}"\n`;
   });
 
   const encodedUri = encodeURI(csvContent);
@@ -1718,6 +1802,366 @@ function exportStudentsCSV() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+// ==========================================
+// TEMPLATE ACCORDION EXPANSION (POINT 12)
+// ==========================================
+function toggleTemplateAccordion(sectionId) {
+  const body = document.getElementById(sectionId);
+  const chevron = document.getElementById("chevron-" + sectionId);
+  if (!body) return;
+
+  const isHidden = body.classList.contains("hidden");
+  if (isHidden) {
+    body.classList.remove("hidden");
+    if (chevron) chevron.classList.add("rotate-180");
+  } else {
+    body.classList.add("hidden");
+    if (chevron) chevron.classList.remove("rotate-180");
+  }
+}
+
+// ==========================================
+// EDIT PROFILE & AVATAR PERSISTENCE (POINT 6)
+// ==========================================
+let pendingAvatarDataUrl = null;
+
+function openEditProfileModal() {
+  if (!STATE.currentUser) return;
+  const modal = document.getElementById("modal-edit-profile");
+  if (!modal) return;
+
+  const user = STATE.currentUser;
+  const nameInput = document.getElementById("edit-profile-name");
+  const schoolInput = document.getElementById("edit-profile-school");
+  const gradeInput = document.getElementById("edit-profile-grade");
+  const alertBox = document.getElementById("edit-profile-alert");
+  const previewContainer = document.getElementById("edit-avatar-preview-container");
+
+  if (nameInput) nameInput.value = user.name || "";
+  if (schoolInput) schoolInput.value = user.school || "";
+  if (gradeInput) gradeInput.value = user.grade || "Kelas 12";
+  if (alertBox) alertBox.classList.add("hidden");
+
+  pendingAvatarDataUrl = user.avatar || null;
+  if (previewContainer) {
+    if (pendingAvatarDataUrl) {
+      previewContainer.innerHTML = `<img src="${pendingAvatarDataUrl}" class="w-full h-full object-cover">`;
+    } else {
+      previewContainer.innerHTML = `<span id="edit-avatar-initial">${(user.name || "S").charAt(0).toUpperCase()}</span>`;
+    }
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeEditProfileModal() {
+  const modal = document.getElementById("modal-edit-profile");
+  if (modal) modal.classList.add("hidden");
+}
+
+function handleAvatarFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    alert("Mohon pilih file gambar (JPG, PNG)!");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // Compress and scale down to 220x220 max using canvas to fit in localStorage comfortably
+      const canvas = document.createElement("canvas");
+      const MAX_SIZE = 220;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_SIZE) {
+          height *= MAX_SIZE / width;
+          width = MAX_SIZE;
+        }
+      } else {
+        if (height > MAX_SIZE) {
+          width *= MAX_SIZE / height;
+          height = MAX_SIZE;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      pendingAvatarDataUrl = compressedDataUrl;
+
+      const previewContainer = document.getElementById("edit-avatar-preview-container");
+      if (previewContainer) {
+        previewContainer.innerHTML = `<img src="${compressedDataUrl}" class="w-full h-full object-cover">`;
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveUserProfile(event) {
+  event.preventDefault();
+  if (!STATE.currentUser) return;
+
+  const name = document.getElementById("edit-profile-name").value.trim();
+  const school = document.getElementById("edit-profile-school").value.trim();
+  const grade = document.getElementById("edit-profile-grade").value;
+  const alertBox = document.getElementById("edit-profile-alert");
+
+  if (!name) {
+    if (alertBox) {
+      alertBox.textContent = "Nama siswa tidak boleh kosong!";
+      alertBox.className = "p-3 rounded-xl bg-red-100 text-red-800 text-xs";
+      alertBox.classList.remove("hidden");
+    }
+    return;
+  }
+
+  // Update in-memory user
+  STATE.currentUser.name = name;
+  STATE.currentUser.school = school;
+  STATE.currentUser.grade = grade;
+  if (pendingAvatarDataUrl) {
+    STATE.currentUser.avatar = pendingAvatarDataUrl;
+  }
+
+  // Persist session
+  localStorage.setItem("ngambis_user_session", JSON.stringify(STATE.currentUser));
+
+  // Persist in registered students list
+  let registeredUsers = getRegisteredStudents();
+  const userIdx = registeredUsers.findIndex(u => u.email && u.email.toLowerCase() === (STATE.currentUser.email || "").toLowerCase());
+  if (userIdx !== -1) {
+    registeredUsers[userIdx] = { ...registeredUsers[userIdx], ...STATE.currentUser };
+    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+    pushCloudStudents(registeredUsers);
+
+    if (GOOGLE_SCRIPT_URL && STATE.currentUser.email) {
+      try {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "update_profile",
+            email: STATE.currentUser.email,
+            name: name,
+            school: school,
+            grade: grade
+          })
+        }).catch(() => {});
+      } catch (err) {}
+    }
+  }
+
+  // Update UI
+  const nameEls = document.querySelectorAll(".user-name-display");
+  nameEls.forEach(el => el.textContent = name);
+
+  const gradeEls = document.querySelectorAll(".user-grade-display");
+  gradeEls.forEach(el => el.textContent = grade);
+
+  const schoolEls = document.querySelectorAll(".user-school-display");
+  schoolEls.forEach(el => el.textContent = school || "Siswa Binaan LDM");
+
+  updateAvatarDisplays(STATE.currentUser);
+  setupWatermark(name, STATE.currentUser.email || grade);
+
+  logActivity("UPDATE_PROFILE", `Mengupdate profil: ${name} (${school})`);
+
+  if (alertBox) {
+    alertBox.textContent = "✅ Profil dan foto berhasil diperbarui!";
+    alertBox.className = "p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs";
+    alertBox.classList.remove("hidden");
+  }
+
+  setTimeout(() => {
+    closeEditProfileModal();
+    if (alertBox) alertBox.classList.add("hidden");
+  }, 1000);
+}
+
+// ==========================================
+// BUBBLE SEMANGAT COMMUNITY FEATURE (POINT 3)
+// ==========================================
+const DEFAULT_SPIRIT_QUOTE = {
+  text: "Orang yang mau berproses selalu punya cara untuk berkembang. Terus pantaskan diri untuk impian kamu, selalu percaya pada prosesmu, dan ayo wujudkan mulai dari Ngambis Bareng! 🚀",
+  author: "Diposting oleh Mentor Maesa",
+  timestamp: "Pesan Resmi"
+};
+
+function getActiveSpiritQuote() {
+  const saved = localStorage.getItem("ngambis_active_spirit_quote");
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {}
+  }
+  return DEFAULT_SPIRIT_QUOTE;
+}
+
+function renderBubbleSemangat() {
+  const quote = getActiveSpiritQuote();
+  const textEl = document.getElementById("bubble-quote-text");
+  const authorEl = document.getElementById("bubble-quote-author");
+  if (textEl) textEl.textContent = `"${quote.text}"`;
+  if (authorEl) authorEl.textContent = `— ${quote.author}`;
+}
+
+function openSubmitSpiritModal() {
+  const modal = document.getElementById("modal-submit-spirit");
+  const alertBox = document.getElementById("spirit-submit-alert");
+  const input = document.getElementById("student-spirit-text");
+  if (input) input.value = "";
+  if (alertBox) alertBox.classList.add("hidden");
+  if (modal) modal.classList.remove("hidden");
+}
+
+function closeSubmitSpiritModal() {
+  const modal = document.getElementById("modal-submit-spirit");
+  if (modal) modal.classList.add("hidden");
+}
+
+function submitSpiritQuote(event) {
+  event.preventDefault();
+  const textInput = document.getElementById("student-spirit-text");
+  const alertBox = document.getElementById("spirit-submit-alert");
+  const quoteText = (textInput ? textInput.value : "").trim();
+
+  if (!quoteText) return;
+
+  const user = STATE.currentUser || { name: "Siswa Ngambis Buddy", school: "SMA" };
+  const newSubmission = {
+    id: "quote_" + Date.now(),
+    text: quoteText,
+    studentName: user.name,
+    studentSchool: user.school || "SMA",
+    studentEmail: user.email || "-",
+    submittedAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
+  };
+
+  const list = JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+  list.unshift(newSubmission);
+  localStorage.setItem("ngambis_pending_spirit_quotes", JSON.stringify(list));
+
+  if (GOOGLE_SCRIPT_URL) {
+    try {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "submit_bubble",
+          name: user.name,
+          school: user.school || "SMA",
+          email: user.email || "-",
+          quote: quoteText
+        })
+      }).catch(() => {});
+    } catch (err) {}
+  }
+
+  logActivity("SUBMIT_SPIRIT_QUOTE", `Kutipan dari ${user.name}: "${quoteText.slice(0, 40)}..."`);
+
+  if (alertBox) {
+    alertBox.textContent = "✨ Terima kasih! Kata-kata semangatmu sudah dikirim ke Mentor untuk diposting.";
+    alertBox.className = "p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs";
+    alertBox.classList.remove("hidden");
+  }
+
+  setTimeout(() => {
+    closeSubmitSpiritModal();
+    if (alertBox) alertBox.classList.add("hidden");
+  }, 1400);
+}
+
+function renderAdminSpiritSubmissions() {
+  const container = document.getElementById("admin-spirit-submissions-list");
+  if (!container) return;
+
+  const list = JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+  if (list.length === 0) {
+    container.innerHTML = `<p class="text-xs text-stone-500 italic p-3 bg-white/70 rounded-xl border border-stone-200">Belum ada kiriman kalimat penyemangat baru dari siswa.</p>`;
+    return;
+  }
+
+  container.innerHTML = list.map(q => `
+    <div class="p-3.5 bg-white rounded-xl border border-amber-200/90 shadow-2xs space-y-2">
+      <p class="text-xs text-stone-900 font-serif italic leading-relaxed">"${sanitizeHTML(q.text)}"</p>
+      <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-stone-100 text-[11px]">
+        <span class="text-stone-600 font-medium">
+          Oleh: <strong>${sanitizeHTML(q.studentName)}</strong> (${sanitizeHTML(q.studentSchool || q.studentEmail)}) • <span class="text-stone-400 font-mono">${q.submittedAt}</span>
+        </span>
+        <div class="flex items-center gap-1.5">
+          <button onclick="mentorApproveStudentSpiritQuote('${q.id}')" class="px-2.5 py-1 bg-stone-900 hover:bg-black text-amber-300 font-bold rounded-lg text-[10px] transition flex items-center gap-1">
+            <i data-lucide="check" class="w-3 h-3"></i> Posting ke Bubble
+          </button>
+          <button onclick="mentorDeleteStudentSpiritQuote('${q.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg text-[10px] transition">
+            Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function mentorPostSpiritQuote(event) {
+  event.preventDefault();
+  const input = document.getElementById("mentor-custom-spirit-input");
+  const quoteText = (input ? input.value : "").trim();
+  if (!quoteText) return;
+
+  const activeQuote = {
+    text: quoteText,
+    author: "Diposting oleh Mentor Maesa",
+    timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
+  };
+
+  localStorage.setItem("ngambis_active_spirit_quote", JSON.stringify(activeQuote));
+  renderBubbleSemangat();
+  if (input) input.value = "";
+  alert("✅ Kalimat penyemangat berhasil diposting ke Bubble Semangat di dashboard seluruh siswa!");
+}
+
+function mentorApproveStudentSpiritQuote(quoteId) {
+  let list = JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+  const found = list.find(q => q.id === quoteId);
+  if (!found) return;
+
+  const activeQuote = {
+    text: found.text,
+    author: `${found.studentName} (${found.studentSchool || 'Ngambis Buddy'}) • Dipilih oleh Mentor Maesa`,
+    timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
+  };
+
+  localStorage.setItem("ngambis_active_spirit_quote", JSON.stringify(activeQuote));
+  renderBubbleSemangat();
+
+  list = list.filter(q => q.id !== quoteId);
+  localStorage.setItem("ngambis_pending_spirit_quotes", JSON.stringify(list));
+  renderAdminSpiritSubmissions();
+
+  alert(`🎉 Kata semangat dari ${found.studentName} berhasil diposting ke Bubble Semangat siswa!`);
+}
+
+function mentorDeleteStudentSpiritQuote(quoteId) {
+  let list = JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+  list = list.filter(q => q.id !== quoteId);
+  localStorage.setItem("ngambis_pending_spirit_quotes", JSON.stringify(list));
+  renderAdminSpiritSubmissions();
 }
 
 // ==========================================
