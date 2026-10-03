@@ -4,24 +4,20 @@
 
 const MENTOR_EMAIL = "maesa.am222@gmail.com";
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6NV9cv1iPsFDN1B2x0TExZDiJn8GSC0hhgjvdsPimL3Ftv_Ut2z4BMKnDGdBAA8tqKQ/exec";
-const CLOUD_SYNC_URL = "https://kvdb.io/7zD9XyN19dJ51TqA5Vv9P4/ngambis_students_db_v1";
-const COMPETITIONS_SYNC_URL = "https://kvdb.io/7zD9XyN19dJ51TqA5Vv9P4/ngambis_competitions_db_v1";
 
 // ==========================================
-// STATE MANAGEMENT
+// STATE MANAGEMENT (SECURED ARCHITECTURE v3.0)
 // ==========================================
 const STATE = {
   currentUser: null,
-  mentorAuth: {
-    email: "maesa.am222@gmail.com",
-    password: "MaesaNgambis2026!"
-  },
-  registrationPasscodes: [
-    "SUCCESS2026",
-    "SUCCESS",
-    "NGAMBIS2026",
-    "AMBIS2026"
-  ],
+  mentorToken: null,
+  adminStudents: [],
+  adminDrafts: [],
+  adminQuotes: [],
+  customCompetitions: [],
+  totalCloudStudents: 0,
+  activeSpiritQuote: null,
+  registrationPasscodes: [],
   deadlines: [
     { name: "US Early Action / Early Decision", date: "2026-11-01T23:59:59", category: "USA (Common App)" },
     { name: "Oxford & Cambridge UCAS Deadline", date: "2026-10-15T18:00:00", category: "UK (UCAS)" },
@@ -427,113 +423,105 @@ function fetchWithTimeout(url, options = {}, timeoutMs = 2500) {
     .finally(() => clearTimeout(timer));
 }
 
-async function pullCloudStudents() {
-  let localData = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
-  let merged = [...localData];
+function sanitizeLocalStudentStorage() {
+  try {
+    const raw = localStorage.getItem("ngambis_registered_students");
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list)) {
+        const cleaned = list.map(item => {
+          const { password, ...safe } = item;
+          return safe;
+        });
+        localStorage.setItem("ngambis_registered_students", JSON.stringify(cleaned));
+      }
+    }
+  } catch (e) {}
+}
 
-  // 1. Google Sheets Pull with Fast Timeout
-  if (GOOGLE_SCRIPT_URL) {
-    try {
-      const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, { cache: "no-store" }, 2500);
-      if (res.ok) {
-        const gasData = await res.json();
-        if (gasData && gasData.students && Array.isArray(gasData.students)) {
-          gasData.students.forEach(gs => {
-            if (gs.email) {
-              const idx = merged.findIndex(m => m.email && m.email.toLowerCase() === gs.email.toLowerCase());
-              if (idx === -1) {
-                merged.push({
-                  id: "std_" + Date.now() + Math.random().toString(36).substr(2, 4),
-                  name: gs.name,
-                  school: gs.school || "SMA Mitra",
-                  email: gs.email.toLowerCase(),
-                  grade: gs.grade || "Kelas 12",
-                  password: gs.password || "SUCCESS2026",
-                  registeredAt: gs.registeredAt || new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-                  role: "STUDENT"
-                });
-              } else {
-                merged[idx] = { 
-                  ...merged[idx], 
-                  name: gs.name || merged[idx].name, 
-                  school: gs.school || merged[idx].school || "SMA Mitra",
-                  grade: gs.grade || merged[idx].grade,
-                  password: gs.password || merged[idx].password 
-                };
-              }
-            }
-          });
-          localStorage.setItem("ngambis_registered_students", JSON.stringify(merged));
+async function pullCloudData() {
+  sanitizeLocalStudentStorage();
+  if (!GOOGLE_SCRIPT_URL) return;
+
+  try {
+    const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, { cache: "no-store" }, 7000);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.status === "success") {
+        if (typeof data.totalStudents === "number") {
+          STATE.totalCloudStudents = data.totalStudents;
+          const stdEl = document.getElementById("stat-total-students");
+          if (stdEl) stdEl.textContent = data.totalStudents;
+        }
+        if (data.competitions && Array.isArray(data.competitions)) {
+          STATE.customCompetitions = data.competitions;
+          renderCompetitions();
+        }
+        if (data.activeQuote) {
+          STATE.activeSpiritQuote = data.activeQuote;
+          renderBubbleSemangat();
         }
       }
-    } catch (err) {}
-  }
-
-  // 2. KV Store Pull with Fast Timeout
-  try {
-    const res = await fetchWithTimeout(CLOUD_SYNC_URL, { cache: "no-store" }, 2000);
-    if (res.ok) {
-      const cloudData = await res.json();
-      if (Array.isArray(cloudData) && cloudData.length > 0) {
-        cloudData.forEach(cs => {
-          const idx = merged.findIndex(m => m.email && m.email.toLowerCase() === cs.email.toLowerCase());
-          if (idx === -1) {
-            merged.push(cs);
-          } else {
-            merged[idx] = { ...merged[idx], ...cs };
-          }
-        });
-        localStorage.setItem("ngambis_registered_students", JSON.stringify(merged));
-      }
     }
-  } catch (err) {}
-
-  return getRegisteredStudents();
-}
-
-async function pushCloudStudents(students) {
-  try {
-    await fetch(CLOUD_SYNC_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(students)
-    });
   } catch (err) {
-    console.warn("Cloud push note:", err);
+    console.warn("Cloud sync note:", err);
   }
 }
 
-async function pullCloudCompetitions() {
-  const local = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+async function loadAdminDataFromServer() {
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (!token) return;
+
   try {
-    const res = await fetch(COMPETITIONS_SYNC_URL, { cache: "no-store" });
+    const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "admin_get_data",
+        token: token
+      })
+    }, 8000);
+
     if (res.ok) {
-      const cloud = await res.json();
-      if (Array.isArray(cloud) && cloud.length > 0) {
-        localStorage.setItem("ngambis_custom_competitions", JSON.stringify(cloud));
-        renderCompetitions();
-        return;
+      const data = await res.json();
+      if (data.status === "success") {
+        if (data.students && Array.isArray(data.students)) {
+          STATE.adminStudents = data.students;
+          renderRegisteredStudentsAdmin();
+          updateAnalyticsStats();
+        }
+        if (data.drafts && Array.isArray(data.drafts)) {
+          STATE.adminDrafts = data.drafts;
+          renderSubmittedDraftsAdmin();
+        }
+        if (data.quotes && Array.isArray(data.quotes)) {
+          STATE.adminQuotes = data.quotes;
+          renderAdminSpiritSubmissions();
+        }
+        if (data.passcodes && Array.isArray(data.passcodes)) {
+          STATE.registrationPasscodes = data.passcodes;
+          renderPasscodesInAdmin();
+        }
+        if (data.competitions && Array.isArray(data.competitions)) {
+          STATE.customCompetitions = data.competitions;
+          renderAdminCompetitions();
+          renderCompetitions();
+        }
+      } else if (data.status === "unauthorized") {
+        alert("Sesi Head Mentor telah berakhir atau tidak valid. Silakan login ulang.");
+        logout();
       }
     }
-  } catch (err) {}
-  renderCompetitions();
-}
-
-async function pushCloudCompetitions(comps) {
-  try {
-    await fetch(COMPETITIONS_SYNC_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(comps)
-    });
-  } catch (err) {}
+  } catch (err) {
+    console.warn("Admin data load notice:", err);
+  }
 }
 
 // ==========================================
 // INITIALIZATION
 // ==========================================
 document.addEventListener("DOMContentLoaded", async () => {
-  loadCustomPasscodes();
+  sanitizeLocalStudentStorage();
   checkExistingSession();
   renderScholarships();
   renderDeadlines();
@@ -541,24 +529,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateAnalyticsStats();
   updateCampusBackground('dashboard');
 
-  pullCloudStudents().then(() => {
+  pullCloudData().then(() => {
     updateAnalyticsStats();
     if (STATE.currentUser && STATE.currentUser.role === "MENTOR") {
-      renderRegisteredStudentsAdmin();
+      loadAdminDataFromServer();
     }
   });
-
-  pullCloudCompetitions();
 });
-
-function loadCustomPasscodes() {
-  const saved = localStorage.getItem("ngambis_student_passcodes");
-  if (saved) {
-    try {
-      STATE.registrationPasscodes = JSON.parse(saved);
-    } catch (e) {}
-  }
-}
 
 // ==========================================
 // SIDEBAR DRAWER NAVIGATION
@@ -670,9 +647,12 @@ function updateCampusBackground(tabId) {
 // TAB SWITCHING & ROUTING
 // ==========================================
 function switchTab(tabId) {
-  if (tabId === "admin" && (!STATE.currentUser || STATE.currentUser.role !== "MENTOR")) {
-    alert("⛔ Akses Terbatas: Halaman ini khusus untuk Head Mentor.");
-    return;
+  if (tabId === "admin") {
+    const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+    if (!STATE.currentUser || STATE.currentUser.role !== "MENTOR" || !token) {
+      alert("⛔ Akses Terbatas: Halaman ini khusus untuk Head Mentor dengan sesi resmi.");
+      return;
+    }
   }
 
   document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
@@ -705,11 +685,7 @@ function switchTab(tabId) {
 
   if (tabId === "admin" && STATE.currentUser && STATE.currentUser.role === "MENTOR") {
     renderAnalyticsTable();
-    renderSubmittedDraftsAdmin();
-    renderRegisteredStudentsAdmin();
-    renderPasscodesInAdmin();
-    renderAdminCompetitions();
-    renderAdminSpiritSubmissions();
+    loadAdminDataFromServer();
   }
 
   if (window.innerWidth < 1024) {
@@ -745,7 +721,7 @@ function switchAuthTab(tab) {
     if (formLogin) formLogin.classList.remove("hidden");
     if (formRegister) formRegister.classList.add("hidden");
     if (formMentor) formMentor.classList.add("hidden");
-    if (btnLogin) btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-stone-900 text-amber-300 border border-amber-500/40 shadow-sm transition";
+    if (btnLogin) btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[#141A54] text-amber-300 border border-amber-500/40 shadow-sm transition";
   } else if (tab === 'register') {
     if (formLogin) formLogin.classList.add("hidden");
     if (formRegister) formRegister.classList.remove("hidden");
@@ -755,7 +731,7 @@ function switchAuthTab(tab) {
     if (formLogin) formLogin.classList.add("hidden");
     if (formRegister) formRegister.classList.add("hidden");
     if (formMentor) formMentor.classList.remove("hidden");
-    if (btnMentor) btnMentor.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-stone-900 text-white shadow-sm transition";
+    if (btnMentor) btnMentor.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[#141A54] text-white shadow-sm transition";
   }
 }
 
@@ -775,67 +751,69 @@ if (loginForm) {
       return;
     }
 
-    // FAST-PATH 1: Instant Local Memory Check (<5ms)
-    let registeredUsers = getRegisteredStudents();
-    let foundUser = registeredUsers.find(u => u.email && u.email.toLowerCase() === email);
+    if (loginBtn) {
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Memverifikasi Akun Siswa...`;
+    }
+    errorBox.classList.add("hidden");
 
-    if (foundUser) {
-      const isMasterPasscode = STATE.registrationPasscodes.includes(password.toUpperCase());
-      if (foundUser.password && foundUser.password !== password && !isMasterPasscode) {
-        errorBox.textContent = "❌ Password salah! Silakan masukkan password yang kamu buat saat mendaftar.";
+    try {
+      const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "login",
+          email: email,
+          password: password
+        })
+      }, 10000);
+
+      const data = await res.json();
+
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `<span>Masuk ke Portal Siswa</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+
+      if (data.status === "not_found") {
+        errorBox.textContent = "❌ Email belum terdaftar di database! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu.";
         errorBox.classList.remove("hidden");
         return;
       }
 
-      // INSTANT ACCESS
-      logActivity("LOGIN", `Siswa Login: ${email}`, foundUser.grade);
-      loginUser(foundUser);
-      // Non-blocking sync in background
-      pullCloudStudents();
-      return;
-    }
+      if (data.status === "wrong_password") {
+        errorBox.textContent = "❌ Password salah! Periksa kembali password yang kamu buat saat mendaftar.";
+        errorBox.classList.remove("hidden");
+        return;
+      }
 
-    // FAST-PATH 2: If not found locally, do swift cloud lookup with spinner
-    if (loginBtn) {
-      loginBtn.disabled = true;
-      loginBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Menghubungkan ke Cloud...`;
-    }
+      if (data.status === "success" && data.student) {
+        const studentUser = data.student;
+        logActivity("LOGIN", `Siswa Login: ${email}`, studentUser.grade);
+        loginUser(studentUser);
+        return;
+      }
 
-    await pullCloudStudents();
-    registeredUsers = getRegisteredStudents();
-    foundUser = registeredUsers.find(u => u.email && u.email.toLowerCase() === email);
-
-    if (loginBtn) {
-      loginBtn.disabled = false;
-      loginBtn.innerHTML = `<span>Masuk ke Portal Siswa</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-      if (window.lucide) lucide.createIcons();
-    }
-
-    // STRICT CHECK: Must be registered
-    if (!foundUser) {
-      errorBox.textContent = "❌ Akun dengan email ini belum terdaftar di cloud! Silakan klik tab 'Daftar Siswa Baru' terlebih dahulu.";
+      errorBox.textContent = data.message || "Gagal menghubungkan ke server. Silakan coba lagi.";
       errorBox.classList.remove("hidden");
-      return;
-    }
 
-    // Password verification
-    const isMasterPasscode = STATE.registrationPasscodes.includes(password.toUpperCase());
-    if (foundUser.password && foundUser.password !== password && !isMasterPasscode) {
-      errorBox.textContent = "❌ Password salah! Silakan masukkan password yang kamu buat saat mendaftar.";
+    } catch (err) {
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `<span>Masuk ke Portal Siswa</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+      errorBox.textContent = "Terjadi gangguan koneksi cloud saat login. Periksa internet kamu lalu coba kembali.";
       errorBox.classList.remove("hidden");
-      return;
     }
-
-    // Grant access
-    logActivity("LOGIN", `Siswa Login: ${email}`, foundUser.grade);
-    loginUser(foundUser);
   });
 }
 
-// 2. INSTANT STUDENT REGISTRATION HANDLER (ZERO-LAG)
+// 2. STUDENT REGISTRATION HANDLER (SERVER-SIDE PASSCODE & HASHING)
 const registerForm = document.getElementById("auth-form-register");
 if (registerForm) {
-  registerForm.addEventListener("submit", (e) => {
+  registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = document.getElementById("reg-name").value.trim();
     const school = (document.getElementById("reg-school") ? document.getElementById("reg-school").value : "").trim();
@@ -844,16 +822,11 @@ if (registerForm) {
     const passcode = document.getElementById("reg-passcode").value.trim().toUpperCase();
     const password = document.getElementById("reg-password").value.trim();
     const errorBox = document.getElementById("login-error");
+    const regBtn = e.target.querySelector("button[type='submit']");
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       errorBox.textContent = "Format email tidak valid! Masukkan alamat email aktif (contoh: nama@gmail.com).";
-      errorBox.classList.remove("hidden");
-      return;
-    }
-
-    if (!STATE.registrationPasscodes.includes(passcode)) {
-      errorBox.textContent = "Passcode Pendaftaran salah! Masukkan passcode resmi dari mentor (SUCCESS2026).";
       errorBox.classList.remove("hidden");
       return;
     }
@@ -864,36 +837,21 @@ if (registerForm) {
       return;
     }
 
-    let registeredUsers = getRegisteredStudents();
-    if (registeredUsers.some(u => u.email && u.email.toLowerCase() === email)) {
-      errorBox.textContent = "Email ini sudah terdaftar! Silakan langsung login di tab 'Masuk (Login)'.";
+    if (!passcode) {
+      errorBox.textContent = "Passcode Pendaftaran wajib diisi! Masukkan passcode resmi yang diberikan mentor.";
       errorBox.classList.remove("hidden");
       return;
     }
 
-    const studentUser = {
-      id: "std_" + Date.now(),
-      name: name,
-      school: school || "SMA Mitra",
-      email: email,
-      grade: grade,
-      password: password,
-      avatar: "",
-      registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-      role: "STUDENT"
-    };
+    if (regBtn) {
+      regBtn.disabled = true;
+      regBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Mendaftarkan Akun ke Cloud...`;
+    }
+    errorBox.classList.add("hidden");
 
-    // 1. INSTANT LOCAL CACHE & TRANSITION
-    registeredUsers.push(studentUser);
-    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-
-    // 2. ASYNC BACKGROUND CLOUD DISPATCH (Non-blocking)
-    pushCloudStudents(registeredUsers);
-
-    if (GOOGLE_SCRIPT_URL) {
-      fetch(GOOGLE_SCRIPT_URL, {
+    try {
+      const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
           action: "register",
@@ -901,57 +859,118 @@ if (registerForm) {
           school: school || "SMA Mitra",
           email: email,
           grade: grade,
-          password: password
+          password: password,
+          passcode: passcode
         })
-      }).catch(() => {});
+      }, 12000);
+
+      const data = await res.json();
+
+      if (regBtn) {
+        regBtn.disabled = false;
+        regBtn.innerHTML = `<span>Daftar & Buka Portal</span> <i data-lucide="check-circle" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+
+      if (data.status === "invalid_passcode") {
+        errorBox.textContent = "❌ Passcode Pendaftaran tidak valid! Hubungi Mentor Maesa untuk mendapatkan passcode resmi.";
+        errorBox.classList.remove("hidden");
+        return;
+      }
+
+      if (data.status === "already_registered") {
+        errorBox.textContent = "❌ Email ini sudah terdaftar! Silakan langsung login di tab 'Masuk (Login)'.";
+        errorBox.classList.remove("hidden");
+        return;
+      }
+
+      if (data.status === "success" && data.student) {
+        logActivity("STUDENT_REGISTER", `Registrasi Akun: ${name} (${email}) - ${school || 'SMA'}`, grade);
+        loginUser(data.student);
+        pullCloudData();
+        return;
+      }
+
+      errorBox.textContent = data.message || "Gagal mendaftarkan akun. Silakan coba lagi.";
+      errorBox.classList.remove("hidden");
+
+    } catch (err) {
+      if (regBtn) {
+        regBtn.disabled = false;
+        regBtn.innerHTML = `<span>Daftar & Buka Portal</span> <i data-lucide="check-circle" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+      errorBox.textContent = "Terjadi gangguan koneksi cloud saat mendaftar. Silakan periksa jaringan lalu coba kembali.";
+      errorBox.classList.remove("hidden");
     }
-
-    // Fire & Forget email to Mentor
-    fetch(`https://formsubmit.co/ajax/${MENTOR_EMAIL}`, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        event: "Pendaftaran Siswa Baru",
-        nama_siswa: name,
-        asal_sekolah: school || "SMA Mitra",
-        email_siswa: email,
-        kelas: grade,
-        waktu: studentUser.registeredAt,
-        _subject: `🎉 [Ngambis Bareng] Siswa Baru Mendaftar: ${name} (${email})`,
-        _replyto: email
-      })
-    }).catch(() => {});
-
-    logActivity("STUDENT_REGISTER", `Registrasi Akun: ${name} (${email}) - ${school || 'SMA'}`, grade);
-    loginUser(studentUser);
   });
 }
 
-// 3. MENTOR LOGIN HANDLER
+// 3. MENTOR LOGIN HANDLER (SERVER-SIDE TOKEN AUTHENTICATION)
 const mentorForm = document.getElementById("auth-form-mentor");
 if (mentorForm) {
-  mentorForm.addEventListener("submit", (e) => {
+  mentorForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("mentor-email").value.trim().toLowerCase();
     const password = document.getElementById("mentor-password").value.trim();
     const errorBox = document.getElementById("login-error");
+    const mentorBtn = e.target.querySelector("button[type='submit']");
 
-    if (email !== STATE.mentorAuth.email.toLowerCase() || password !== STATE.mentorAuth.password) {
-      errorBox.textContent = "Email atau Password Mentor salah! Akses ditolak.";
+    if (!email || !password) {
+      errorBox.textContent = "Mohon masukkan email dan Master Password.";
       errorBox.classList.remove("hidden");
       return;
     }
 
-    const mentorUser = {
-      id: "mentor_maesa",
-      name: "Maesa (Head Mentor)",
-      school: "Head Mentor LDM",
-      email: STATE.mentorAuth.email,
-      grade: "Head Mentor",
-      role: "MENTOR"
-    };
+    if (mentorBtn) {
+      mentorBtn.disabled = true;
+      mentorBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Memverifikasi Kredensial Mentor...`;
+    }
+    errorBox.classList.add("hidden");
 
-    loginUser(mentorUser);
+    try {
+      const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "login_mentor",
+          email: email,
+          password: password
+        })
+      }, 10000);
+
+      const data = await res.json();
+
+      if (mentorBtn) {
+        mentorBtn.disabled = false;
+        mentorBtn.innerHTML = `<span>Masuk sebagai Head Mentor</span> <i data-lucide="shield" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+
+      if (data.status === "success" && data.token && data.mentor) {
+        STATE.mentorToken = data.token;
+        try {
+          localStorage.setItem("ngambis_mentor_token", data.token);
+        } catch (e) {}
+
+        logActivity("LOGIN_MENTOR", `Head Mentor Login: ${email}`, "Head Mentor");
+        loginUser(data.mentor);
+        await loadAdminDataFromServer();
+        return;
+      }
+
+      errorBox.textContent = "❌ Email atau Master Password Mentor salah! Akses ditolak.";
+      errorBox.classList.remove("hidden");
+
+    } catch (err) {
+      if (mentorBtn) {
+        mentorBtn.disabled = false;
+        mentorBtn.innerHTML = `<span>Masuk sebagai Head Mentor</span> <i data-lucide="shield" class="w-4 h-4"></i>`;
+        if (window.lucide) lucide.createIcons();
+      }
+      errorBox.textContent = "Gagal memverifikasi ke server. Periksa koneksi internet.";
+      errorBox.classList.remove("hidden");
+    }
   });
 }
 
@@ -995,8 +1014,28 @@ function closeWelcomeModal() {
 }
 
 function loginUser(user) {
+  if (user && user.email) {
+    const emailKey = user.email.toLowerCase();
+    if (!user.avatar) {
+      const cached = localStorage.getItem("ngambis_avatar_" + emailKey);
+      if (cached) user.avatar = cached;
+    } else {
+      try { localStorage.setItem("ngambis_avatar_" + emailKey, user.avatar); } catch (e) {}
+    }
+  }
+
   STATE.currentUser = user;
   localStorage.setItem("ngambis_user_session", JSON.stringify(user));
+
+  // Sync avatar into registered students list if present
+  try {
+    let allUsers = getRegisteredStudents();
+    const uIdx = allUsers.findIndex(u => u.email && u.email.toLowerCase() === (user.email || "").toLowerCase());
+    if (uIdx !== -1 && user.avatar && allUsers[uIdx].avatar !== user.avatar) {
+      allUsers[uIdx].avatar = user.avatar;
+      localStorage.setItem("ngambis_registered_students", JSON.stringify(allUsers));
+    }
+  } catch (e) {}
 
   document.getElementById("auth-screen").classList.add("hidden");
   document.getElementById("app-container").classList.remove("hidden");
@@ -1024,10 +1063,7 @@ function loginUser(user) {
   const navAdmin = document.getElementById("nav-admin");
   if (user.role === "MENTOR") {
     if (navAdmin) navAdmin.classList.remove("hidden");
-    renderRegisteredStudentsAdmin();
-    renderPasscodesInAdmin();
-    renderAdminCompetitions();
-    renderAdminSpiritSubmissions();
+    loadAdminDataFromServer();
   } else {
     if (navAdmin) navAdmin.classList.add("hidden");
   }
@@ -1053,7 +1089,24 @@ function checkExistingSession() {
   if (saved) {
     try {
       const user = JSON.parse(saved);
-      loginUser(user);
+      if (user && user.role === "MENTOR") {
+        const token = localStorage.getItem("ngambis_mentor_token");
+        if (token) {
+          STATE.mentorToken = token;
+          loginUser(user);
+          return;
+        } else {
+          localStorage.removeItem("ngambis_user_session");
+          return;
+        }
+      } else if (user) {
+        if (user.email && !user.avatar) {
+          const cached = localStorage.getItem("ngambis_avatar_" + user.email.toLowerCase());
+          if (cached) user.avatar = cached;
+        }
+        loginUser(user);
+        return;
+      }
     } catch (e) {
       localStorage.removeItem("ngambis_user_session");
     }
@@ -1064,7 +1117,10 @@ function logout() {
   if (STATE.currentUser) {
     logActivity("LOGOUT", "Keluar dari portal", STATE.currentUser.grade);
   }
+  STATE.currentUser = null;
+  STATE.mentorToken = null;
   localStorage.removeItem("ngambis_user_session");
+  localStorage.removeItem("ngambis_mentor_token");
   location.reload();
 }
 
@@ -1101,7 +1157,7 @@ function switchRoadmapTrack(track) {
   if (track === 'ptln') {
     if (viewPtln) viewPtln.classList.remove("hidden");
     if (viewIup) viewIup.classList.add("hidden");
-    if (btnPtln) btnPtln.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-stone-900 text-amber-300 border border-amber-500/40 shadow-sm transition";
+    if (btnPtln) btnPtln.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-bold rounded-xl bg-[#141A54] text-amber-300 border border-amber-500/40 shadow-sm transition";
     if (btnIup) btnIup.className = "flex-1 sm:flex-none py-2 px-4 text-xs font-semibold rounded-xl text-stone-600 hover:text-stone-900 transition";
   } else {
     if (viewPtln) viewPtln.classList.add("hidden");
@@ -1170,7 +1226,9 @@ function updateProgressPercentage(userProgress) {
 // COMPETITION FEED & MENTOR MANAGER
 // ==========================================
 function getAllCompetitions() {
-  const custom = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+  const custom = (STATE.customCompetitions && STATE.customCompetitions.length > 0)
+    ? STATE.customCompetitions
+    : JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
   return [...custom, ...STATE.competitions];
 }
 
@@ -1195,7 +1253,7 @@ function renderCompetitions(items = null) {
             </span>
           </div>
           <div class="absolute bottom-3 right-3">
-            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-stone-900/80 text-white backdrop-blur-sm">
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[#141A54]/80 text-white backdrop-blur-sm">
               ⏳ ${sanitizeHTML(c.deadline)}
             </span>
           </div>
@@ -1213,7 +1271,7 @@ function renderCompetitions(items = null) {
       </div>
 
       <div class="p-5 pt-0">
-        <a href="${sanitizeHTML(c.link)}" target="_blank" rel="noopener noreferrer" onclick="logActivity('COMPETITION_LINK', '${sanitizeHTML(c.title)}')" class="w-full py-2.5 px-3 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+        <a href="${sanitizeHTML(c.link)}" target="_blank" rel="noopener noreferrer" onclick="logActivity('COMPETITION_LINK', '${sanitizeHTML(c.title)}')" class="w-full py-2.5 px-3 bg-[#141A54] hover:bg-[#0D123B] text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
           <span>Kunjungi Website Resmi & Daftar</span>
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
@@ -1280,10 +1338,23 @@ function addNewCompetitionByMentor(e) {
     badgeColor: "bg-amber-100 text-amber-900 border-amber-300"
   };
 
-  const currentCustom = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
-  currentCustom.unshift(newComp);
-  localStorage.setItem("ngambis_custom_competitions", JSON.stringify(currentCustom));
-  pushCloudCompetitions(currentCustom);
+  if (!STATE.customCompetitions) STATE.customCompetitions = [];
+  STATE.customCompetitions.unshift(newComp);
+  localStorage.setItem("ngambis_custom_competitions", JSON.stringify(STATE.customCompetitions));
+
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (token && GOOGLE_SCRIPT_URL) {
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "admin_competition_action",
+        operation: "add",
+        competition: newComp,
+        token: token
+      })
+    }).catch(() => {});
+  }
 
   document.getElementById("form-add-competition").reset();
   document.getElementById("new-comp-image-preview").classList.add("hidden");
@@ -1296,10 +1367,26 @@ function addNewCompetitionByMentor(e) {
 
 function deleteCompetitionByMentor(id) {
   if (confirm("Hapus info lomba ini dari portal siswa?")) {
-    let currentCustom = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
-    currentCustom = currentCustom.filter(c => c.id !== id);
-    localStorage.setItem("ngambis_custom_competitions", JSON.stringify(currentCustom));
-    pushCloudCompetitions(currentCustom);
+    if (!STATE.customCompetitions) {
+      STATE.customCompetitions = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+    }
+    STATE.customCompetitions = STATE.customCompetitions.filter(c => c.id !== id);
+    localStorage.setItem("ngambis_custom_competitions", JSON.stringify(STATE.customCompetitions));
+
+    const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+    if (token && GOOGLE_SCRIPT_URL) {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "admin_competition_action",
+          operation: "delete",
+          id: id,
+          token: token
+        })
+      }).catch(() => {});
+    }
+
     renderCompetitions();
     renderAdminCompetitions();
   }
@@ -1309,7 +1396,10 @@ function renderAdminCompetitions() {
   const container = document.getElementById("admin-competitions-list");
   if (!container) return;
 
-  const list = JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+  const list = (STATE.customCompetitions && STATE.customCompetitions.length > 0)
+    ? STATE.customCompetitions
+    : JSON.parse(localStorage.getItem("ngambis_custom_competitions") || "[]");
+
   if (list.length === 0) {
     container.innerHTML = `<p class="text-xs text-stone-500 italic">Belum ada lomba custom yang kamu tambahkan.</p>`;
     return;
@@ -1536,7 +1626,6 @@ async function submitEssayDraft(e) {
       try {
         await fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
-          mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
             action: "submit_essay",
@@ -1622,7 +1711,10 @@ function renderSubmittedDraftsAdmin() {
   const container = document.getElementById("admin-draft-stream");
   if (!container) return;
 
-  const allDrafts = JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
+  const allDrafts = (STATE.adminDrafts && STATE.adminDrafts.length > 0)
+    ? STATE.adminDrafts
+    : JSON.parse(localStorage.getItem("ngambis_submitted_drafts") || "[]");
+
   if (allDrafts.length === 0) {
     container.innerHTML = `<p class="text-xs text-stone-500 italic">Belum ada draft esai dari siswa yang masuk.</p>`;
     return;
@@ -1641,7 +1733,7 @@ function renderSubmittedDraftsAdmin() {
         <p class="text-[11px] text-stone-500">Waktu: ${d.timestamp} | Catatan: "${sanitizeHTML(d.notes || 'Tidak ada catatan')}"</p>
       </div>
       <div class="flex items-center gap-2">
-        <a href="${sanitizeHTML(d.link)}" target="_blank" class="px-3.5 py-2 bg-stone-900 hover:bg-black text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+        <a href="${sanitizeHTML(d.link)}" target="_blank" class="px-3.5 py-2 bg-[#141A54] hover:bg-[#0D123B] text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
           Buka Docs & Koreksi <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
       </div>
@@ -1655,6 +1747,9 @@ function renderSubmittedDraftsAdmin() {
 // REGISTERED STUDENTS & MENTOR DIRECTORY
 // ==========================================
 function getRegisteredStudents() {
+  if (STATE.currentUser && STATE.currentUser.role === "MENTOR" && STATE.adminStudents && STATE.adminStudents.length > 0) {
+    return STATE.adminStudents;
+  }
   let registeredUsers = JSON.parse(localStorage.getItem("ngambis_registered_students") || "[]");
   return registeredUsers;
 }
@@ -1663,9 +1758,12 @@ function renderRegisteredStudentsAdmin() {
   const tbody = document.getElementById("admin-students-body");
   if (!tbody) return;
 
-  const registeredUsers = getRegisteredStudents();
+  const registeredUsers = (STATE.adminStudents && STATE.adminStudents.length > 0)
+    ? STATE.adminStudents
+    : getRegisteredStudents();
+
   if (registeredUsers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-stone-500">Belum ada siswa yang mendaftar.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-stone-500">Belum ada siswa yang mendaftar atau sedang memuat data dari cloud...</td></tr>`;
     return;
   }
 
@@ -1701,7 +1799,7 @@ function toggleAddStudentForm() {
   if (form) form.classList.toggle("hidden");
 }
 
-function addManualStudent() {
+async function addManualStudent() {
   const nameInput = document.getElementById("manual-std-name");
   const emailInput = document.getElementById("manual-std-email");
   const schoolInput = document.getElementById("manual-std-school");
@@ -1723,43 +1821,27 @@ function addManualStudent() {
     return;
   }
 
-  let registeredUsers = getRegisteredStudents();
-  if (registeredUsers.some(u => u.email === email)) {
-    alert("Email ini sudah terdaftar di cloud!");
-    return;
-  }
-
-  const newStudent = {
-    id: "std_" + Date.now(),
-    name: name,
-    school: school || "SMA Mitra",
-    email: email,
-    grade: grade,
-    password: "SUCCESS2026",
-    avatar: "",
-    registeredAt: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }) + " (Manual)",
-    role: "STUDENT"
-  };
-
-  registeredUsers.push(newStudent);
-  localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-  pushCloudStudents(registeredUsers);
-
-  if (GOOGLE_SCRIPT_URL) {
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (token && GOOGLE_SCRIPT_URL) {
     try {
-      fetch(GOOGLE_SCRIPT_URL, {
+      const res = await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
           action: "register",
           name: name,
           school: school || "SMA Mitra",
           email: email,
           grade: grade,
-          password: "SUCCESS2026"
+          password: "SUCCESS2026",
+          passcode: "SUCCESS2026"
         })
       });
+      const data = await res.json();
+      if (data.status === "already_registered") {
+        alert("Email ini sudah terdaftar di database cloud!");
+        return;
+      }
     } catch (err) {}
   }
 
@@ -1768,23 +1850,39 @@ function addManualStudent() {
   if (schoolInput) schoolInput.value = "";
   toggleAddStudentForm();
 
-  renderRegisteredStudentsAdmin();
+  await loadAdminDataFromServer();
   updateAnalyticsStats();
   alert(`✅ Akun siswa '${name}' (${email}) berhasil didaftarkan secara manual! Password default: SUCCESS2026`);
 }
 
-function deleteStudentAdmin(email) {
-  if (confirm(`Hapus akun siswa '${email}' dari cloud?`)) {
-    let registeredUsers = getRegisteredStudents().filter(u => u.email !== email);
-    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-    pushCloudStudents(registeredUsers);
-    renderRegisteredStudentsAdmin();
-    updateAnalyticsStats();
+async function deleteStudentAdmin(email) {
+  if (!confirm(`Hapus akun siswa '${email}' dari database cloud?`)) return;
+
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (token && GOOGLE_SCRIPT_URL) {
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "admin_delete_student",
+          token: token,
+          email: email
+        })
+      });
+      await loadAdminDataFromServer();
+      updateAnalyticsStats();
+    } catch (e) {
+      console.warn("Delete error:", e);
+    }
   }
 }
 
 function exportStudentsCSV() {
-  const registeredUsers = getRegisteredStudents();
+  const registeredUsers = (STATE.adminStudents && STATE.adminStudents.length > 0)
+    ? STATE.adminStudents
+    : getRegisteredStudents();
+
   if (registeredUsers.length === 0) {
     alert("Belum ada data siswa untuk diexport!");
     return;
@@ -1874,20 +1972,20 @@ function handleAvatarFileSelect(event) {
   reader.onload = function(e) {
     const img = new Image();
     img.onload = function() {
-      // Compress and scale down to 220x220 max using canvas to fit in localStorage comfortably
+      // Compress and scale down to 160x160 max @ 0.70 JPEG to safely fit in Google Sheets (<8KB) and localStorage
       const canvas = document.createElement("canvas");
-      const MAX_SIZE = 220;
+      const MAX_SIZE = 160;
       let width = img.width;
       let height = img.height;
 
       if (width > height) {
         if (width > MAX_SIZE) {
-          height *= MAX_SIZE / width;
+          height = Math.round(height * (MAX_SIZE / width));
           width = MAX_SIZE;
         }
       } else {
         if (height > MAX_SIZE) {
-          width *= MAX_SIZE / height;
+          width = Math.round(width * (MAX_SIZE / height));
           height = MAX_SIZE;
         }
       }
@@ -1897,7 +1995,7 @@ function handleAvatarFileSelect(event) {
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
 
-      const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.70);
       pendingAvatarDataUrl = compressedDataUrl;
 
       const previewContainer = document.getElementById("edit-avatar-preview-container");
@@ -1934,6 +2032,11 @@ function saveUserProfile(event) {
   STATE.currentUser.grade = grade;
   if (pendingAvatarDataUrl) {
     STATE.currentUser.avatar = pendingAvatarDataUrl;
+    if (STATE.currentUser.email) {
+      try {
+        localStorage.setItem("ngambis_avatar_" + STATE.currentUser.email.toLowerCase(), pendingAvatarDataUrl);
+      } catch (e) {}
+    }
   }
 
   // Persist session
@@ -1944,21 +2047,18 @@ function saveUserProfile(event) {
   const userIdx = registeredUsers.findIndex(u => u.email && u.email.toLowerCase() === (STATE.currentUser.email || "").toLowerCase());
   if (userIdx !== -1) {
     registeredUsers[userIdx] = { ...registeredUsers[userIdx], ...STATE.currentUser };
-    localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
-    pushCloudStudents(registeredUsers);
-
     if (GOOGLE_SCRIPT_URL && STATE.currentUser.email) {
       try {
         fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
-          mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({
             action: "update_profile",
             email: STATE.currentUser.email,
             name: name,
             school: school,
-            grade: grade
+            grade: grade,
+            avatar: pendingAvatarDataUrl || STATE.currentUser.avatar || ""
           })
         }).catch(() => {});
       } catch (err) {}
@@ -2090,7 +2190,10 @@ function renderAdminSpiritSubmissions() {
   const container = document.getElementById("admin-spirit-submissions-list");
   if (!container) return;
 
-  const list = JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+  const list = (STATE.adminQuotes && STATE.adminQuotes.length > 0)
+    ? STATE.adminQuotes
+    : JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+
   if (list.length === 0) {
     container.innerHTML = `<p class="text-xs text-stone-500 italic p-3 bg-white/70 rounded-xl border border-stone-200">Belum ada kiriman kalimat penyemangat baru dari siswa.</p>`;
     return;
@@ -2104,7 +2207,7 @@ function renderAdminSpiritSubmissions() {
           Oleh: <strong>${sanitizeHTML(q.studentName)}</strong> (${sanitizeHTML(q.studentSchool || q.studentEmail)}) • <span class="text-stone-400 font-mono">${q.submittedAt}</span>
         </span>
         <div class="flex items-center gap-1.5">
-          <button onclick="mentorApproveStudentSpiritQuote('${q.id}')" class="px-2.5 py-1 bg-stone-900 hover:bg-black text-amber-300 font-bold rounded-lg text-[10px] transition flex items-center gap-1">
+          <button onclick="mentorApproveStudentSpiritQuote('${q.id}')" class="px-2.5 py-1 bg-[#141A54] hover:bg-[#0D123B] text-amber-300 font-bold rounded-lg text-[10px] transition flex items-center gap-1">
             <i data-lucide="check" class="w-3 h-3"></i> Posting ke Bubble
           </button>
           <button onclick="mentorDeleteStudentSpiritQuote('${q.id}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg text-[10px] transition">
@@ -2118,7 +2221,7 @@ function renderAdminSpiritSubmissions() {
   if (window.lucide) lucide.createIcons();
 }
 
-function mentorPostSpiritQuote(event) {
+async function mentorPostSpiritQuote(event) {
   event.preventDefault();
   const input = document.getElementById("mentor-custom-spirit-input");
   const quoteText = (input ? input.value : "").trim();
@@ -2130,14 +2233,35 @@ function mentorPostSpiritQuote(event) {
     timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
   };
 
+  STATE.activeSpiritQuote = activeQuote;
   localStorage.setItem("ngambis_active_spirit_quote", JSON.stringify(activeQuote));
   renderBubbleSemangat();
+
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (token && GOOGLE_SCRIPT_URL) {
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "admin_bubble_action",
+          operation: "post",
+          quote: activeQuote,
+          token: token
+        })
+      });
+    } catch (e) {}
+  }
+
   if (input) input.value = "";
   alert("✅ Kalimat penyemangat berhasil diposting ke Bubble Semangat di dashboard seluruh siswa!");
 }
 
-function mentorApproveStudentSpiritQuote(quoteId) {
-  let list = JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+async function mentorApproveStudentSpiritQuote(quoteId) {
+  const list = (STATE.adminQuotes && STATE.adminQuotes.length > 0)
+    ? STATE.adminQuotes
+    : JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
+
   const found = list.find(q => q.id === quoteId);
   if (!found) return;
 
@@ -2147,31 +2271,49 @@ function mentorApproveStudentSpiritQuote(quoteId) {
     timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
   };
 
+  STATE.activeSpiritQuote = activeQuote;
   localStorage.setItem("ngambis_active_spirit_quote", JSON.stringify(activeQuote));
   renderBubbleSemangat();
 
-  list = list.filter(q => q.id !== quoteId);
-  localStorage.setItem("ngambis_pending_spirit_quotes", JSON.stringify(list));
-  renderAdminSpiritSubmissions();
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (token && GOOGLE_SCRIPT_URL) {
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "admin_bubble_action",
+          operation: "approve",
+          quote: activeQuote,
+          token: token
+        })
+      });
+      await loadAdminDataFromServer();
+    } catch (e) {}
+  }
 
   alert(`🎉 Kata semangat dari ${found.studentName} berhasil diposting ke Bubble Semangat siswa!`);
 }
 
 function mentorDeleteStudentSpiritQuote(quoteId) {
-  let list = JSON.parse(localStorage.getItem("ngambis_pending_spirit_quotes") || "[]");
-  list = list.filter(q => q.id !== quoteId);
-  localStorage.setItem("ngambis_pending_spirit_quotes", JSON.stringify(list));
+  STATE.adminQuotes = (STATE.adminQuotes || []).filter(q => q.id !== quoteId);
   renderAdminSpiritSubmissions();
 }
 
 // ==========================================
-// PASSCODE MANAGEMENT
+// PASSCODE MANAGEMENT (SERVER-SIDE VIA MENTOR TOKEN)
 // ==========================================
 function renderPasscodesInAdmin() {
   const container = document.getElementById("admin-passcodes-list");
   if (!container) return;
 
-  container.innerHTML = STATE.registrationPasscodes.map(p => `
+  const list = STATE.registrationPasscodes || [];
+  if (list.length === 0) {
+    container.innerHTML = `<span class="text-xs text-stone-500 italic">Memuat passcode resmi dari server...</span>`;
+    return;
+  }
+
+  container.innerHTML = list.map(p => `
     <span class="px-2.5 py-1 rounded-lg bg-stone-100 border border-stone-300 text-xs font-mono text-stone-800 flex items-center gap-1.5 font-bold">
       <span>${p}</span>
       <button onclick="removeStudentPasscode('${p}')" class="text-stone-400 hover:text-red-600 ml-1">×</button>
@@ -2179,26 +2321,70 @@ function renderPasscodesInAdmin() {
   `).join("");
 }
 
-function addStudentPasscode() {
+async function addStudentPasscode() {
   const input = document.getElementById("new-student-passcode");
   const code = (input.value || "").trim().toUpperCase();
   if (!code) return;
 
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (token && GOOGLE_SCRIPT_URL) {
+    try {
+      const res = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "admin_update_passcode",
+          operation: "add",
+          passcode: code,
+          token: token
+        })
+      });
+      const data = await res.json();
+      if (data.passcodes) {
+        STATE.registrationPasscodes = data.passcodes;
+        renderPasscodesInAdmin();
+      }
+      input.value = "";
+      alert(`✅ Passcode pendaftaran '${code}' berhasil ditambahkan ke database server!`);
+      return;
+    } catch (e) {}
+  }
+
   if (!STATE.registrationPasscodes.includes(code)) {
     STATE.registrationPasscodes.push(code);
-    localStorage.setItem("ngambis_student_passcodes", JSON.stringify(STATE.registrationPasscodes));
     renderPasscodesInAdmin();
     input.value = "";
     alert(`✅ Passcode pendaftaran '${code}' berhasil ditambahkan!`);
   }
 }
 
-function removeStudentPasscode(code) {
-  if (confirm(`Hapus passcode '${code}'?`)) {
-    STATE.registrationPasscodes = STATE.registrationPasscodes.filter(p => p !== code);
-    localStorage.setItem("ngambis_student_passcodes", JSON.stringify(STATE.registrationPasscodes));
-    renderPasscodesInAdmin();
+async function removeStudentPasscode(code) {
+  if (!confirm(`Hapus passcode '${code}' dari database server?`)) return;
+
+  const token = STATE.mentorToken || localStorage.getItem("ngambis_mentor_token");
+  if (token && GOOGLE_SCRIPT_URL) {
+    try {
+      const res = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "admin_update_passcode",
+          operation: "remove",
+          passcode: code,
+          token: token
+        })
+      });
+      const data = await res.json();
+      if (data.passcodes) {
+        STATE.registrationPasscodes = data.passcodes;
+        renderPasscodesInAdmin();
+      }
+      return;
+    } catch (e) {}
   }
+
+  STATE.registrationPasscodes = STATE.registrationPasscodes.filter(p => p !== code);
+  renderPasscodesInAdmin();
 }
 
 // ==========================================
@@ -2286,8 +2472,7 @@ function renderAnalyticsTable() {
 function updateAnalyticsStats() {
   const logs = JSON.parse(localStorage.getItem("ngambis_activity_logs") || "[]");
   const registeredUsers = getRegisteredStudents();
-  
-  const totalStudents = registeredUsers.length;
+  const totalStudents = STATE.totalCloudStudents || registeredUsers.length || 0;
   const totalLogins = logs.filter(l => l.action === "LOGIN").length;
   const totalViews = logs.filter(l => l.action === "VIEW_TAB").length;
   const totalLinks = logs.filter(l => l.action.includes("LINK") || l.action.includes("TEMPLATE")).length;
