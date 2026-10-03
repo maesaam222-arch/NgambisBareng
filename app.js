@@ -1018,7 +1018,26 @@ function loginUser(user) {
     const emailKey = user.email.toLowerCase();
     if (!user.avatar) {
       const cached = localStorage.getItem("ngambis_avatar_" + emailKey);
-      if (cached) user.avatar = cached;
+      if (cached) {
+        user.avatar = cached;
+        // Auto-sync cached avatar to Google Sheets in background if missing from cloud
+        if (GOOGLE_SCRIPT_URL) {
+          try {
+            fetch(GOOGLE_SCRIPT_URL, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify({
+                action: "update_profile",
+                email: user.email,
+                name: user.name || "",
+                school: user.school || "",
+                grade: user.grade || "",
+                avatar: cached
+              })
+            }).catch(() => {});
+          } catch (e) {}
+        }
+      }
     } else {
       try { localStorage.setItem("ngambis_avatar_" + emailKey, user.avatar); } catch (e) {}
     }
@@ -1770,7 +1789,14 @@ function renderRegisteredStudentsAdmin() {
   tbody.innerHTML = registeredUsers.map((s, idx) => `
     <tr class="hover:bg-stone-50 transition">
       <td class="p-3.5 text-stone-500 font-mono">${idx + 1}</td>
-      <td class="p-3.5 font-semibold text-stone-900">${sanitizeHTML(s.name)}</td>
+      <td class="p-3.5 font-semibold text-stone-900">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-full bg-[#141A54] text-amber-200 text-xs font-bold flex items-center justify-center shrink-0 overflow-hidden ring-1 ring-stone-200">
+            ${s.avatar ? `<img src="${s.avatar}" class="w-full h-full object-cover">` : `<span>${(s.name || 'S').charAt(0).toUpperCase()}</span>`}
+          </div>
+          <span>${sanitizeHTML(s.name)}</span>
+        </div>
+      </td>
       <td class="p-3.5 font-mono text-stone-700 text-xs">
         <a href="mailto:${s.email}" class="hover:underline inline-flex items-center gap-1 text-amber-900 font-medium">
           ${sanitizeHTML(s.email)} <i data-lucide="mail" class="w-3 h-3"></i>
@@ -1957,6 +1983,9 @@ function openEditProfileModal() {
 function closeEditProfileModal() {
   const modal = document.getElementById("modal-edit-profile");
   if (modal) modal.classList.add("hidden");
+  pendingAvatarDataUrl = null;
+  const fileInput = document.getElementById("edit-profile-avatar-file");
+  if (fileInput) fileInput.value = "";
 }
 
 function handleAvatarFileSelect(event) {
@@ -2008,10 +2037,12 @@ function handleAvatarFileSelect(event) {
   reader.readAsDataURL(file);
 }
 
-function saveUserProfile(event) {
+async function saveUserProfile(event) {
   event.preventDefault();
   if (!STATE.currentUser) return;
 
+  const form = event.target;
+  const submitBtn = form ? form.querySelector("button[type='submit']") : null;
   const name = document.getElementById("edit-profile-name").value.trim();
   const school = document.getElementById("edit-profile-school").value.trim();
   const grade = document.getElementById("edit-profile-grade").value;
@@ -2026,46 +2057,66 @@ function saveUserProfile(event) {
     return;
   }
 
+  // Visual feedback: button spinner
+  let origBtnHTML = "";
+  if (submitBtn) {
+    origBtnHTML = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Menyimpan ke Cloud Database...`;
+  }
+
+  const avatarToSave = pendingAvatarDataUrl !== null ? pendingAvatarDataUrl : (STATE.currentUser.avatar || "");
+
   // Update in-memory user
   STATE.currentUser.name = name;
   STATE.currentUser.school = school;
   STATE.currentUser.grade = grade;
-  if (pendingAvatarDataUrl) {
-    STATE.currentUser.avatar = pendingAvatarDataUrl;
-    if (STATE.currentUser.email) {
-      try {
-        localStorage.setItem("ngambis_avatar_" + STATE.currentUser.email.toLowerCase(), pendingAvatarDataUrl);
-      } catch (e) {}
-    }
-  }
+  STATE.currentUser.avatar = avatarToSave;
 
-  // Persist session
+  // Persist session & cache avatar in localStorage
+  if (STATE.currentUser.email) {
+    try {
+      localStorage.setItem("ngambis_avatar_" + STATE.currentUser.email.toLowerCase(), avatarToSave);
+    } catch (e) {}
+  }
   localStorage.setItem("ngambis_user_session", JSON.stringify(STATE.currentUser));
 
-  // Persist in registered students list
-  let registeredUsers = getRegisteredStudents();
-  const userIdx = registeredUsers.findIndex(u => u.email && u.email.toLowerCase() === (STATE.currentUser.email || "").toLowerCase());
-  if (userIdx !== -1) {
-    registeredUsers[userIdx] = { ...registeredUsers[userIdx], ...STATE.currentUser };
-    if (GOOGLE_SCRIPT_URL && STATE.currentUser.email) {
-      try {
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            action: "update_profile",
-            email: STATE.currentUser.email,
-            name: name,
-            school: school,
-            grade: grade,
-            avatar: pendingAvatarDataUrl || STATE.currentUser.avatar || ""
-          })
-        }).catch(() => {});
-      } catch (err) {}
+  // Persist in local registered students list if present
+  try {
+    let registeredUsers = getRegisteredStudents();
+    const userIdx = registeredUsers.findIndex(u => u.email && u.email.toLowerCase() === (STATE.currentUser.email || "").toLowerCase());
+    if (userIdx !== -1) {
+      registeredUsers[userIdx] = { ...registeredUsers[userIdx], ...STATE.currentUser };
+      localStorage.setItem("ngambis_registered_students", JSON.stringify(registeredUsers));
+    }
+  } catch (e) {}
+
+  // ALWAYS dispatch update to Google Apps Script cloud database unconditionally
+  let cloudSuccess = false;
+  if (GOOGLE_SCRIPT_URL && STATE.currentUser.email) {
+    try {
+      const res = await fetchWithTimeout(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "update_profile",
+          email: STATE.currentUser.email,
+          name: name,
+          school: school,
+          grade: grade,
+          avatar: avatarToSave
+        })
+      }, 15000);
+      const data = await res.json();
+      if (data && data.status === "success") {
+        cloudSuccess = true;
+      }
+    } catch (err) {
+      console.warn("Cloud profile sync error:", err);
     }
   }
 
-  // Update UI
+  // Update UI Displays immediately
   const nameEls = document.querySelectorAll(".user-name-display");
   nameEls.forEach(el => el.textContent = name);
 
@@ -2077,19 +2128,28 @@ function saveUserProfile(event) {
 
   updateAvatarDisplays(STATE.currentUser);
   setupWatermark(name, STATE.currentUser.email || grade);
-
   logActivity("UPDATE_PROFILE", `Mengupdate profil: ${name} (${school})`);
 
+  pendingAvatarDataUrl = null;
+
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = origBtnHTML || `<i data-lucide="check" class="w-4 h-4"></i><span>Simpan Perubahan Profil</span>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
   if (alertBox) {
-    alertBox.textContent = "✅ Profil dan foto berhasil diperbarui!";
-    alertBox.className = "p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs";
+    alertBox.textContent = cloudSuccess
+      ? "✅ Profil dan foto berhasil disimpan permanen ke Cloud Database!"
+      : "✅ Profil tersimpan di perangkat ini. (Koneksi cloud akan sinkron otomatis saat online)";
+    alertBox.className = "p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-semibold";
     alertBox.classList.remove("hidden");
   }
 
   setTimeout(() => {
     closeEditProfileModal();
     if (alertBox) alertBox.classList.add("hidden");
-  }, 1000);
+  }, 1200);
 }
 
 // ==========================================

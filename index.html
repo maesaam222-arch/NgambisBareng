@@ -406,6 +406,14 @@
 
         <!-- Right: Student Profile & Logout -->
         <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Mobile Profile Avatar Button (Tampil di Layar HP) -->
+          <button type="button" onclick="openEditProfileModal()" class="flex sm:hidden items-center p-0.5 rounded-full bg-white/90 hover:bg-white border border-stone-200 hover:border-[#800429]/60 shadow-xs cursor-pointer transition" title="Klik untuk edit profil & foto">
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-[#141A54] text-amber-200 text-xs font-bold flex items-center justify-center shrink-0 user-avatar-small-container ring-2 ring-[#800429]/40">
+              <span class="user-initial-display">S</span>
+            </div>
+          </button>
+
+          <!-- Desktop Profile Pill Button (Tampil di Layar Laptop/Tablet) -->
           <button type="button" onclick="openEditProfileModal()" class="hidden sm:flex items-center gap-2.5 bg-white/90 hover:bg-white backdrop-blur-md border border-stone-200 hover:border-[#800429]/60 px-3.5 py-2 rounded-xl text-xs shadow-xs transition group cursor-pointer" title="Klik untuk edit profil & foto">
             <div class="w-7 h-7 rounded-full overflow-hidden bg-[#141A54] text-amber-200 text-[10px] font-bold flex items-center justify-center shrink-0 user-avatar-small-container ring-2 ring-[#800429]/40">
               <span class="user-initial-display">S</span>
@@ -1605,14 +1613,14 @@
                   <button type="button" onclick="event.stopPropagation(); copyTemplate('tpl-mot-letter-full')" class="px-3.5 py-1.5 bg-white/95 hover:bg-white text-stone-900 rounded-xl text-xs font-bold border border-stone-300 flex items-center gap-1.5 shadow-2xs transition">
                     <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-600"></i> Salin Template
                   </button>
-                  <div id="chevron-tpl-section-1" class="w-7 h-7 rounded-xl bg-white border border-stone-200 flex items-center justify-center text-stone-600 transition-transform duration-300 rotate-180">
+                  <div id="chevron-tpl-section-1" class="w-7 h-7 rounded-xl bg-white border border-stone-200 flex items-center justify-center text-stone-600 transition-transform duration-300">
                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
                   </div>
                 </div>
               </div>
 
-              <!-- Collapsible Content for Template 1 (Open by Default) -->
-              <div id="tpl-section-1" class="p-6 pt-2 border-t border-stone-200/60 space-y-4">
+              <!-- Collapsible Content for Template 1 (Collapsed by Default) -->
+              <div id="tpl-section-1" class="p-6 pt-2 border-t border-stone-200/60 space-y-4 hidden">
                 <!-- Outline Breakdown with Descriptions and Real Examples -->
                 <div class="space-y-4 text-xs text-stone-800">
                 
@@ -2741,7 +2749,7 @@ NISN: [NISN Kamu]</pre>
       <!-- Welcome Body Message (Exact Revised Copy & Logo Red Background) -->
       <div class="space-y-3.5 text-xs sm:text-sm text-red-50/95 leading-relaxed relative z-10">
         <p class="leading-relaxed">
-          Sekarang kamu sudah resmi masuk jadi <span class="inline-block px-2.5 py-0.5 mx-1 rounded-lg bg-amber-400 text-stone-950 font-black shadow-xs tracking-wide">Ngambis Buddy</span>, yeay! Kepo deh seberapa ngambis kamu 🧐
+          Sekarang kamu sudah resmi masuk jadi <span class="font-black text-amber-300">Ngambis Buddy</span>, yeay! Kepo deh seberapa ngambis kamu 🧐
         </p>
 
         <p class="font-semibold text-amber-200 text-xs sm:text-sm italic">
@@ -2761,14 +2769,14 @@ NISN: [NISN Kamu]</pre>
         </div>
 
         <p class="text-amber-300 font-extrabold text-sm sm:text-base pt-1 flex items-center gap-1.5">
-          <span>Semangat Nak :)</span>
+          <span>Semangat Buddy!</span>
         </p>
       </div>
 
       <!-- Action Button -->
       <div class="pt-2 relative z-10">
         <button onclick="closeWelcomeModal()" class="w-full py-3 px-4 bg-amber-400 hover:bg-amber-300 active:scale-[0.99] text-stone-950 font-black rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-xs sm:text-sm">
-          <span>Siap Ngambis Bareng! Masuk ke Dashboard</span>
+          <span>Mulai Ngambis Bareng</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </div>
